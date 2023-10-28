@@ -12,6 +12,12 @@ const COLORS = {
   black: '#000000',
   red: '#ff0000',
 
+  toggleOn: 'green',
+  toggleOff: 'red',
+
+  toggleThumbOn: '#d2d2d2',
+  toggleThumbOff: '#f4f3f4',
+
   backgroung: 'gainsboro',
   modalBackground: 'rgba(0,0,0,0.3)',
 };

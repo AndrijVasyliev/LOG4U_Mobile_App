@@ -15,9 +15,9 @@ import * as SecureStore from 'expo-secure-store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { Main, Loads, Truck } from '../components';
+import { Main, Loads, Profile } from '../components';
 
-import { COLORS, icons } from '../constants';
+import { COLORS, icons, images } from '../constants';
 
 const Tab = createBottomTabNavigator();
 
@@ -160,21 +160,25 @@ const Home = () => {
       />
       <StatusBar barStyle={'light-content'} />
       <Tab.Navigator
-        initialRouteName="Main"
+        initialRouteName="Profile"
         screenOptions={{
           headerShown: false,
           tabBarShowLabel: false,
         }}
       >
         <Tab.Screen
-          name="Main"
+          name="Profile"
           options={{
-            tabBarLabel: 'Main',
+            tabBarLabel: 'Profile',
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="home" color={color} size={size} />
+              <MaterialCommunityIcons
+                name="account"
+                color={color}
+                size={size}
+              />
             ),
           }}
-          component={Main}
+          component={Profile}
         />
         <Tab.Screen
           name="Truck"
@@ -185,20 +189,6 @@ const Home = () => {
             ),
           }}
           component={Loads}
-        />
-        <Tab.Screen
-          name="Loads"
-          options={{
-            tabBarLabel: 'Loads',
-            tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons
-                name="account"
-                color={color}
-                size={size}
-              />
-            ),
-          }}
-          component={Truck}
         />
       </Tab.Navigator>
     </SafeAreaView>

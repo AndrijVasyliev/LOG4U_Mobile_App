@@ -4,7 +4,7 @@ import Main from './main/Main';
 // loads
 import Loads from './loads/Loads';
 
-// truck
-import Truck from './truck/Truck';
+// profile
+import Profile from './profile/Profile';
 
-export { Main, Loads, Truck };
+export { Main, Loads, Profile };
