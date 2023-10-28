@@ -1,6 +1,12 @@
-node_modules/
+# compiled output
+dist
+coverage
+build
+/tmp
+/out-tsc
+
+
 .expo/
-dist/
 npm-debug.*
 *.jks
 *.p8
@@ -10,11 +16,49 @@ npm-debug.*
 *.orig.*
 web-build/
 
+
+# dependencies
+node_modules
+
 # macOS
 .DS_Store
 
-# vscode
-.vscode
-
-# env
+# dotenv environment variable files
 .env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# IDEs and editors
+*.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.npm
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/connect.lock
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+
+#Logs
+*.log
