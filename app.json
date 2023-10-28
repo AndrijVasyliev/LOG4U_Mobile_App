@@ -1,6 +1,7 @@
 {
   "expo": {
     "scheme": "acme",
+    "icon": "./assets/icons/log4u_small_icon.png",
     "web": {
       "bundler": "metro"
     },
@@ -15,6 +16,7 @@
       }
     },
     "ios": {
+      "buildNumber": "2",
       "bundleIdentifier": "com.log4u"
     }
   }

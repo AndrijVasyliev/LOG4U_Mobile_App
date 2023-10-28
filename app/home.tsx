@@ -17,20 +17,20 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import { Main, Loads, Truck } from '../components';
 
-
-import { COLORS, icons, images, SIZES } from '../constants';
-
+import { COLORS, icons } from '../constants';
 
 const Tab = createBottomTabNavigator();
 
 const Home = () => {
-  const [userName, setUserName] = React.useState<string>("");
+  const [userName, setUserName] = React.useState<string>('');
   const [userMenuVisible, setUserMenuVisible] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     SecureStore.getItemAsync('username')
       .then((userName) => setUserName(userName))
-      .catch(() => { return; })
+      .catch(() => {
+        return;
+      });
   }, []);
 
   const router = useRouter();
@@ -41,11 +41,10 @@ const Home = () => {
       SecureStore.deleteItemAsync('username'),
       SecureStore.deleteItemAsync('login'),
       SecureStore.deleteItemAsync('password'),
-    ])
-      .then(() => {
-        setUserMenuVisible((prev) => !prev);
-        router.replace('/login');
-      });
+    ]).then(() => {
+      setUserMenuVisible((prev) => !prev);
+      router.replace('/login');
+    });
   };
 
   return (
@@ -55,34 +54,37 @@ const Home = () => {
         backgroundColor: COLORS.backgroung,
       }}
     >
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={userMenuVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-            handleToggleUserMenu();
-          }}>
-          <View style={{
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={userMenuVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          handleToggleUserMenu();
+        }}
+      >
+        <View
+          style={{
             flex: 1,
-            backgroundColor: 'yello',
+            backgroundColor: COLORS.modalBackground,
             justifyContent: 'center',
             alignItems: 'center',
-            // marginTop: '20%',
-          }}>
-            <TouchableWithoutFeedback onPress={handleToggleUserMenu}>
-              <View
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  backgroundColor: COLORS.modalBackground,
-                }}
-              />
-            </TouchableWithoutFeedback>
-            <View style={{
+          }}
+        >
+          <TouchableWithoutFeedback onPress={handleToggleUserMenu}>
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: COLORS.modalBackground,
+              }}
+            />
+          </TouchableWithoutFeedback>
+          <View
+            style={{
               backgroundColor: COLORS.white,
               borderRadius: 10,
               padding: 35,
@@ -95,39 +97,43 @@ const Home = () => {
               shadowOpacity: 0.25,
               shadowRadius: 4,
               elevation: 5,
-            }}>
-              <View
+            }}
+          >
+            <View
+              style={{
+                width: '100%',
+                height: 40,
+                marginTop: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <TouchableOpacity
                 style={{
-                  width: '100%',
+                  width: 100,
                   height: 40,
-                  marginTop: 5,
+                  backgroundColor: COLORS.primary,
+                  borderRadius: 10,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
+                onPress={handleLogout}
               >
-                <TouchableOpacity
-                  style={{
-                    width: 100,
-                    height: 40,
-                    backgroundColor: COLORS.primary,
-                    borderRadius: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  onPress={handleLogout}
-                >
-                  <Text style={{ color: COLORS.white }}>LOG OUT</Text>
-                </TouchableOpacity>
-              </View>
+                <Text style={{ color: COLORS.white }}>LOG OUT</Text>
+              </TouchableOpacity>
             </View>
           </View>
-        </Modal>
+        </View>
+      </Modal>
       <Stack.Screen
         options={{
           headerStyle: { backgroundColor: COLORS.primary },
           headerShadowVisible: false,
           headerLeft: () => (
-            <Image source={icons.LOGO_4U_White} style={{resizeMode: 'contain', height: 40, width: 40}}/>
+            <Image
+              source={icons.LOGO_4U_White}
+              style={{ resizeMode: 'contain', height: 40, width: 40 }}
+            />
           ),
           headerRight: () => (
             <>
@@ -135,8 +141,8 @@ const Home = () => {
                 style={{
                   width: 40,
                   height: 40,
-                  justifyContent: "center",
-                  alignItems: "center",
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
                 onPress={handleToggleUserMenu}
               >
@@ -149,27 +155,26 @@ const Home = () => {
               <Text style={{ color: COLORS.white }}>{userName}</Text>
             </>
           ),
-          headerTitle: "",
+          headerTitle: '',
         }}
       />
-      <StatusBar
-        barStyle={'light-content'}
-      />
+      <StatusBar barStyle={'light-content'} />
       <Tab.Navigator
-          initialRouteName="Main"
-          screenOptions={{
-              headerShown: false,
-              tabBarShowLabel: false,
-          }}>
+        initialRouteName="Main"
+        screenOptions={{
+          headerShown: false,
+          tabBarShowLabel: false,
+        }}
+      >
         <Tab.Screen
-            name="Main"
-            options={{
-                tabBarLabel: 'Main',
-                tabBarIcon: ({ color, size }) => (
-                    <MaterialCommunityIcons name="home" color={color} size={size} />
-                ),
-            }}
-            component={Main}
+          name="Main"
+          options={{
+            tabBarLabel: 'Main',
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="home" color={color} size={size} />
+            ),
+          }}
+          component={Main}
         />
         <Tab.Screen
           name="Truck"
@@ -186,7 +191,11 @@ const Home = () => {
           options={{
             tabBarLabel: 'Loads',
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="account" color={color} size={size} />
+              <MaterialCommunityIcons
+                name="account"
+                color={color}
+                size={size}
+              />
             ),
           }}
           component={Truck}
