@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View, ImageBackground, Text, Switch } from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
@@ -7,8 +8,7 @@ import { encode as btoa } from 'base-64';
 
 import UserDataItem from './UserDataItem';
 import ErrorText from '../common/ErrorText';
-import {COLORS, images} from '../../constants';
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { COLORS, images } from '../../constants';
 
 const origin = 'https://admin-test-lt5d.onrender.com';
 
@@ -114,7 +114,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
   return (
     <ImageBackground
       source={images.appBackground}
-      resizeMode="center"
+      resizeMode="contain"
       style={{
         flexDirection: 'column',
         width: '100%',

@@ -58,7 +58,7 @@ const Login = () => {
     setShowPassword((prev) => !prev);
   };
   const handleClick = (event, log = login, pas = password) => {
-    if (!login || !password) {
+    if (!log || !pas) {
       return setLoginError(
         `${!log ? 'Login' : ''}${!log && !pas ? ' and ' : ''}${
           !pas ? 'Password' : ''
