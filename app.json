@@ -1,14 +1,16 @@
 {
   "expo": {
+    "name": "LOG4U",
+    "slug": "LOG4U",
+    "version": "1.0.1",
+    "orientation": "portrait",
     "scheme": "acme",
-    "icon": "./assets/icons/log4u_small_icon.png",
+    "icon": "./assets/images/log4u_small_icon.png",
     "web": {
       "bundler": "metro"
     },
-    "name": "LOG4U",
-    "slug": "LOG4U",
     "android": {
-      "package": "com.anonymous.LOG4U"
+      "package": "com.LOG4U"
     },
     "extra": {
       "eas": {
@@ -16,7 +18,6 @@
       }
     },
     "ios": {
-      "buildNumber": "2",
       "bundleIdentifier": "com.log4u"
     }
   }

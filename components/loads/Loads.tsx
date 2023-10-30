@@ -72,7 +72,7 @@ const Loads = ({ navigation }: { navigation: any }) => {
   return (
     <ImageBackground
       source={images.appBackground}
-      resizeMode="center"
+      resizeMode="contain"
       style={{
         flexDirection: 'column',
         width: '100%',

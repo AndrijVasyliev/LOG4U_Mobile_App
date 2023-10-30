@@ -56,7 +56,7 @@
     "metro-resolver": "^0.73.7"
   },
   "name": "@log4u/mobile_app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "main": "expo-router/entry"
 }

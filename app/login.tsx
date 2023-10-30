@@ -58,6 +58,13 @@ const Login = () => {
     setShowPassword((prev) => !prev);
   };
   const handleClick = (event, log = login, pas = password) => {
+    if (!login || !password) {
+      return setLoginError(
+        `${!log ? 'Login' : ''}${!log && !pas ? ' and ' : ''}${
+          !pas ? 'Password' : ''
+        } must not be empty!`,
+      );
+    }
     setIsAutentificating(true);
     const headers = new Headers();
     headers.set('Authorization', 'Basic ' + btoa(log + ':' + pas));
@@ -214,15 +221,11 @@ const Login = () => {
               style={{
                 width: '100%',
                 height: 40,
-                backgroundColor:
-                  !password || !login || loginError
-                    ? COLORS.secondary
-                    : COLORS.primary,
+                backgroundColor: COLORS.primary,
                 borderRadius: 10,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
-              disabled={!password || !login || !!loginError}
               onPress={handleClick}
             >
               <Text style={{ color: COLORS.white }}>LOG IN</Text>
