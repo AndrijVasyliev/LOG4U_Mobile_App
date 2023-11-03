@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {
   Image,
-  SafeAreaView,
   ScrollView,
   Text,
   TextInput,
   View,
   TouchableOpacity,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Spinner from 'react-native-loading-spinner-overlay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Stack, useRouter } from 'expo-router';

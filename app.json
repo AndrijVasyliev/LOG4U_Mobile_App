@@ -2,10 +2,18 @@
   "expo": {
     "name": "LOG4U",
     "slug": "LOG4U",
-    "version": "1.0.5",
+    "version": "1.0.14",
     "orientation": "portrait",
     "scheme": "acme",
     "icon": "./assets/images/log4u_small_icon.png",
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ],
     "web": {
       "bundler": "metro"
     },
@@ -18,7 +26,10 @@
       }
     },
     "ios": {
-      "bundleIdentifier": "com.log4u"
+      "bundleIdentifier": "com.log4u",
+      "infoPlist": {
+        "UIBackgroundModes": ["location", "fetch"]
+      }
     }
   }
 }
