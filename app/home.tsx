@@ -15,119 +15,28 @@ import {
 } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
-import * as Location from 'expo-location';
-import * as TaskManager from 'expo-task-manager';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Loads, Profile } from '../components';
-
+import { stopLocation } from '../utils/location';
 import { COLORS, icons } from '../constants';
-import { encode as btoa } from 'base-64';
 
 const Tab = createBottomTabNavigator();
 
-const origin = 'https://admin-test-lt5d.onrender.com';
-const LOCATION_TRACKING = 'location-tracking';
-const locationUpdateInterval = 1000 * 60 * 3;
-
 const Home = () => {
-  const [locationStarted, setLocationStarted] = React.useState<boolean>(false);
-  const [locationStartedAt, setLocationStartedAt] = React.useState<number>(0);
-  const [login, setLogin] = React.useState<string>('');
-  const [password, setPassword] = React.useState<string>('');
   const [userName, setUserName] = React.useState<string>('');
   const [userMenuVisible, setUserMenuVisible] = React.useState<boolean>(false);
-  const [startUpdate, setStartUpdate] = React.useState<string>('');
-  const [endUpdate, setEndUpdate] = React.useState<string>('');
-  const [location, setLocation] = React.useState<string>('');
 
   React.useEffect(() => {
-    Promise.all([
-      SecureStore.getItemAsync('login'),
-      SecureStore.getItemAsync('password'),
-      SecureStore.getItemAsync('username'),
-    ])
-      .then(([login, password, username]) => {
-        login && setLogin(login);
-        password && setPassword(password);
+    SecureStore.getItemAsync('username')
+      .then((username) => {
         username && setUserName(username);
       })
       .catch(() => {
         return;
       });
   }, []);
-
-  React.useEffect(() => {
-    const start = async () => {
-      const resf = await Location.requestForegroundPermissionsAsync();
-      const resb = await Location.requestBackgroundPermissionsAsync();
-      if (resf.status != 'granted' && resb.status !== 'granted') {
-        console.log('Permission to access location was denied');
-      } else {
-        console.log('Permission to access location granted');
-        setLocation('P G');
-        await Location.startLocationUpdatesAsync(LOCATION_TRACKING, {
-          accuracy: Location.Accuracy.Highest,
-          timeInterval: locationUpdateInterval,
-          distanceInterval: 0,
-        });
-        const hasStarted = await Location.hasStartedLocationUpdatesAsync(
-          LOCATION_TRACKING,
-        );
-        setLocationStarted(hasStarted);
-        console.log('tracking started?', hasStarted);
-      }
-    };
-    const stop = async () => {
-      const isStarted = await Location.hasStartedLocationUpdatesAsync(
-        LOCATION_TRACKING,
-      );
-      if (isStarted) {
-        await Location.stopLocationUpdatesAsync(LOCATION_TRACKING);
-        setLocationStarted(false);
-      }
-    };
-    if (login && password && !locationStarted) {
-      start();
-      // return stop;
-    }
-  }, [login, password, locationStarted]);
-
-  React.useEffect(() => {
-    TaskManager.defineTask(LOCATION_TRACKING, async ({ data, error }) => {
-      if (error) {
-        console.log('LOCATION_TRACKING task ERROR:', error);
-        setLocation('Err');
-        return;
-      }
-      if (data) {
-        const { locations } = data as any;
-        const lat = locations[0].coords.latitude;
-        const long = locations[0].coords.longitude;
-
-        console.log(`${new Date(Date.now()).toLocaleString()}: ${lat},${long}`);
-        setLocation(`${lat},${long}`);
-
-        if (login && password) {
-          setStartUpdate(`${new Date()}`);
-          const headers = new Headers();
-          headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
-          headers.set('Accept', 'application/json');
-          headers.set('Content-Type', 'application/json');
-          return fetch(new URL('/mobileApp/updateTruck', origin), {
-            method: 'PATCH',
-            headers,
-            body: JSON.stringify({
-              lastLocation: [lat, long],
-            }),
-          }).then(() => setEndUpdate(`${new Date()}`));
-        }
-      }
-    });
-    // TaskManager.isTaskDefined(LOCATION_TRACKING);
-    // TaskManager.isTaskRegisteredAsync(LOCATION_TRACKING);
-  }, [locationStarted]);
 
   const router = useRouter();
 
@@ -137,6 +46,7 @@ const Home = () => {
       SecureStore.deleteItemAsync('username'),
       SecureStore.deleteItemAsync('login'),
       SecureStore.deleteItemAsync('password'),
+      stopLocation(),
     ]).then(() => {
       setUserMenuVisible((prev) => !prev);
       router.replace('/login');

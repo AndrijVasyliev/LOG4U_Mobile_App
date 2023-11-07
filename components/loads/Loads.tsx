@@ -4,11 +4,10 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { encode as btoa } from 'base-64';
+
 import Load from './Load';
 import ErrorText from '../common/ErrorText';
-import { images } from '../../constants';
-
-const origin = 'https://admin-test-lt5d.onrender.com';
+import { images, BACKEND_ORIGIN, GET_LOADS_PATH } from '../../constants';
 
 const Loads = ({ navigation }: { navigation: any }) => {
   const [changedAt, setChangedAt] = React.useState<number>(Date.now());
@@ -32,7 +31,7 @@ const Loads = ({ navigation }: { navigation: any }) => {
         if (login && password) {
           const headers = new Headers();
           headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
-          return fetch(new URL('mobileApp/getLoad', origin), {
+          return fetch(new URL(GET_LOADS_PATH, BACKEND_ORIGIN), {
             method: 'GET',
             headers,
           })

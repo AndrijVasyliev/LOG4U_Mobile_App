@@ -14,9 +14,8 @@ import { Stack, useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { encode as btoa } from 'base-64';
 
-import { COLORS, icons } from '../constants';
-
-const origin = 'https://admin-test-lt5d.onrender.com';
+import { startLocation } from '../utils/location';
+import { BACKEND_ORIGIN, GET_DRIVER_PATH, COLORS, icons } from '../constants';
 
 const Login = () => {
   const [login, setLogin] = React.useState<string>('');
@@ -68,8 +67,8 @@ const Login = () => {
     setIsAutentificating(true);
     const headers = new Headers();
     headers.set('Authorization', 'Basic ' + btoa(log + ':' + pas));
-    fetch(new URL('/mobileApp/auth', origin), { method: 'GET', headers })
-      .catch((error) => {
+    fetch(new URL(GET_DRIVER_PATH, BACKEND_ORIGIN), { method: 'GET', headers })
+      .catch(() => {
         setLoginError('Some network problem');
         setIsAutentificating(false);
       })
@@ -83,6 +82,7 @@ const Login = () => {
             .then(() => SecureStore.setItemAsync('login', log))
             .then(() => SecureStore.setItemAsync('password', pas))
             .then(() => {
+              startLocation();
               setIsAutentificating(false);
               router.replace('/home');
             });

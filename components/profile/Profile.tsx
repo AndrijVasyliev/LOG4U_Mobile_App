@@ -8,9 +8,13 @@ import { encode as btoa } from 'base-64';
 
 import UserDataItem from './UserDataItem';
 import ErrorText from '../common/ErrorText';
-import { COLORS, images } from '../../constants';
-
-const origin = 'https://admin-test-lt5d.onrender.com';
+import {
+  BACKEND_ORIGIN,
+  COLORS,
+  GET_DRIVER_PATH,
+  images,
+  UPDATE_TRUCK_PATH,
+} from '../../constants';
 
 const Profile = ({ navigation }: { navigation: any }) => {
   const [changedAt, setChangedAt] = React.useState<number>(Date.now());
@@ -37,7 +41,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
         if (login && password) {
           const headers = new Headers();
           headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
-          return fetch(new URL('/mobileApp/auth', origin), {
+          return fetch(new URL(GET_DRIVER_PATH, BACKEND_ORIGIN), {
             method: 'GET',
             headers,
           })
@@ -93,7 +97,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
           headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
           headers.set('Accept', 'application/json');
           headers.set('Content-Type', 'application/json');
-          return fetch(new URL('/mobileApp/updateTruck', origin), {
+          return fetch(new URL(UPDATE_TRUCK_PATH, BACKEND_ORIGIN), {
             method: 'PATCH',
             headers,
             body: JSON.stringify({

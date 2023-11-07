@@ -8,7 +8,7 @@ const Load = ({ load }: { load: Record<string, any> }) => {
   const pickRef = React.useRef(null);
   const deliverRef = React.useRef(null);
   const copyToClipboard = async (text: string, toastMsg: string) => {
-    if (Platform.OS === 'ios') {
+    if (Platform.OS !== 'android') {
       Toast.show(toastMsg, {
         duration: Toast.durations.SHORT,
         position: Toast.positions.BOTTOM,
