@@ -2,7 +2,7 @@
   "expo": {
     "name": "LOG4U",
     "slug": "LOG4U",
-    "version": "1.0.21",
+    "version": "1.0.24",
     "orientation": "portrait",
     "scheme": "acme",
     "icon": "./assets/images/log4u_small_icon.png",
@@ -22,7 +22,7 @@
       "bundler": "metro"
     },
     "android": {
-      "package": "com.LOG4U"
+      "package": "com.log4u"
     },
     "extra": {
       "eas": {

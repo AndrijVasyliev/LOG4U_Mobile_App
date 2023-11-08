@@ -13,8 +13,6 @@ import {
   UPDATE_TRUCK_PATH,
 } from '../constants';
 
-const GEOFENCE_RADIUS = 0.2;
-
 let isStarting = false;
 let login = '';
 let password = '';
@@ -113,9 +111,9 @@ const startLocationTask = async () => {
   }
   await Location.startLocationUpdatesAsync(LOCATION_TRACKING, {
     activityType: Location.ActivityType.Other, // Location.ActivityType.AutomotiveNavigation,
-    deferredUpdatesDistance: 0.3,
-    deferredUpdatesInterval: 2000,
-    deferredUpdatesTimeout: 1000 * 60 * 30,
+    // deferredUpdatesDistance: 0,
+    // deferredUpdatesInterval: 0,
+    // deferredUpdatesTimeout: 1000 * 60 * 30,
     foregroundService: {
       killServiceOnDestroy: false,
       notificationBody: 'LOG4U is tracking your location',
@@ -126,9 +124,9 @@ const startLocationTask = async () => {
     showsBackgroundLocationIndicator: true,
     // next from getCurrentPositionAsync
     accuracy: Location.Accuracy.Balanced,
-    distanceInterval: 0.1,
+    distanceInterval: 250,
     mayShowUserSettingsDialog: true,
-    timeInterval: 1000,
+    timeInterval: 1000 * 60 * 30,
   });
 
   const hasStarted = await Location.hasStartedLocationUpdatesAsync(
@@ -151,7 +149,7 @@ const startGeofenceTask = async (currentLocation: Location.LocationObject) => {
         longitude: currentLocation.coords.longitude,
         notifyOnEnter: false,
         notifyOnExit: true,
-        radius: GEOFENCE_RADIUS,
+        radius: 300,
       },
     ]);
     console.log('New geofence started');
@@ -254,7 +252,3 @@ TaskManager.defineTask<{
 });
 
 export { startLocation, stopLocation };
-
-// Location.getLastKnownPositionAsync(options)
-// Location.hasStartedGeofencingAsync(taskName)
-// Location.startGeofencingAsync(taskName, regions)

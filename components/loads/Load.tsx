@@ -1,22 +1,17 @@
 import * as React from 'react';
 import { Platform, TouchableOpacity, Text, View } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import Toast from 'react-native-root-toast';
+import { useToast } from 'react-native-toast-notifications';
 import { COLORS } from '../../constants';
 
 const Load = ({ load }: { load: Record<string, any> }) => {
   const pickRef = React.useRef(null);
   const deliverRef = React.useRef(null);
+  const toast = useToast();
   const copyToClipboard = async (text: string, toastMsg: string) => {
-    if (Platform.OS !== 'android') {
-      Toast.show(toastMsg, {
-        duration: Toast.durations.SHORT,
-        position: Toast.positions.BOTTOM,
-        shadow: true,
-        animation: true,
-        hideOnPress: true,
-        delay: 0,
-      });
+    if (Platform.OS === 'ios') {
+      toast.hideAll();
+      toast.show(toastMsg, { duration: 1500 });
     }
     await Clipboard.setStringAsync(text);
   };
