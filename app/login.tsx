@@ -82,7 +82,9 @@ const Login = () => {
             .then(() => SecureStore.setItemAsync('login', log))
             .then(() => SecureStore.setItemAsync('password', pas))
             .then(() => {
-              startLocation();
+              startLocation().catch((reason) =>
+                console.log('Error starting location from login', reason),
+              );
               setIsAutentificating(false);
               router.replace('/home');
             });

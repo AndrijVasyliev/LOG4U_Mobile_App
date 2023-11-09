@@ -1,15 +1,15 @@
 import * as SecureStore from 'expo-secure-store';
 import * as Location from 'expo-location';
-import * as BackgroundFetch from 'expo-background-fetch';
+// import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { encode as btoa } from 'base-64';
 
 import {
   BACKEND_ORIGIN,
-  BACKGROUND_FETCH_TASK,
+  // BACKGROUND_FETCH_TASK,
   LOCATION_TRACKING,
   BACKGROUND_GEOFENCE_TASK,
-  LOCATION_UPDATE_INTERVAL,
+  // LOCATION_UPDATE_INTERVAL,
   UPDATE_TRUCK_PATH,
 } from '../constants';
 
@@ -24,19 +24,29 @@ const startLocation = async () => {
   }
   isStarting = true;
 
-  const resf = await Location.requestForegroundPermissionsAsync();
-  const resb = await Location.requestBackgroundPermissionsAsync();
-  if (resf.status != 'granted' && resb.status !== 'granted') {
-    console.log('Permission to access location was denied');
+  try {
+    const resf = await Location.requestForegroundPermissionsAsync();
+    const resb = await Location.requestBackgroundPermissionsAsync();
+    if (resf.status != 'granted' && resb.status !== 'granted') {
+      console.log('Permission to access location was denied');
+      isStarting = false;
+      return;
+    }
+    console.log('Permission to access location granted');
+  } catch (error) {
+    console.log('Error, requesting permissions: ', error);
     isStarting = false;
     return;
   }
-  console.log('Permission to access location granted');
 
-  [login, password] = await Promise.all([
-    SecureStore.getItemAsync('login'),
-    SecureStore.getItemAsync('password'),
-  ]);
+  try {
+    [login, password] = await Promise.all([
+      SecureStore.getItemAsync('login'),
+      SecureStore.getItemAsync('password'),
+    ]);
+  } catch (error) {
+    console.log('Error, getting login and password: ', error);
+  }
 
   if (!login || !password) {
     console.log('No login or password');
@@ -53,6 +63,8 @@ const startLocation = async () => {
     ]);
   } catch (e) {
     console.log(`Error, while starting location: ${e.message}`);
+    isStarting = false;
+    return;
   }
 
   const locationHasStarted = await Location.hasStartedLocationUpdatesAsync(
@@ -207,48 +219,63 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
   }
 };
 
-TaskManager.defineTask(LOCATION_TRACKING, async ({ data, error }) => {
-  console.log(`${new Date().toISOString()}: Location task`);
+if (!TaskManager.isTaskDefined(LOCATION_TRACKING)) {
+  console.log('Registering: ', LOCATION_TRACKING);
+  TaskManager.defineTask(LOCATION_TRACKING, async ({ data, error }) => {
+    console.log(`${new Date().toISOString()}: Location task`);
 
-  if (error) {
-    console.log('Location task ERROR:', error);
+    if (error) {
+      console.log('Location task ERROR:', error);
+      return;
+    }
+    if (data) {
+      const { locations } = data as { locations: Location.LocationObject[] };
+      console.log(`Location data: ${JSON.stringify(data)}`);
+
+      const currentLocation = locations[0];
+      Promise.all([
+        startGeofenceTask(currentLocation),
+        sendLocation(currentLocation),
+      ]).catch((reason) =>
+        console.log('Error, starting geofence from location task: ', reason),
+      );
+    }
     return;
-  }
-  if (data) {
-    const { locations } = data as { locations: Location.LocationObject[] };
-    console.log(`Location data: ${JSON.stringify(data)}`);
+  });
+} else {
+  console.log('Already registered: ', LOCATION_TRACKING);
+}
 
-    const currentLocation = locations[0];
-    await Promise.all([
-      startGeofenceTask(currentLocation),
-      sendLocation(currentLocation),
-    ]);
-  }
-  return;
-});
-TaskManager.defineTask<{
-  eventType: Location.GeofencingEventType;
-  region: Location.LocationRegion;
-}>(BACKGROUND_GEOFENCE_TASK, async ({ data, error }) => {
-  console.log(`${new Date().toISOString()}: Geofence task`);
-  if (error) {
-    console.log('Geofence task ERROR:', error);
-    return;
-  }
-  const { eventType, region } = data;
-  if (eventType === Location.GeofencingEventType.Enter) {
-    console.log("You've entered region:", region);
-  } else if (eventType === Location.GeofencingEventType.Exit) {
-    console.log("You've left region:", region);
-
-    const currentLocation = await getLocation();
-    await Promise.all([
-      startGeofenceTask(currentLocation),
-      sendLocation(currentLocation),
-    ]);
-
-    return;
-  }
-});
+if (!TaskManager.isTaskDefined(BACKGROUND_GEOFENCE_TASK)) {
+  console.log('Registering: ', BACKGROUND_GEOFENCE_TASK);
+  TaskManager.defineTask<{
+    eventType: Location.GeofencingEventType;
+    region: Location.LocationRegion;
+  }>(BACKGROUND_GEOFENCE_TASK, async ({ data, error }) => {
+    console.log(`${new Date().toISOString()}: Geofence task`);
+    if (error) {
+      console.log('Geofence task ERROR:', error);
+      return;
+    }
+    const { eventType, region } = data;
+    if (eventType === Location.GeofencingEventType.Enter) {
+      console.log("You've entered region:", region);
+    } else if (eventType === Location.GeofencingEventType.Exit) {
+      console.log("You've left region:", region);
+      try {
+        const currentLocation = await getLocation();
+        await Promise.all([
+          startGeofenceTask(currentLocation),
+          sendLocation(currentLocation),
+        ]);
+        return;
+      } catch (error) {
+        console.log('Error, restarting geofence', error);
+      }
+    }
+  });
+} else {
+  console.log('Already registered: ', BACKGROUND_GEOFENCE_TASK);
+}
 
 export { startLocation, stopLocation };

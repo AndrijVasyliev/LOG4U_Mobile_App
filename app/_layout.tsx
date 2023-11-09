@@ -15,16 +15,10 @@ const Layout = () => {
   const [canShow, setCanShow] = React.useState<boolean>(false);
   const router = useRouter();
   React.useEffect(() => {
-    const start = async () => {
-      try {
-        await startLocation();
-      } catch (error) {
-        console.log('Error, while startring: ', error);
-      } finally {
-        setCanShow(true);
-      }
-    };
-    start();
+    startLocation().catch((reason) =>
+      console.log('Error starting location from start', reason),
+    );
+    setCanShow(true);
   }, []);
   React.useEffect(() => {
     if (canShow) {
