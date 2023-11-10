@@ -1,7 +1,12 @@
 import * as React from 'react';
 import { Redirect } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 
 export default function Index() {
-  return null;
-  // return <Redirect href="/login" />;
+  React.useEffect(() => {
+    (async () => {
+      await SplashScreen.hideAsync();
+    })();
+  }, []);
+  return <Redirect href="/login" />;
 }
