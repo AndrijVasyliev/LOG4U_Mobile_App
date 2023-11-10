@@ -6,11 +6,12 @@ import { encode as btoa } from 'base-64';
 
 import {
   BACKEND_ORIGIN,
+  SET_LOCATION_PATH,
   // BACKGROUND_FETCH_TASK,
   LOCATION_TRACKING,
   BACKGROUND_GEOFENCE_TASK,
   // LOCATION_UPDATE_INTERVAL,
-  UPDATE_TRUCK_PATH,
+  // UPDATE_TRUCK_PATH,
 } from '../constants';
 
 let isStarting = false;
@@ -196,15 +197,17 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
     headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
     headers.set('Accept', 'application/json');
     headers.set('Content-Type', 'application/json');
-    const uri = new URL(UPDATE_TRUCK_PATH, BACKEND_ORIGIN);
+    const uri = new URL(SET_LOCATION_PATH, BACKEND_ORIGIN);
     const init = {
-      method: 'PATCH',
+      method: 'POST',
       headers,
       body: JSON.stringify({
-        lastLocation: [
-          currentLocation.coords.latitude,
-          currentLocation.coords.longitude,
-        ],
+        location: {
+          coords: {
+            latitude: currentLocation.coords.latitude,
+            longitude: currentLocation.coords.longitude,
+          },
+        },
       }),
     };
     console.log(

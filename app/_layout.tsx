@@ -4,20 +4,17 @@ import { ToastProvider } from 'react-native-toast-notifications';
 import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 
-import { startLocation } from '../utils/location';
+// import { startLocation } from '../utils/location';
 
 // Instruct SplashScreen not to hide yet, we want to do this manually
-SplashScreen.preventAutoHideAsync().catch(() => {
-  /* reloading the app might trigger some race conditions, ignore them */
-});
+// SplashScreen.preventAutoHideAsync().catch(() => {
+/* reloading the app might trigger some race conditions, ignore them */
+// });
 
 const Layout = () => {
   const [canShow, setCanShow] = React.useState<boolean>(false);
   const router = useRouter();
   React.useEffect(() => {
-    startLocation().catch((reason) =>
-      console.log('Error starting location from start', reason),
-    );
     setCanShow(true);
   }, []);
   React.useEffect(() => {
