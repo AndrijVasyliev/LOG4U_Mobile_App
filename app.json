@@ -2,21 +2,23 @@
   "expo": {
     "name": "LOG4U",
     "slug": "LOG4U",
-    "version": "1.0.27",
+    "version": "1.1.2",
     "orientation": "portrait",
     "scheme": "acme",
     "icon": "./assets/images/log4u_small_icon.png",
     "plugins": [
       [
-        "expo-location",
-        {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
-          "locationAlwaysPermission": "Allow $(PRODUCT_NAME) to use your location",
-          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location",
-          "isIosBackgroundLocationEnabled": true,
-          "isAndroidBackgroundLocationEnabled": true
+        "react-native-background-geolocation", {
+          "license": "4347a8453602e2388691ac5c2a242193e8e6308045131e4dcc18a9aa59f2ca77"
         }
-      ]
+      ],
+      [
+        "expo-gradle-ext-vars", {
+        "googlePlayServicesLocationVersion": "20.0.0",
+        "appCompatVersion": "1.4.2"
+      }
+      ],
+      "react-native-background-fetch"
     ],
     "web": {
       "bundler": "metro"
@@ -32,7 +34,19 @@
     "ios": {
       "bundleIdentifier": "com.log4u",
       "infoPlist": {
-        "UIBackgroundModes": ["location", "fetch"]
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "[LOG4U] This app requires location in the background",
+        "NSLocationWhenInUseUsageDescription": "[LOG4U] This app requires location while in use",
+        "NSMotionUsageDescription": "[LOG4U] This app uses motion-detection to determine the motion-activity of the device (walking, vehicle, bicycle, etc)",
+        "UIBackgroundModes": [
+          "location",
+          "fetch",
+          "processing",
+          "audio"
+        ],
+        "BGTaskSchedulerPermittedIdentifiers": [
+          "com.transistorsoft.fetch",
+          "com.transistorsoft.customtask"
+        ]
       }
     }
   }
