@@ -31,7 +31,10 @@ const Login = () => {
           setLogin(login);
           setPassword(password);
           // handleClick(null, login, password);
-          setTimeout(() => handleClick(null, login, password), 1);
+          setTimeout(() => {
+              console.log('Calling start login');
+              handleClick(null, login, password);
+          }, 1);
         }
       })
       .catch(() => {
@@ -63,6 +66,7 @@ const Login = () => {
     setIsAutentificating(true);
     const headers = new Headers();
     headers.set('Authorization', 'Basic ' + btoa(log + ':' + pas));
+    console.log('Ready for login');
     fetch(new URL(GET_DRIVER_PATH, BACKEND_ORIGIN), { method: 'GET', headers })
       .catch(() => {
         setLoginError('Some network problem');
@@ -70,9 +74,16 @@ const Login = () => {
       })
       .then((response) => {
         if (response && response.status === 200) {
-          return startLocation().catch((reason) =>
-            console.log('Error starting location from login', reason),
-          );
+          console.log('Logged in');
+            return response
+                .json()
+                .then(() => {
+                    startLocation().catch((reason) =>
+                        console.log('Error starting location from login', reason),
+                    );
+                    setIsAutentificating(false);
+                    router.replace('/home');
+                });
         } else {
           setLoginError('Login or Password is incorrect');
           setIsAutentificating(false);
