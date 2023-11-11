@@ -1,4 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
+//import * as SecureStore from 'expo-secure-store';
 import { encode as btoa } from 'base-64';
 import BackgroundGeolocation, {
   State,
@@ -21,10 +21,28 @@ import {
   SET_LOCATION_PATH,
 } from '../constants';
 
+const baseConfig: Config = {
+  // Geolocation Config
+  desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+  distanceFilter: 0,
+  locationUpdateInterval: 1000,
+  // Activity Recognition
+  // stopTimeout: 5,
+  // Application config
+  debug: true, // <-- enable this hear sounds for background-geolocation life-cycle.
+  logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
+  stopOnTerminate: false,   // <-- Allow the background-service to continue tracking when user closes the app.
+  startOnBoot: true,        // <-- Auto start tracking when device is powered-up.
+  // HTTP / SQLite config
+  url: BACKEND_ORIGIN + SET_LOCATION_PATH,
+  batchSync: false,       // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
+  autoSync: true,         // <-- [Default: true] Set true to sync each location to server as it arrives.
+};
+
 let isStarting = false;
 let isStarted = false;
-let login = '';
-let password = '';
+let login = 'Mego2Man';
+let password = 'Super2Pass';
 
 const startLocation = async () => {
   if (isStarting) {
@@ -33,14 +51,14 @@ const startLocation = async () => {
   }
   isStarting = true;
 
-  try {
+  /*try {
     [login, password] = await Promise.all([
       SecureStore.getItemAsync('login'),
       SecureStore.getItemAsync('password'),
     ]);
   } catch (error) {
     console.log('Error, getting login and password: ', error);
-  }
+  }*/
 
   if (!login || !password) {
     console.log('No login or password');
@@ -57,21 +75,7 @@ const startLocation = async () => {
       return;
     }
     const config: Config = {
-      // Geolocation Config
-      desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
-      distanceFilter: 0,
-      locationUpdateInterval: 1000,
-      // Activity Recognition
-      // stopTimeout: 5,
-      // Application config
-      debug: true, // <-- enable this hear sounds for background-geolocation life-cycle.
-      logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
-      stopOnTerminate: false,   // <-- Allow the background-service to continue tracking when user closes the app.
-      startOnBoot: true,        // <-- Auto start tracking when device is powered-up.
-      // HTTP / SQLite config
-      url: BACKEND_ORIGIN + SET_LOCATION_PATH,
-      batchSync: false,       // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
-      autoSync: true,         // <-- [Default: true] Set true to sync each location to server as it arrives.
+      ...baseConfig,
       headers: {
         'Authorization': 'Basic ' + btoa(login + ':' + password),
       },

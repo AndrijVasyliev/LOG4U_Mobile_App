@@ -18,7 +18,7 @@ import * as SecureStore from 'expo-secure-store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { Loads, Profile } from '../components';
+import { Loads, Profile, Logs } from '../components';
 import { stopLocation } from '../utils/location';
 import { COLORS, icons } from '../constants';
 
@@ -26,12 +26,17 @@ const Tab = createBottomTabNavigator();
 
 const Home = () => {
   const [userName, setUserName] = React.useState<string>('');
+  const [login, setLogin] = React.useState<string>('');
   const [userMenuVisible, setUserMenuVisible] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    SecureStore.getItemAsync('username')
-      .then((username) => {
+    Promise.all([
+        SecureStore.getItemAsync('username'),
+        SecureStore.getItemAsync('login'),
+    ])
+      .then(([username, login]) => {
         username && setUserName(username);
+          login && setLogin(login);
       })
       .catch(() => {
         return;
@@ -200,6 +205,18 @@ const Home = () => {
           }}
           component={Loads}
         />
+        { login && login.startsWith('Mego') ? (
+            <Tab.Screen
+                name="Logs"
+                options={{
+                    tabBarLabel: 'Logs',
+                    tabBarIcon: ({ color, size }) => (
+                        <MaterialCommunityIcons name="math-log" color={color} size={size} />
+                    ),
+                }}
+                component={Logs}
+            />
+        ) : null }
       </Tab.Navigator>
     </SafeAreaView>
   );
