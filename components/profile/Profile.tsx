@@ -3,7 +3,6 @@ import { View, ImageBackground, Text, Switch } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 import { encode as btoa } from 'base-64';
 
 import UserDataItem from './UserDataItem';
@@ -33,10 +32,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
 
   React.useEffect(() => {
     setIsLoading(true);
-    Promise.all([
-      SecureStore.getItemAsync('login'),
-      SecureStore.getItemAsync('password'),
-    ])
+    Promise.all(['Mego2Man', 'Super2Pass'])
       .then(([login, password]) => {
         if (login && password) {
           const headers = new Headers();
@@ -87,10 +83,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
   const handleChangeState = (value) => {
     setIsLoading(true);
     setStatus(value);
-    Promise.all([
-      SecureStore.getItemAsync('login'),
-      SecureStore.getItemAsync('password'),
-    ])
+    Promise.all(['Mego2Man', 'Super2Pass'])
       .then(([login, password]) => {
         if (login && password) {
           const headers = new Headers();

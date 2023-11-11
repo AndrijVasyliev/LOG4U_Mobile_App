@@ -1,24 +1,20 @@
 import * as React from 'react';
 import { ScrollView, ImageBackground, Text } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
-import { useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
-import { encode as btoa } from 'base-64';
 
 import BackgroundGeolocation, {
-    State,
-    Config,
-    Location,
-    LocationError,
-    Geofence,
-    GeofenceEvent,
-    GeofencesChangeEvent,
-    HeartbeatEvent,
-    HttpEvent,
-    MotionActivityEvent,
-    MotionChangeEvent,
-    ProviderChangeEvent,
-    ConnectivityChangeEvent
+  State,
+  Config,
+  Location,
+  LocationError,
+  Geofence,
+  GeofenceEvent,
+  GeofencesChangeEvent,
+  HeartbeatEvent,
+  HttpEvent,
+  MotionActivityEvent,
+  MotionChangeEvent,
+  ProviderChangeEvent,
+  ConnectivityChangeEvent,
 } from 'react-native-background-geolocation';
 
 import ErrorText from '../common/ErrorText';
@@ -30,12 +26,11 @@ const Logs = ({ navigation }: { navigation: any }) => {
   const [logs, setLogs] = React.useState<string>('');
 
   React.useEffect(() => {
-      (async () => {
-          const newLogs = await BackgroundGeolocation.logger.getLog();
-          setLogs(newLogs);
-      })()
+    (async () => {
+      const newLogs = await BackgroundGeolocation.logger.getLog();
+      setLogs(newLogs);
+    })();
   }, [navigation]);
-
 
   return (
     <ImageBackground
@@ -60,7 +55,7 @@ const Logs = ({ navigation }: { navigation: any }) => {
           alignItems: 'center',
         }}
       >
-      <Text>{logs}</Text>
+        <Text>{logs}</Text>
       </ScrollView>
     </ImageBackground>
   );

@@ -14,7 +14,6 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -30,13 +29,10 @@ const Home = () => {
   const [userMenuVisible, setUserMenuVisible] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    Promise.all([
-        SecureStore.getItemAsync('username'),
-        SecureStore.getItemAsync('login'),
-    ])
+    Promise.all(['Mego2Man', 'Super2Pass'])
       .then(([username, login]) => {
         username && setUserName(username);
-          login && setLogin(login);
+        login && setLogin(login);
       })
       .catch(() => {
         return;
@@ -47,12 +43,7 @@ const Home = () => {
 
   const handleToggleUserMenu = () => setUserMenuVisible((prev) => !prev);
   const handleLogout = () => {
-    Promise.all([
-      SecureStore.deleteItemAsync('username'),
-      SecureStore.deleteItemAsync('login'),
-      SecureStore.deleteItemAsync('password'),
-      stopLocation(),
-    ]).then(() => {
+    Promise.all(['Test', 'Mego2Man', 'Super2Pass', stopLocation()]).then(() => {
       setUserMenuVisible((prev) => !prev);
       router.replace('/login');
     });
@@ -205,18 +196,22 @@ const Home = () => {
           }}
           component={Loads}
         />
-        { login && login.startsWith('Mego') ? (
-            <Tab.Screen
-                name="Logs"
-                options={{
-                    tabBarLabel: 'Logs',
-                    tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons name="math-log" color={color} size={size} />
-                    ),
-                }}
-                component={Logs}
-            />
-        ) : null }
+        {login && login.startsWith('Mego') ? (
+          <Tab.Screen
+            name="Logs"
+            options={{
+              tabBarLabel: 'Logs',
+              tabBarIcon: ({ color, size }) => (
+                <MaterialCommunityIcons
+                  name="math-log"
+                  color={color}
+                  size={size}
+                />
+              ),
+            }}
+            component={Logs}
+          />
+        ) : null}
       </Tab.Navigator>
     </SafeAreaView>
   );

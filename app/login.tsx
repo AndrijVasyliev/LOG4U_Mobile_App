@@ -11,7 +11,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Spinner from 'react-native-loading-spinner-overlay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Stack, useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 import { encode as btoa } from 'base-64';
 
 import { startLocation } from '../utils/location';
@@ -26,10 +25,7 @@ const Login = () => {
     React.useState<boolean>(false);
 
   React.useEffect(() => {
-    Promise.all([
-      SecureStore.getItemAsync('login'),
-      SecureStore.getItemAsync('password'),
-    ])
+    Promise.all(['Mego2Man', 'Super2Pass'])
       .then(([login, password]) => {
         if (login && password) {
           setLogin(login);
@@ -74,20 +70,9 @@ const Login = () => {
       })
       .then((response) => {
         if (response && response.status === 200) {
-          return response
-            .json()
-            .then((driver) =>
-              SecureStore.setItemAsync('username', driver.fullName),
-            )
-            .then(() => SecureStore.setItemAsync('login', log))
-            .then(() => SecureStore.setItemAsync('password', pas))
-            .then(() => {
-              startLocation().catch((reason) =>
-                console.log('Error starting location from login', reason),
-              );
-              setIsAutentificating(false);
-              router.replace('/home');
-            });
+          return startLocation().catch((reason) =>
+            console.log('Error starting location from login', reason),
+          );
         } else {
           setLoginError('Login or Password is incorrect');
           setIsAutentificating(false);

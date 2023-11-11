@@ -2,7 +2,6 @@ import * as React from 'react';
 import { ScrollView, ImageBackground } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 import { encode as btoa } from 'base-64';
 
 import Load from './Load';
@@ -23,10 +22,7 @@ const Loads = ({ navigation }: { navigation: any }) => {
 
   React.useEffect(() => {
     setIsLoading(true);
-    Promise.all([
-      SecureStore.getItemAsync('login'),
-      SecureStore.getItemAsync('password'),
-    ])
+    Promise.all(['Mego2Man', 'Super2Pass'])
       .then(([login, password]) => {
         if (login && password) {
           const headers = new Headers();
