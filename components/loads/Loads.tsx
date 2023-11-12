@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ScrollView, ImageBackground } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { encode as btoa } from 'base-64';
 
 import Load from './Load';
@@ -24,8 +24,8 @@ const Loads = ({ navigation }: { navigation: any }) => {
   React.useEffect(() => {
     setIsLoading(true);
     Promise.all([
-      SecureStore.getItemAsync('login'),
-      SecureStore.getItemAsync('password'),
+      AsyncStorage.getItem('login'),
+      AsyncStorage.getItem('password'),
     ])
       .then(([login, password]) => {
         if (login && password) {

@@ -11,7 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Spinner from 'react-native-loading-spinner-overlay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Stack, useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { encode as btoa } from 'base-64';
 
 import { startLocation } from '../utils/location';
@@ -27,8 +27,8 @@ const Login = () => {
 
   React.useEffect(() => {
     Promise.all([
-      SecureStore.getItemAsync('login'),
-      SecureStore.getItemAsync('password'),
+      AsyncStorage.getItem('login'),
+      AsyncStorage.getItem('password'),
     ])
       .then(([login, password]) => {
         if (login && password) {
@@ -76,13 +76,11 @@ const Login = () => {
         if (response && response.status === 200) {
           return response
             .json()
-            .then((driver) =>
-              SecureStore.setItemAsync('username', driver.fullName),
-            )
-            .then(() => SecureStore.setItemAsync('login', log))
-            .then(() => SecureStore.setItemAsync('password', pas))
+            .then((driver) => AsyncStorage.setItem('username', driver.fullName))
+            .then(() => AsyncStorage.setItem('login', log))
+            .then(() => AsyncStorage.setItem('password', pas))
             .then(() => {
-              startLocation().catch((reason) =>
+              startLocation(login, password).catch((reason) =>
                 console.log('Error starting location from login', reason),
               );
               setIsAutentificating(false);

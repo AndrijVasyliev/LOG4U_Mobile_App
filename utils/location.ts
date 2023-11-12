@@ -1,5 +1,5 @@
-import * as SecureStore from 'expo-secure-store';
 import * as Location from 'expo-location';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { encode as btoa } from 'base-64';
@@ -15,44 +15,59 @@ import {
 } from '../constants';
 
 let isStarting = false;
-let login = '';
-let password = '';
+let storedLogin = 'Mego1Man';
+let storedPassword = 'Super1Pass';
 
-const startLocation = async () => {
+const startLocation = async (login?: string, password?: string) => {
   if (isStarting) {
     console.log('Already starting');
     return;
   }
   isStarting = true;
 
-  try {
-    const resf = await Location.requestForegroundPermissionsAsync();
-    const resb = await Location.requestBackgroundPermissionsAsync();
-    if (resf.status != 'granted' && resb.status !== 'granted') {
-      console.log('Permission to access location was denied');
+  if (login && password) {
+    // storedLogin = login;
+    // storedPassword = password;
+    try {
+      const resf = await Location.requestForegroundPermissionsAsync();
+      const resb = await Location.requestBackgroundPermissionsAsync();
+      if (resf.status != 'granted' && resb.status !== 'granted') {
+        console.log('No Permission to access location');
+        isStarting = false;
+        return;
+      }
+      console.log('Permission to access location present');
+    } catch (error) {
+      console.log('Error, getting permissions: ', error);
       isStarting = false;
       return;
     }
-    console.log('Permission to access location granted');
-  } catch (error) {
-    console.log('Error, requesting permissions: ', error);
-    isStarting = false;
-    return;
-  }
-
-  try {
-    [login, password] = await Promise.all([
-      SecureStore.getItemAsync('login'),
-      SecureStore.getItemAsync('password'),
-    ]);
-  } catch (error) {
-    console.log('Error, getting login and password: ', error);
-  }
-
-  if (!login || !password) {
-    console.log('No login or password');
-    isStarting = false;
-    return;
+  } else {
+    //const [storedLogin, storedPassword] = await Promise.all([
+    //  AsyncStorage.getItem('login'),
+    //  AsyncStorage.getItem('password'),
+    //]);
+    let storedLogin = 'Mego1Man';
+    let storedPassword = 'Super1Pass';
+    if (!storedLogin || !storedPassword) {
+      console.log('No stored login or password');
+      isStarting = false;
+      return;
+    }
+    try {
+      const resf = await Location.getForegroundPermissionsAsync();
+      const resb = await Location.getBackgroundPermissionsAsync();
+      if (resf.status != 'granted' && resb.status !== 'granted') {
+        console.log('Permission to access location was denied');
+        isStarting = false;
+        return;
+      }
+      console.log('Permission to access location granted');
+    } catch (error) {
+      console.log('Error, requesting permissions: ', error);
+      isStarting = false;
+      return;
+    }
   }
 
   try {
@@ -109,8 +124,8 @@ const stopLocation = async () => {
   }
   await Promise.all(tasks);
 
-  login = '';
-  password = '';
+  // storedLogin = '';
+  // storedPassword = '';
   console.log('Stopped');
 };
 const startLocationTask = async () => {
@@ -186,7 +201,17 @@ const getLocation = async () => {
   return currentLocation;
 };
 const sendLocation = async (currentLocation: Location.LocationObject) => {
-  if (!login || !password) {
+  let storedLogin = 'Mego1Man';
+  let storedPassword = 'Super1Pass';
+  /*try {
+    [storedLogin, storedPassword] = await Promise.all([
+      AsyncStorage.getItem('login'),
+      AsyncStorage.getItem('password'),
+    ]);
+  } catch (error) {
+    console.log('Error, getting stored credentials: ', error);
+  }*/
+  if (!storedLogin || !storedPassword) {
     console.log('No login or password to send location');
     await stopLocation();
     return;
@@ -194,7 +219,10 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
 
   if (currentLocation) {
     const headers = new Headers();
-    headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
+    headers.set(
+      'Authorization',
+      'Basic ' + btoa(storedLogin + ':' + storedPassword),
+    );
     headers.set('Accept', 'application/json');
     headers.set('Content-Type', 'application/json');
     const uri = new URL(SET_LOCATION_PATH, BACKEND_ORIGIN);

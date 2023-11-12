@@ -3,7 +3,7 @@ import { View, ImageBackground, Text, Switch } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { encode as btoa } from 'base-64';
 
 import UserDataItem from './UserDataItem';
@@ -34,8 +34,8 @@ const Profile = ({ navigation }: { navigation: any }) => {
   React.useEffect(() => {
     setIsLoading(true);
     Promise.all([
-      SecureStore.getItemAsync('login'),
-      SecureStore.getItemAsync('password'),
+      AsyncStorage.getItem('login'),
+      AsyncStorage.getItem('password'),
     ])
       .then(([login, password]) => {
         if (login && password) {
@@ -88,8 +88,8 @@ const Profile = ({ navigation }: { navigation: any }) => {
     setIsLoading(true);
     setStatus(value);
     Promise.all([
-      SecureStore.getItemAsync('login'),
-      SecureStore.getItemAsync('password'),
+      AsyncStorage.getItem('login'),
+      AsyncStorage.getItem('password'),
     ])
       .then(([login, password]) => {
         if (login && password) {

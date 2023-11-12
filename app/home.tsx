@@ -14,7 +14,7 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -29,7 +29,7 @@ const Home = () => {
   const [userMenuVisible, setUserMenuVisible] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    SecureStore.getItemAsync('username')
+    AsyncStorage.getItem('username')
       .then((username) => {
         username && setUserName(username);
       })
@@ -43,9 +43,9 @@ const Home = () => {
   const handleToggleUserMenu = () => setUserMenuVisible((prev) => !prev);
   const handleLogout = () => {
     Promise.all([
-      SecureStore.deleteItemAsync('username'),
-      SecureStore.deleteItemAsync('login'),
-      SecureStore.deleteItemAsync('password'),
+      AsyncStorage.removeItem('username'),
+      AsyncStorage.removeItem('login'),
+      AsyncStorage.removeItem('password'),
       stopLocation(),
     ]).then(() => {
       setUserMenuVisible((prev) => !prev);
