@@ -1,5 +1,4 @@
 import * as Location from 'expo-location';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 // import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { encode as btoa } from 'base-64';
@@ -10,24 +9,24 @@ import {
   // BACKGROUND_FETCH_TASK,
   LOCATION_TRACKING,
   BACKGROUND_GEOFENCE_TASK,
-  // LOCATION_UPDATE_INTERVAL,
-  // UPDATE_TRUCK_PATH,
+  LOCATION_UPDATE_INTERVAL,
+  LOCATION_DISTANCE_INTERVAL,
+  GEOFENCE_DISTANCE_INTERVAL,
+  LOCATION_NOTIFICATION_BODY,
+  LOCATION_NOTIFICATION_TITLE, COLORS,
 } from '../constants';
+import { getDeviceId } from './deviceId';
 
 let isStarting = false;
-let storedLogin = 'Mego1Man';
-let storedPassword = 'Super1Pass';
 
-const startLocation = async (login?: string, password?: string) => {
+const startLocation = async (isStartedAfterLogin = false) => {
   if (isStarting) {
     console.log('Already starting');
     return;
   }
   isStarting = true;
 
-  if (login && password) {
-    // storedLogin = login;
-    // storedPassword = password;
+  if (isStartedAfterLogin) {
     try {
       const resf = await Location.requestForegroundPermissionsAsync();
       const resb = await Location.requestBackgroundPermissionsAsync();
@@ -43,17 +42,6 @@ const startLocation = async (login?: string, password?: string) => {
       return;
     }
   } else {
-    //const [storedLogin, storedPassword] = await Promise.all([
-    //  AsyncStorage.getItem('login'),
-    //  AsyncStorage.getItem('password'),
-    //]);
-    let storedLogin = 'Mego1Man';
-    let storedPassword = 'Super1Pass';
-    if (!storedLogin || !storedPassword) {
-      console.log('No stored login or password');
-      isStarting = false;
-      return;
-    }
     try {
       const resf = await Location.getForegroundPermissionsAsync();
       const resb = await Location.getBackgroundPermissionsAsync();
@@ -124,8 +112,6 @@ const stopLocation = async () => {
   }
   await Promise.all(tasks);
 
-  // storedLogin = '';
-  // storedPassword = '';
   console.log('Stopped');
 };
 const startLocationTask = async () => {
@@ -144,17 +130,17 @@ const startLocationTask = async () => {
     // deferredUpdatesTimeout: 1000 * 60 * 30,
     foregroundService: {
       killServiceOnDestroy: false,
-      notificationBody: 'LOG4U is tracking your location',
-      notificationTitle: 'LOG4U Location Service',
-      notificationColor: 'green',
+      notificationBody: LOCATION_NOTIFICATION_BODY,
+      notificationTitle: LOCATION_NOTIFICATION_TITLE,
+      notificationColor: COLORS.locationNotification,
     },
     pausesUpdatesAutomatically: false,
     showsBackgroundLocationIndicator: true,
     // next from getCurrentPositionAsync
     accuracy: Location.Accuracy.Balanced,
-    distanceInterval: 250,
+    distanceInterval: LOCATION_DISTANCE_INTERVAL,
     mayShowUserSettingsDialog: true,
-    timeInterval: 1000 * 60 * 30,
+    timeInterval: LOCATION_UPDATE_INTERVAL,
   });
 
   const hasStarted = await Location.hasStartedLocationUpdatesAsync(
@@ -177,7 +163,7 @@ const startGeofenceTask = async (currentLocation: Location.LocationObject) => {
         longitude: currentLocation.coords.longitude,
         notifyOnEnter: false,
         notifyOnExit: true,
-        radius: 300,
+        radius: GEOFENCE_DISTANCE_INTERVAL,
       },
     ]);
     console.log('New geofence started');
@@ -201,28 +187,9 @@ const getLocation = async () => {
   return currentLocation;
 };
 const sendLocation = async (currentLocation: Location.LocationObject) => {
-  let storedLogin = 'Mego1Man';
-  let storedPassword = 'Super1Pass';
-  /*try {
-    [storedLogin, storedPassword] = await Promise.all([
-      AsyncStorage.getItem('login'),
-      AsyncStorage.getItem('password'),
-    ]);
-  } catch (error) {
-    console.log('Error, getting stored credentials: ', error);
-  }*/
-  if (!storedLogin || !storedPassword) {
-    console.log('No login or password to send location');
-    await stopLocation();
-    return;
-  }
-
   if (currentLocation) {
+    const deviceId = await getDeviceId();
     const headers = new Headers();
-    headers.set(
-      'Authorization',
-      'Basic ' + btoa(storedLogin + ':' + storedPassword),
-    );
     headers.set('Accept', 'application/json');
     headers.set('Content-Type', 'application/json');
     const uri = new URL(SET_LOCATION_PATH, BACKEND_ORIGIN);
@@ -230,6 +197,7 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
       method: 'POST',
       headers,
       body: JSON.stringify({
+        deviceId,
         location: {
           coords: {
             latitude: currentLocation.coords.latitude,

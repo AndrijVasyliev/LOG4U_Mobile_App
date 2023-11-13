@@ -15,7 +15,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { encode as btoa } from 'base-64';
 
 import { startLocation } from '../utils/location';
-import { BACKEND_ORIGIN, GET_DRIVER_PATH, COLORS, icons } from '../constants';
+import {
+  BACKEND_ORIGIN,
+  GET_DRIVER_PATH,
+  COLORS,
+  icons,
+  PATCH_AUTH_PATH,
+} from '../constants';
+import { getDeviceId } from '../utils/deviceId';
 
 const Login = () => {
   const [login, setLogin] = React.useState<string>('');
@@ -67,34 +74,50 @@ const Login = () => {
     setIsAutentificating(true);
     const headers = new Headers();
     headers.set('Authorization', 'Basic ' + btoa(log + ':' + pas));
-    fetch(new URL(GET_DRIVER_PATH, BACKEND_ORIGIN), { method: 'GET', headers })
-      .catch(() => {
-        setLoginError('Some network problem');
-        setIsAutentificating(false);
+    headers.set('Accept', 'application/json');
+    headers.set('Content-Type', 'application/json');
+    getDeviceId().then((deviceId) =>
+      fetch(new URL(PATCH_AUTH_PATH, BACKEND_ORIGIN), {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({
+          deviceId,
+        }),
       })
-      .then((response) => {
-        if (response && response.status === 200) {
-          return response
-            .json()
-            .then((driver) => AsyncStorage.setItem('username', driver.fullName))
-            .then(() => AsyncStorage.setItem('login', log))
-            .then(() => AsyncStorage.setItem('password', pas))
-            .then(() => {
-              startLocation(login, password).catch((reason) =>
-                console.log('Error starting location from login', reason),
-              );
-              setIsAutentificating(false);
-              router.replace('/home');
-            });
-        } else {
-          setLoginError('Login or Password is incorrect');
+        .catch(() => {
+          setLoginError('Some network problem');
           setIsAutentificating(false);
-        }
-      })
-      .catch(() => {
-        setLoginError('Something went wrong');
-        setIsAutentificating(false);
-      });
+        })
+        .then((response) => {
+          console.log(
+            'Login response status code: ',
+            response && response.status,
+          );
+          if (response && response.status === 200) {
+            return response
+              .json()
+              .then((driver) =>
+                AsyncStorage.setItem('username', driver.fullName),
+              )
+              .then(() => AsyncStorage.setItem('login', log))
+              .then(() => AsyncStorage.setItem('password', pas))
+              .then(() => {
+                startLocation(true).catch((reason) =>
+                  console.log('Error starting location from login', reason),
+                );
+                setIsAutentificating(false);
+                router.replace('/home');
+              });
+          } else {
+            setLoginError('Login or Password is incorrect');
+            setIsAutentificating(false);
+          }
+        })
+        .catch(() => {
+          setLoginError('Something went wrong');
+          setIsAutentificating(false);
+        }),
+    );
     return;
   };
 
