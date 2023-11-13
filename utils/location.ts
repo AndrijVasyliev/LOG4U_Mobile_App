@@ -1,7 +1,6 @@
 import * as Location from 'expo-location';
 // import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import { encode as btoa } from 'base-64';
 
 import {
   BACKEND_ORIGIN,
