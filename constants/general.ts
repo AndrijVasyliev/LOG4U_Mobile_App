@@ -7,8 +7,9 @@ export const SET_LOCATION_PATH = '/mobileApp/setTruckLocation';
 export const LOCATION_TRACKING = 'location-tracking';
 export const BACKGROUND_FETCH_TASK = 'background-fetch';
 export const BACKGROUND_GEOFENCE_TASK = 'background-geofence';
-export const LOCATION_NOTIFICATION_BODY = 'LOG4U is tracking your location';
-export const LOCATION_NOTIFICATION_TITLE = 'LOG4U Location Service';
+export const LOCATION_NOTIFICATION_BODY =
+  '4U LOGISTICS is tracking your location';
+export const LOCATION_NOTIFICATION_TITLE = '4U LOGISTICS Location Service';
 export const LOCATION_UPDATE_INTERVAL = 1000 * 60 * 30;
 export const LOCATION_DISTANCE_INTERVAL = 250;
 export const GEOFENCE_DISTANCE_INTERVAL = 300;
