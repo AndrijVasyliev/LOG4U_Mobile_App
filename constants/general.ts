@@ -1,4 +1,4 @@
-export const BACKEND_ORIGIN = 'https://admin-test-lt5d.onrender.com';
+export const BACKEND_ORIGIN = 'https://mobile.4u-logistics.com';
 export const PATCH_AUTH_PATH = '/mobileApp/auth';
 export const GET_DRIVER_PATH = '/mobileApp/driver';
 export const GET_LOADS_PATH = 'mobileApp/getLoad';
