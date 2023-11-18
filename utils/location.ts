@@ -20,6 +20,7 @@ import { getDeviceId } from './deviceId';
 let isStarting = false;
 
 const startLocation = async (isStartedAfterLogin = false) => {
+  return;
   if (isStarting) {
     console.log('Already starting');
     return;
@@ -94,6 +95,7 @@ const startLocation = async (isStartedAfterLogin = false) => {
 };
 
 const stopLocation = async () => {
+  return;
   const tasks = [];
   const isGeofenceStarted = await Location.hasStartedGeofencingAsync(
     BACKGROUND_GEOFENCE_TASK,
@@ -217,7 +219,7 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
     console.log('No location to send');
   }
 };
-
+/*
 if (!TaskManager.isTaskDefined(LOCATION_TRACKING)) {
   console.log('Registering: ', LOCATION_TRACKING);
   TaskManager.defineTask(LOCATION_TRACKING, async ({ data, error }) => {
@@ -275,6 +277,6 @@ if (!TaskManager.isTaskDefined(BACKGROUND_GEOFENCE_TASK)) {
   });
 } else {
   console.log('Already registered: ', BACKGROUND_GEOFENCE_TASK);
-}
+}*/
 
 export { startLocation, stopLocation };

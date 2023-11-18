@@ -2,22 +2,10 @@
   "expo": {
     "name": "4U TRACK",
     "slug": "LOG4U",
-    "version": "1.2.9",
+    "version": "1.2.1",
     "orientation": "portrait",
     "scheme": "acme",
     "icon": "./assets/images/log4u_small_icon.png",
-    "plugins": [
-      [
-        "expo-location",
-        {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
-          "locationAlwaysPermission": "Allow $(PRODUCT_NAME) to use your location",
-          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location",
-          "isIosBackgroundLocationEnabled": true,
-          "isAndroidBackgroundLocationEnabled": true
-        }
-      ]
-    ],
     "web": {
       "bundler": "metro"
     },
@@ -30,10 +18,7 @@
       }
     },
     "ios": {
-      "bundleIdentifier": "com.log4u",
-      "infoPlist": {
-        "UIBackgroundModes": ["location", "fetch"]
-      }
+      "bundleIdentifier": "com.log4u"
     }
   }
 }
