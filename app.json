@@ -22,7 +22,8 @@
       "bundler": "metro"
     },
     "android": {
-      "package": "com.log4u"
+      "package": "com.log4u",
+      "versionCode": 2
     },
     "extra": {
       "eas": {
@@ -31,6 +32,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.log4u",
+      "buildNumber": "1.2.9",
       "infoPlist": {
         "UIBackgroundModes": ["location", "fetch"]
       }
