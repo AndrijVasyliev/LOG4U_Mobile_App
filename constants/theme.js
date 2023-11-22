@@ -12,6 +12,8 @@ const COLORS = {
   black: '#000000',
   red: '#ff0000',
 
+  link: '#0000ff',
+
   locationNotification: '#00ff00',
 
   toggleOn: 'green',

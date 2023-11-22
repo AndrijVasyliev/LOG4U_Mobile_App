@@ -16,6 +16,12 @@
           "isIosBackgroundLocationEnabled": true,
           "isAndroidBackgroundLocationEnabled": true
         }
+      ],
+      [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "Allow 4U Track app to collect location and device ID data that can be used for tracking your device. This data is used by 4U Logistics to provide most suitable orders for you. Any of your personal data, including geolocation, is not disclosed to third parties."
+        }
       ]
     ],
     "web": {
@@ -23,7 +29,7 @@
     },
     "android": {
       "package": "com.log4u",
-      "versionCode": 2
+      "versionCode": 3
     },
     "extra": {
       "eas": {
@@ -32,7 +38,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.log4u",
-      "buildNumber": "1.2.9",
+      "buildNumber": "1.2.9+3",
       "infoPlist": {
         "UIBackgroundModes": ["location", "fetch"]
       }

@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Modal,
   TouchableWithoutFeedback,
-  Alert,
 } from 'react-native';
 import {
   SafeAreaView,
@@ -70,7 +69,7 @@ const Home = () => {
         transparent={true}
         visible={userMenuVisible}
         onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
+          console.log('Modal has been closed.');
           handleToggleUserMenu();
         }}
       >

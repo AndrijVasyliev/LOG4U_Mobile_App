@@ -14,6 +14,7 @@ import {
   LOCATION_NOTIFICATION_BODY,
   LOCATION_NOTIFICATION_TITLE,
   COLORS,
+  PERMISSION_GRANTED,
 } from '../constants';
 import { getDeviceId } from './deviceId';
 
@@ -30,7 +31,10 @@ const startLocation = async (isStartedAfterLogin = false) => {
     try {
       const resf = await Location.requestForegroundPermissionsAsync();
       const resb = await Location.requestBackgroundPermissionsAsync();
-      if (resf.status != 'granted' && resb.status !== 'granted') {
+      if (
+        resf.status != PERMISSION_GRANTED &&
+        resb.status !== PERMISSION_GRANTED
+      ) {
         console.log('No Permission to access location');
         isStarting = false;
         return;
@@ -45,7 +49,10 @@ const startLocation = async (isStartedAfterLogin = false) => {
     try {
       const resf = await Location.getForegroundPermissionsAsync();
       const resb = await Location.getBackgroundPermissionsAsync();
-      if (resf.status != 'granted' && resb.status !== 'granted') {
+      if (
+        resf.status != PERMISSION_GRANTED &&
+        resb.status !== PERMISSION_GRANTED
+      ) {
         console.log('Permission to access location was denied');
         isStarting = false;
         return;
