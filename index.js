@@ -1,3 +1,4 @@
+import './utils/abortSignal';
 import { startLocation } from './utils/location';
 startLocation().catch((reason) =>
   console.log('Error starting location from start', reason),
