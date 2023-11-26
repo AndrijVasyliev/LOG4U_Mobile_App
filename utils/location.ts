@@ -128,7 +128,6 @@ const startLocationTask = async () => {
   );
   if (alreadyStarted) {
     console.log('Location already started');
-    isStarting = false;
     return;
   }
   await Location.startLocationUpdatesAsync(LOCATION_TRACKING, {
@@ -255,6 +254,7 @@ if (!TaskManager.isTaskDefined(LOCATION_TRACKING)) {
         await Promise.all([
           startGeofenceTask(currentLocation),
           sendLocation(currentLocation),
+          startLocationTask(),
         ]);
         return;
       } catch (error) {
@@ -288,6 +288,7 @@ if (!TaskManager.isTaskDefined(BACKGROUND_GEOFENCE_TASK)) {
         await Promise.all([
           startGeofenceTask(currentLocation),
           sendLocation(currentLocation),
+          startLocationTask(),
         ]);
         return;
       } catch (error) {
