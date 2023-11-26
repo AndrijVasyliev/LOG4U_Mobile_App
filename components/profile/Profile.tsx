@@ -11,6 +11,7 @@ import ErrorText from '../common/ErrorText';
 import {
   BACKEND_ORIGIN,
   COLORS,
+  FETCH_TIMEOUT,
   GET_DRIVER_PATH,
   images,
   UPDATE_TRUCK_PATH,
@@ -44,6 +45,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
           return fetch(new URL(GET_DRIVER_PATH, BACKEND_ORIGIN), {
             method: 'GET',
             headers,
+            signal: AbortSignal.timeout(FETCH_TIMEOUT),
           })
             .catch(() => {
               setProfileError('Some network problem');
@@ -100,6 +102,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
           return fetch(new URL(UPDATE_TRUCK_PATH, BACKEND_ORIGIN), {
             method: 'PATCH',
             headers,
+            signal: AbortSignal.timeout(FETCH_TIMEOUT),
             body: JSON.stringify({
               status: value ? 'Available' : 'Not Available',
             }),

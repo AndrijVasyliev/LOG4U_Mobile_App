@@ -15,6 +15,7 @@ import {
   LOCATION_NOTIFICATION_TITLE,
   COLORS,
   PERMISSION_GRANTED,
+  FETCH_TIMEOUT,
 } from '../constants';
 import { getDeviceId } from './deviceId';
 
@@ -179,17 +180,22 @@ const startGeofenceTask = async (currentLocation: Location.LocationObject) => {
   }
 };
 const getLocation = async () => {
-  let currentLocation = await Location.getLastKnownPositionAsync();
-  console.log(
-    `${
-      currentLocation
-        ? 'Current location at: ' + currentLocation.timestamp
-        : 'No last known location'
-    }`,
-  );
-  if (!currentLocation) {
-    currentLocation = await Location.getCurrentPositionAsync();
-    console.log(`New location location at: ${currentLocation.timestamp}`);
+  let currentLocation: Location.LocationObject;
+  try {
+    currentLocation = await Location.getLastKnownPositionAsync();
+    console.log(
+      `${
+        currentLocation
+          ? 'Current location at: ' + currentLocation.timestamp
+          : 'No last known location'
+      }`,
+    );
+    if (!currentLocation) {
+      currentLocation = await Location.getCurrentPositionAsync();
+      console.log(`New location location at: ${currentLocation.timestamp}`);
+    }
+  } catch (error) {
+    console.log('Error getting location: ', error);
   }
   return currentLocation;
 };
@@ -200,9 +206,12 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
     headers.set('Accept', 'application/json');
     headers.set('Content-Type', 'application/json');
     const uri = new URL(SET_LOCATION_PATH, BACKEND_ORIGIN);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
     const init = {
       method: 'POST',
       headers,
+      signal: controller.signal,
       body: JSON.stringify({
         deviceId,
         location: {
@@ -216,10 +225,14 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
     console.log(
       `Sending location to ${uri.toString()}: ${JSON.stringify(init)}`,
     );
-    await fetch(uri, init).catch((reason) =>
-      console.log(`Error updating location: ${JSON.stringify(reason)}`),
-    );
-    console.log('Location sent');
+    try {
+      await fetch(uri, init);
+      console.log('Location sent');
+    } catch (error) {
+      console.log('Error sending location', error);
+    } finally {
+      clearTimeout(timeoutId);
+    }
   } else {
     console.log('No location to send');
   }
@@ -237,14 +250,16 @@ if (!TaskManager.isTaskDefined(LOCATION_TRACKING)) {
     if (data) {
       const { locations } = data as { locations: Location.LocationObject[] };
       console.log(`Location data: ${JSON.stringify(data)}`);
-
-      const currentLocation = locations[0];
-      Promise.all([
-        startGeofenceTask(currentLocation),
-        sendLocation(currentLocation),
-      ]).catch((reason) =>
-        console.log('Error, starting geofence from location task: ', reason),
-      );
+      try {
+        const currentLocation = locations[0];
+        await Promise.all([
+          startGeofenceTask(currentLocation),
+          sendLocation(currentLocation),
+        ]);
+        return;
+      } catch (error) {
+        console.log('Error, restarting geofence', error);
+      }
     }
     return;
   });

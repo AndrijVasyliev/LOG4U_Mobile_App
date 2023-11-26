@@ -1,3 +1,4 @@
+import 'react-native-get-random-values';
 import { Platform } from 'react-native';
 import * as Application from 'expo-application';
 import { v4 as uuidv4 } from 'uuid';

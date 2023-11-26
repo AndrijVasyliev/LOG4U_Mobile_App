@@ -13,7 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Spinner from 'react-native-loading-spinner-overlay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useRouter, useFocusEffect } from 'expo-router';
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { encode as btoa } from 'base-64';
@@ -22,6 +22,7 @@ import { startLocation } from '../utils/location';
 import {
   BACKEND_ORIGIN,
   COLORS,
+  FETCH_TIMEOUT,
   icons,
   PATCH_AUTH_PATH,
   PERMISSION_DENIED,
@@ -40,6 +41,20 @@ const Login = () => {
   const [isAutentificating, setIsAutentificating] =
     React.useState<boolean>(false);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('Login screen is focused');
+      if (!pdStatus) {
+        AsyncStorage.getItem('pdstatus').then((pdstatus) =>
+          setPDStatus(pdstatus),
+        );
+      }
+      return () => {
+        console.log('Login screen is unfocused');
+      };
+    }, [pdStatus]),
+  );
+
   React.useEffect(() => {
     Promise.all([
       AsyncStorage.getItem('login'),
@@ -52,6 +67,8 @@ const Login = () => {
           AsyncStorage.setItem('pdstatus', PERMISSION_GRANTED);
         } else if (!pdstatus) {
           setProminentDisclosureVisible(true);
+        } else {
+          setPDStatus(pdstatus);
         }
         if (login && password) {
           setLogin(login);
@@ -88,6 +105,7 @@ const Login = () => {
         } must not be empty!`,
       );
     }
+    console.log('PD Status', pds, log, pas);
     setIsAutentificating(true);
     const headers = new Headers();
     headers.set('Authorization', 'Basic ' + btoa(log + ':' + pas));
@@ -97,6 +115,7 @@ const Login = () => {
       fetch(new URL(PATCH_AUTH_PATH, BACKEND_ORIGIN), {
         method: 'PATCH',
         headers,
+        signal: AbortSignal.timeout(FETCH_TIMEOUT),
         body: JSON.stringify({
           deviceId,
         }),

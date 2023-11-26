@@ -7,7 +7,12 @@ import { encode as btoa } from 'base-64';
 
 import Load from './Load';
 import ErrorText from '../common/ErrorText';
-import { images, BACKEND_ORIGIN, GET_LOADS_PATH } from '../../constants';
+import {
+  images,
+  BACKEND_ORIGIN,
+  GET_LOADS_PATH,
+  FETCH_TIMEOUT,
+} from '../../constants';
 
 const Loads = ({ navigation }: { navigation: any }) => {
   const [changedAt, setChangedAt] = React.useState<number>(Date.now());
@@ -34,6 +39,7 @@ const Loads = ({ navigation }: { navigation: any }) => {
           return fetch(new URL(GET_LOADS_PATH, BACKEND_ORIGIN), {
             method: 'GET',
             headers,
+            signal: AbortSignal.timeout(FETCH_TIMEOUT),
           })
             .catch(() => {
               setLoadError('Some network problem');
