@@ -42,7 +42,7 @@ const Loads = ({ navigation }: { navigation: any }) => {
             signal: AbortSignal.timeout(FETCH_TIMEOUT),
           })
             .catch(() => {
-              setLoadError('Some network problem');
+              setLoadError('Network problem');
               setIsLoading(false);
             })
             .then((response) => {

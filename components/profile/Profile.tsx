@@ -48,7 +48,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
             signal: AbortSignal.timeout(FETCH_TIMEOUT),
           })
             .catch(() => {
-              setProfileError('Some network problem');
+              setProfileError('Network problem');
               setIsLoading(false);
             })
             .then((response) => {
@@ -106,6 +106,9 @@ const Profile = ({ navigation }: { navigation: any }) => {
             body: JSON.stringify({
               status: value ? 'Available' : 'Not Available',
             }),
+          }).catch(() => {
+            setProfileError('Network problem');
+            setIsLoading(false);
           });
         }
       })
