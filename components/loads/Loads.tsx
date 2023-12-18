@@ -13,6 +13,7 @@ import {
   GET_LOADS_PATH,
   FETCH_TIMEOUT,
 } from '../../constants';
+import { getDeviceId } from '../../utils/deviceId';
 
 const Loads = ({ navigation }: { navigation: any }) => {
   const [changedAt, setChangedAt] = React.useState<number>(Date.now());
@@ -31,10 +32,13 @@ const Loads = ({ navigation }: { navigation: any }) => {
     Promise.all([
       AsyncStorage.getItem('login'),
       AsyncStorage.getItem('password'),
+      getDeviceId(),
     ])
-      .then(([login, password]) => {
+      .then(([login, password, deviceId]) => {
         if (login && password) {
           const headers = new Headers();
+          headers.set('X-User-Login', `${login}`);
+          headers.set('X-Device-Id', `${deviceId}`);
           headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
           return fetch(new URL(GET_LOADS_PATH, BACKEND_ORIGIN), {
             method: 'GET',

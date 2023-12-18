@@ -16,6 +16,7 @@ import {
   images,
   UPDATE_TRUCK_PATH,
 } from '../../constants';
+import { getDeviceId } from '../../utils/deviceId';
 
 const Profile = ({ navigation }: { navigation: any }) => {
   const [changedAt, setChangedAt] = React.useState<number>(Date.now());
@@ -37,10 +38,13 @@ const Profile = ({ navigation }: { navigation: any }) => {
     Promise.all([
       AsyncStorage.getItem('login'),
       AsyncStorage.getItem('password'),
+      getDeviceId(),
     ])
-      .then(([login, password]) => {
+      .then(([login, password, deviceId]) => {
         if (login && password) {
           const headers = new Headers();
+          headers.set('X-User-Login', `${login}`);
+          headers.set('X-Device-Id', `${deviceId}`);
           headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
           return fetch(new URL(GET_DRIVER_PATH, BACKEND_ORIGIN), {
             method: 'GET',
@@ -92,10 +96,13 @@ const Profile = ({ navigation }: { navigation: any }) => {
     Promise.all([
       AsyncStorage.getItem('login'),
       AsyncStorage.getItem('password'),
+      getDeviceId(),
     ])
-      .then(([login, password]) => {
+      .then(([login, password, deviceId]) => {
         if (login && password) {
           const headers = new Headers();
+          headers.set('X-User-Login', `${login}`);
+          headers.set('X-Device-Id', `${deviceId}`);
           headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
           headers.set('Accept', 'application/json');
           headers.set('Content-Type', 'application/json');

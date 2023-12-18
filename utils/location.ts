@@ -226,6 +226,7 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
   if (currentLocation) {
     const deviceId = await getDeviceId();
     const headers = new Headers();
+    headers.set('X-Device-Id', `${deviceId}`);
     headers.set('Accept', 'application/json');
     headers.set('Content-Type', 'application/json');
     const uri = new URL(SET_LOCATION_PATH, BACKEND_ORIGIN);

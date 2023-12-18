@@ -36,6 +36,7 @@ const Login = () => {
   const [pdStatus, setPDStatus] = React.useState<string>('');
   const [login, setLogin] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
+  const [deviceId, setDeviceId] = React.useState<string>('');
   const [showPassword, setShowPassword] = React.useState(false);
   const [loginError, setLoginError] = React.useState<string>('');
   const [isAutentificating, setIsAutentificating] =
@@ -60,8 +61,10 @@ const Login = () => {
       AsyncStorage.getItem('login'),
       AsyncStorage.getItem('password'),
       AsyncStorage.getItem('pdstatus'),
+      getDeviceId(),
     ])
-      .then(([login, password, pdstatus]) => {
+      .then(([login, password, pdstatus, deviceId]) => {
+        setDeviceId(deviceId);
         if (Platform.OS !== 'android' && !pdstatus) {
           setPDStatus(PERMISSION_GRANTED);
           AsyncStorage.setItem('pdstatus', PERMISSION_GRANTED);
@@ -108,6 +111,8 @@ const Login = () => {
     console.log('PD Status', pds, log, pas);
     setIsAutentificating(true);
     const headers = new Headers();
+    headers.set('X-User-Login', `${login}`);
+    headers.set('X-Device-Id', `${deviceId}`);
     headers.set('Authorization', 'Basic ' + btoa(log + ':' + pas));
     headers.set('Accept', 'application/json');
     headers.set('Content-Type', 'application/json');

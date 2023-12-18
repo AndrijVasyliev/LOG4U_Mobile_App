@@ -29,7 +29,7 @@
     },
     "android": {
       "package": "com.log4u",
-      "versionCode": 8
+      "versionCode": 9
     },
     "extra": {
       "eas": {
@@ -38,7 +38,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.log4u",
-      "buildNumber": "8",
+      "buildNumber": "9",
       "infoPlist": {
         "UIBackgroundModes": ["location", "fetch"]
       }
