@@ -1,6 +1,6 @@
 import { PermissionStatus } from 'expo-modules-core/src/PermissionsInterface';
 
-export const FETCH_TIMEOUT = 3000;
+export const FETCH_TIMEOUT = 5000;
 export const BACKEND_ORIGIN = 'https://mobile.4u-logistics.com';
 export const PATCH_AUTH_PATH = '/mobileApp/auth';
 export const GET_DRIVER_PATH = '/mobileApp/driver';

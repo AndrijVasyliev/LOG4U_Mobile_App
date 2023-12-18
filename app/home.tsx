@@ -18,8 +18,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Loads, Profile } from '../components';
-import { stopLocation } from '../utils/location';
 import { COLORS, icons } from '../constants';
+import { logout } from '../utils/logout';
 
 const Tab = createBottomTabNavigator();
 
@@ -41,12 +41,7 @@ const Home = () => {
 
   const handleToggleUserMenu = () => setUserMenuVisible((prev) => !prev);
   const handleLogout = () => {
-    Promise.all([
-      AsyncStorage.removeItem('username'),
-      AsyncStorage.removeItem('login'),
-      AsyncStorage.removeItem('password'),
-      stopLocation(),
-    ]).then(() => {
+    logout().then(() => {
       setUserMenuVisible((prev) => !prev);
       router.replace('/login');
     });

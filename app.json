@@ -2,7 +2,7 @@
   "expo": {
     "name": "4U TRACK",
     "slug": "LOG4U",
-    "version": "1.2.9",
+    "version": "1.2.10",
     "orientation": "portrait",
     "scheme": "acme",
     "icon": "./assets/images/log4u_small_icon.png",
@@ -29,7 +29,7 @@
     },
     "android": {
       "package": "com.log4u",
-      "versionCode": 6
+      "versionCode": 8
     },
     "extra": {
       "eas": {
@@ -38,7 +38,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.log4u",
-      "buildNumber": "6",
+      "buildNumber": "8",
       "infoPlist": {
         "UIBackgroundModes": ["location", "fetch"]
       }

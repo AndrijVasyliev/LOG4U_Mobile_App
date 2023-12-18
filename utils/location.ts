@@ -71,7 +71,7 @@ const startLocation = async (isStartedAfterLogin = false) => {
     const currentLocation = await getLocation();
     await Promise.all([
       startGeofenceTask(currentLocation),
-      sendLocation(currentLocation),
+      debouncedSendLocation(currentLocation),
     ]);
   } catch (e) {
     console.log(`Error, while starting location: ${e.message}`);
@@ -198,6 +198,30 @@ const getLocation = async () => {
   }
   return currentLocation;
 };
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+const debounce = (func: Function, delay: number) => {
+  let interval: ReturnType<typeof setTimeout> | null;
+  let calledWIth: Array<any> | null;
+  let res: any;
+  return function (...args: Array<any>) {
+    calledWIth = args;
+    if (!interval) {
+      res = res = func.apply(this, calledWIth);
+      calledWIth = null;
+      interval = setInterval(() => {
+        if (!calledWIth) {
+          clearInterval(interval);
+          interval = null;
+          return;
+        }
+        res = func.apply(this, calledWIth);
+        calledWIth = null;
+      }, delay);
+    }
+    return res;
+  };
+};
 const sendLocation = async (currentLocation: Location.LocationObject) => {
   if (currentLocation) {
     const deviceId = await getDeviceId();
@@ -225,7 +249,15 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
       `Sending location to ${uri.toString()}: ${JSON.stringify(init)}`,
     );
     try {
-      await fetch(uri, init);
+      await fetch(uri, init).then((response) => {
+        console.log(
+          'Login response status code: ',
+          response && response.status,
+        );
+        if (response && response.status === 412) {
+          return stopLocation();
+        }
+      });
       console.log('Location sent');
     } catch (error) {
       console.log('Error sending location', error);
@@ -236,6 +268,8 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
     console.log('No location to send');
   }
 };
+
+const debouncedSendLocation = debounce(sendLocation, FETCH_TIMEOUT);
 
 if (!TaskManager.isTaskDefined(LOCATION_TRACKING)) {
   console.log('Registering: ', LOCATION_TRACKING);
@@ -253,7 +287,7 @@ if (!TaskManager.isTaskDefined(LOCATION_TRACKING)) {
         const currentLocation = locations[0];
         await Promise.all([
           startGeofenceTask(currentLocation),
-          sendLocation(currentLocation),
+          debouncedSendLocation(currentLocation),
           startLocationTask(),
         ]);
         return;
@@ -287,7 +321,7 @@ if (!TaskManager.isTaskDefined(BACKGROUND_GEOFENCE_TASK)) {
         const currentLocation = await getLocation();
         await Promise.all([
           startGeofenceTask(currentLocation),
-          sendLocation(currentLocation),
+          debouncedSendLocation(currentLocation),
           startLocationTask(),
         ]);
         return;
