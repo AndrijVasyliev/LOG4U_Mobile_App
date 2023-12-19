@@ -10,6 +10,7 @@ import UserDataItem from './UserDataItem';
 import ErrorText from '../common/ErrorText';
 import {
   BACKEND_ORIGIN,
+  BUILD_VERSION,
   COLORS,
   FETCH_TIMEOUT,
   GET_DRIVER_PATH,
@@ -45,6 +46,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
           const headers = new Headers();
           headers.set('X-User-Login', `${login}`);
           headers.set('X-Device-Id', `${deviceId}`);
+          headers.set('X-App-Version', `${BUILD_VERSION}`);
           headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
           return fetch(new URL(GET_DRIVER_PATH, BACKEND_ORIGIN), {
             method: 'GET',
@@ -52,11 +54,13 @@ const Profile = ({ navigation }: { navigation: any }) => {
             signal: AbortSignal.timeout(FETCH_TIMEOUT),
           })
             .catch(() => {
-              setProfileError('Network problem');
+              setProfileError('Network problem: no connection');
               setIsLoading(false);
             })
             .then((response) => {
-              if (response && response.status === 200) {
+              if (!response) {
+                setProfileError('Network problem: slow or unstable connection');
+              } else if (response && response.status === 200) {
                 return response.json().then((driver) => {
                   setProfile(driver);
                   setProfileError('');
@@ -64,9 +68,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
                 });
               } else {
                 setProfileError(
-                  `Incorrect response from server: ${
-                    !response ? 'empty response' : 'status = ' + response.status
-                  }`,
+                  `Incorrect response from server: status = ${response.status}`,
                 );
               }
               setIsLoading(false);
@@ -103,6 +105,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
           const headers = new Headers();
           headers.set('X-User-Login', `${login}`);
           headers.set('X-Device-Id', `${deviceId}`);
+          headers.set('X-App-Version', `${BUILD_VERSION}`);
           headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
           headers.set('Accept', 'application/json');
           headers.set('Content-Type', 'application/json');
@@ -114,7 +117,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
               status: value ? 'Available' : 'Not Available',
             }),
           }).catch(() => {
-            setProfileError('Network problem');
+            setProfileError('Network problem: no connection');
             setIsLoading(false);
           });
         }

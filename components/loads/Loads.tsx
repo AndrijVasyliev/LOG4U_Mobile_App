@@ -12,6 +12,7 @@ import {
   BACKEND_ORIGIN,
   GET_LOADS_PATH,
   FETCH_TIMEOUT,
+  BUILD_VERSION,
 } from '../../constants';
 import { getDeviceId } from '../../utils/deviceId';
 
@@ -39,6 +40,7 @@ const Loads = ({ navigation }: { navigation: any }) => {
           const headers = new Headers();
           headers.set('X-User-Login', `${login}`);
           headers.set('X-Device-Id', `${deviceId}`);
+          headers.set('X-App-Version', `${BUILD_VERSION}`);
           headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
           return fetch(new URL(GET_LOADS_PATH, BACKEND_ORIGIN), {
             method: 'GET',
@@ -46,11 +48,13 @@ const Loads = ({ navigation }: { navigation: any }) => {
             signal: AbortSignal.timeout(FETCH_TIMEOUT),
           })
             .catch(() => {
-              setLoadError('Network problem');
+              setLoadError('Network problem: no connection');
               setIsLoading(false);
             })
             .then((response) => {
-              if (response && response.status === 200) {
+              if (!response) {
+                setLoadError('Network problem: slow or unstable connection');
+              } else if (response && response.status === 200) {
                 return response.json().then((loads) => {
                   setLoads(loads.items);
                   setLoadError('');
@@ -58,9 +62,7 @@ const Loads = ({ navigation }: { navigation: any }) => {
                 });
               } else {
                 setLoadError(
-                  `Incorrect response from server: ${
-                    !response ? 'empty response' : 'status = ' + response.status
-                  }`,
+                  `Incorrect response from server: status = ${response.status}`,
                 );
               }
               setIsLoading(false);

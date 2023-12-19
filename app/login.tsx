@@ -21,6 +21,7 @@ import { encode as btoa } from 'base-64';
 import { startLocation } from '../utils/location';
 import {
   BACKEND_ORIGIN,
+  BUILD_VERSION,
   COLORS,
   FETCH_TIMEOUT,
   icons,
@@ -113,6 +114,7 @@ const Login = () => {
     const headers = new Headers();
     headers.set('X-User-Login', `${login}`);
     headers.set('X-Device-Id', `${deviceId}`);
+    headers.set('X-App-Version', `${BUILD_VERSION}`);
     headers.set('Authorization', 'Basic ' + btoa(log + ':' + pas));
     headers.set('Accept', 'application/json');
     headers.set('Content-Type', 'application/json');
@@ -126,7 +128,7 @@ const Login = () => {
         }),
       })
         .catch(() => {
-          setLoginError('Network problem');
+          setLoginError('Network problem: no connection');
           setIsAutentificating(false);
         })
         .then((response) => {
@@ -134,7 +136,9 @@ const Login = () => {
             'Login response status code: ',
             response && response.status,
           );
-          if (response && response.status === 200) {
+          if (!response) {
+            setLoginError('Network problem: slow or unstable connection');
+          } else if (response && response.status === 200) {
             return response
               .json()
               .then((driver) =>
@@ -162,7 +166,9 @@ const Login = () => {
             setLoginError('Login or Password is incorrect');
             setIsAutentificating(false);
           } else {
-            setLoginError('Network problem');
+            setLoginError(
+              `Incorrect response from server: status = ${response.status}`,
+            );
             setIsAutentificating(false);
           }
         })

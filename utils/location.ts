@@ -16,6 +16,7 @@ import {
   COLORS,
   PERMISSION_GRANTED,
   FETCH_TIMEOUT,
+  BUILD_VERSION,
 } from '../constants';
 import { getDeviceId } from './deviceId';
 
@@ -227,6 +228,7 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
     const deviceId = await getDeviceId();
     const headers = new Headers();
     headers.set('X-Device-Id', `${deviceId}`);
+    headers.set('X-App-Version', `${BUILD_VERSION}`);
     headers.set('Accept', 'application/json');
     headers.set('Content-Type', 'application/json');
     const uri = new URL(SET_LOCATION_PATH, BACKEND_ORIGIN);
