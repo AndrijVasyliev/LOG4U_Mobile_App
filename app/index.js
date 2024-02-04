@@ -8,5 +8,5 @@ export default function Index() {
       await SplashScreen.hideAsync();
     })();
   }, []);
-  return <Redirect href="/login" />;
+  return <Redirect href="/login/login" />;
 }

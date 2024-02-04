@@ -17,9 +17,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { Loads, Profile } from '../components';
-import { COLORS, icons } from '../constants';
-import { logout } from '../utils/logout';
+import { Loads, Profile } from '../../components';
+import { COLORS, icons } from '../../constants';
+import { logout } from '../../utils/logout';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,7 +43,7 @@ const Home = () => {
   const handleLogout = () => {
     logout().then(() => {
       setUserMenuVisible((prev) => !prev);
-      router.replace('/login');
+      router.replace('/login/login');
     });
   };
 

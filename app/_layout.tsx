@@ -7,9 +7,9 @@ const Layout = () => {
   return (
     <SafeAreaProvider>
       <ToastProvider>
-        <Stack initialRouteName="login">
-          <Stack.Screen name="login" />
-          <Stack.Screen name="home" />
+        <Stack initialRouteName="login/login">
+          <Stack.Screen name="login/login" />
+          <Stack.Screen name="home/home" />
         </Stack>
       </ToastProvider>
     </SafeAreaProvider>

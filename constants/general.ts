@@ -1,10 +1,15 @@
+import * as Application from 'expo-application';
 import { PermissionStatus } from 'expo-modules-core/src/PermissionsInterface';
 
-export const BUILD_VERSION = 10;
+export const BUILD_VERSION =
+  Application.nativeBuildVersion + '@' + Application.nativeApplicationVersion;
 
 export const FETCH_TIMEOUT = 15000;
-export const BACKEND_ORIGIN = 'https://mobile.4u-logistics.com';
-export const PATCH_AUTH_PATH = '/mobileApp/auth';
+
+// export const BACKEND_ORIGIN = 'https://mobile.4u-logistics.com';
+export const BACKEND_ORIGIN = 'https://admin-test-lt5d.onrender.com';
+export const CHECK_AUTH_PATH = '/mobileApp/checkAuth';
+export const SET_AUTH_PATH = '/mobileApp/setAuth';
 export const GET_DRIVER_PATH = '/mobileApp/driver';
 export const GET_LOADS_PATH = 'mobileApp/getLoad';
 export const UPDATE_TRUCK_PATH = '/mobileApp/updateTruck';
