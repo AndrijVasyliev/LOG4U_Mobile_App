@@ -7,14 +7,14 @@ import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { encode as btoa } from 'base-64';
 
-import ProminentDisclosureModal from './prominentDisclosure';
-import ForceLoginModal from './forceLogin';
-import Logo from './logo';
-import LoginInput from './loginInput';
-import PasswordInput from './passwordInput';
-import LoginButton from './loginButton';
-import LoginErrorText from './loginErrorText';
-import WelcomeText from './wellcomeText';
+import ProminentDisclosureModal from '../../components/login/prominentDisclosure';
+import ForceLoginModal from '../../components/login/forceLogin';
+import Logo from '../../components/login/logo';
+import LoginInput from '../../components/login/loginInput';
+import PasswordInput from '../../components/login/passwordInput';
+import LoginButton from '../../components/login/loginButton';
+import LoginErrorText from '../../components/login/loginErrorText';
+import WelcomeText from '../../components/login/wellcomeText';
 import { startLocation } from '../../utils/location';
 import {
   BACKEND_ORIGIN,
@@ -22,9 +22,13 @@ import {
   COLORS,
   FETCH_TIMEOUT,
   SET_AUTH_PATH,
-  CHECK_AUTH_PATH,
   PERMISSION_DENIED,
   PERMISSION_GRANTED,
+  STORAGE_USER_TYPE,
+  STORAGE_USER_NAME,
+  STORAGE_USER_LOGIN,
+  STORAGE_USER_PASSWORD,
+  STORAGE_USER_PD_STATUS,
 } from '../../constants';
 import { getDeviceId } from '../../utils/deviceId';
 import { getAppPermissions } from '../../utils/getAppPermissions';
@@ -44,7 +48,7 @@ const Login = () => {
     React.useCallback(() => {
       console.log('Login screen is focused');
       if (!pdStatus) {
-        AsyncStorage.getItem('pdstatus').then((pdstatus) =>
+        AsyncStorage.getItem(STORAGE_USER_PD_STATUS).then((pdstatus) =>
           setPDStatus(pdstatus),
         );
       }
@@ -56,16 +60,16 @@ const Login = () => {
 
   React.useEffect(() => {
     Promise.all([
-      AsyncStorage.getItem('login'),
-      AsyncStorage.getItem('password'),
-      AsyncStorage.getItem('pdstatus'),
+      AsyncStorage.getItem(STORAGE_USER_LOGIN),
+      AsyncStorage.getItem(STORAGE_USER_PASSWORD),
+      AsyncStorage.getItem(STORAGE_USER_PD_STATUS),
       getDeviceId(),
     ])
       .then(([login, password, pdstatus, deviceId]) => {
         setDeviceId(deviceId);
         if (Platform.OS !== 'android' && !pdstatus) {
           setPDStatus(PERMISSION_GRANTED);
-          AsyncStorage.setItem('pdstatus', PERMISSION_GRANTED);
+          AsyncStorage.setItem(STORAGE_USER_PD_STATUS, PERMISSION_GRANTED);
         } else if (!pdstatus) {
           setProminentDisclosureVisible(true);
         } else {
@@ -77,7 +81,7 @@ const Login = () => {
           setPDStatus(pdstatus);
           if (pdstatus) {
             setTimeout(
-              () => handleLogin(null, { login, password, pdstatus }),
+              () => handleLogin(null, { login, password, deviceId, pdstatus }),
               1,
             );
           }
@@ -104,22 +108,22 @@ const Login = () => {
     {
       login: log = login,
       password: pas = password,
+      deviceId: devId = deviceId,
       pdstatus: pds = pdStatus,
       force = false,
     }: {
       login?: string;
       password?: string;
+      deviceId?: string;
       pdstatus?: string;
       force?: boolean;
     } = {
       login: login,
       password: password,
+      deviceId: deviceId,
       pdstatus: pdStatus,
       force: false,
     },
-    // log = login,
-    // pas = password,
-    // pds = pdStatus,
   ) => {
     if (!log || !pas) {
       return setLoginError(
@@ -131,78 +135,78 @@ const Login = () => {
     console.log('PD Status', pds, log, pas);
     setIsAutentificating(true);
     const headers = new Headers();
-    headers.set('X-User-Login', `${login}`);
-    headers.set('X-Device-Id', `${deviceId}`); // ToDo Move this below
+    headers.set('X-User-Login', `${log}`);
+    headers.set('X-Device-Id', `${devId}`);
     headers.set('X-App-Version', `${BUILD_VERSION}`);
     headers.set('Authorization', 'Basic ' + btoa(log + ':' + pas));
     headers.set('Accept', 'application/json');
     headers.set('Content-Type', 'application/json');
-    Promise.all([getDeviceId(pds), getAppPermissions()]).then(
-      ([deviceId, appPermissions]) =>
-        fetch(
-          new URL(force ? SET_AUTH_PATH : CHECK_AUTH_PATH, BACKEND_ORIGIN),
-          {
-            method: 'PATCH',
-            headers,
-            signal: AbortSignal.timeout(FETCH_TIMEOUT),
-            body: JSON.stringify({
-              deviceId,
-              appPermissions,
-            }),
-          },
-        )
-          .catch(() => {
-            setLoginError('Network problem: no connection');
+    getAppPermissions().then((appPermissions) =>
+      fetch(new URL(SET_AUTH_PATH, BACKEND_ORIGIN), {
+        method: 'PATCH',
+        headers,
+        signal: AbortSignal.timeout(FETCH_TIMEOUT),
+        body: JSON.stringify({
+          force,
+          deviceId: devId,
+          appPermissions,
+        }),
+      })
+        .catch(() => {
+          setLoginError('Network problem: no connection');
+          setIsAutentificating(false);
+        })
+        .then((response) => {
+          console.log(
+            'Login response status code: ',
+            response && response.status,
+          );
+          if (!response) {
+            setLoginError('Network problem: slow or unstable connection');
+          } else if (response && response.status === 200) {
+            return response
+              .json()
+              .then((person) =>
+                Promise.all([
+                  AsyncStorage.setItem(STORAGE_USER_NAME, person.fullName),
+                  AsyncStorage.setItem(STORAGE_USER_TYPE, person.type),
+                ]),
+              )
+              .then(() => AsyncStorage.setItem(STORAGE_USER_LOGIN, log))
+              .then(() => AsyncStorage.setItem(STORAGE_USER_PASSWORD, pas))
+              .then(() => requestTrackingPermissionsAsync())
+              .then(({ status }) => {
+                if (
+                  status === PERMISSION_GRANTED &&
+                  pds === PERMISSION_GRANTED
+                ) {
+                  console.log('Permission to track data is here');
+                  return startLocation(true).catch((reason) =>
+                    console.log('Error starting location from login', reason),
+                  );
+                }
+              })
+              .then(() => {
+                setIsAutentificating(false);
+                router.replace('/home');
+              });
+          } else if (response && response.status === 401) {
+            setLoginError('Login or Password is incorrect');
             setIsAutentificating(false);
-          })
-          .then((response) => {
-            console.log(
-              'Login response status code: ',
-              response && response.status,
+          } else if (response && response.status === 412) {
+            setLoginError('Logged From other device');
+            setIsAutentificating(false);
+          } else {
+            setLoginError(
+              `Incorrect response from server: status = ${response.status}`,
             );
-            if (!response) {
-              setLoginError('Network problem: slow or unstable connection');
-            } else if (response && response.status === 200) {
-              return response
-                .json()
-                .then((person) =>
-                  AsyncStorage.setItem('username', person.fullName),
-                )
-                .then(() => AsyncStorage.setItem('login', log))
-                .then(() => AsyncStorage.setItem('password', pas))
-                .then(() => requestTrackingPermissionsAsync())
-                .then(({ status }) => {
-                  if (
-                    status === PERMISSION_GRANTED &&
-                    pds === PERMISSION_GRANTED
-                  ) {
-                    console.log('Permission to track data is here');
-                    return startLocation(true).catch((reason) =>
-                      console.log('Error starting location from login', reason),
-                    );
-                  }
-                })
-                .then(() => {
-                  setIsAutentificating(false);
-                  router.replace('/home/home');
-                });
-            } else if (response && response.status === 401) {
-              setLoginError('Login or Password is incorrect');
-              setIsAutentificating(false);
-            } else if (response && response.status === 412) {
-              setLoginError('Logged From other device');
-              setIsAutentificating(false);
-            } else {
-              setLoginError(
-                `Incorrect response from server: status = ${response.status}`,
-              );
-              setIsAutentificating(false);
-            }
-          })
-          .catch(() => {
-            setLoginError('Something went wrong');
             setIsAutentificating(false);
-          }),
+          }
+        })
+        .catch(() => {
+          setLoginError('Something went wrong');
+          setIsAutentificating(false);
+        }),
     );
     return;
   };
@@ -210,13 +214,13 @@ const Login = () => {
   const handlePDGrant = () => {
     setProminentDisclosureVisible(false);
     setPDStatus(PERMISSION_GRANTED);
-    AsyncStorage.setItem('pdstatus', PERMISSION_GRANTED);
+    AsyncStorage.setItem(STORAGE_USER_PD_STATUS, PERMISSION_GRANTED);
     return;
   };
   const handlePDReject = () => {
     setProminentDisclosureVisible(false);
     setPDStatus(PERMISSION_DENIED);
-    AsyncStorage.setItem('pdstatus', PERMISSION_DENIED);
+    AsyncStorage.setItem(STORAGE_USER_PD_STATUS, PERMISSION_DENIED);
     return;
   };
 

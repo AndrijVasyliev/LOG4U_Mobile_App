@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ScrollView, ImageBackground } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { useRouter } from 'expo-router';
+// import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { encode as btoa } from 'base-64';
 
@@ -13,6 +13,8 @@ import {
   GET_LOADS_PATH,
   FETCH_TIMEOUT,
   BUILD_VERSION,
+  STORAGE_USER_LOGIN,
+  STORAGE_USER_PASSWORD,
 } from '../../constants';
 import { getDeviceId } from '../../utils/deviceId';
 
@@ -31,8 +33,8 @@ const Loads = ({ navigation }: { navigation: any }) => {
   React.useEffect(() => {
     setIsLoading(true);
     Promise.all([
-      AsyncStorage.getItem('login'),
-      AsyncStorage.getItem('password'),
+      AsyncStorage.getItem(STORAGE_USER_LOGIN),
+      AsyncStorage.getItem(STORAGE_USER_PASSWORD),
       getDeviceId(),
     ])
       .then(([login, password, deviceId]) => {
@@ -78,7 +80,7 @@ const Loads = ({ navigation }: { navigation: any }) => {
       });
   }, [changedAt]);
 
-  const router = useRouter();
+  // const router = useRouter();
 
   return (
     <ImageBackground

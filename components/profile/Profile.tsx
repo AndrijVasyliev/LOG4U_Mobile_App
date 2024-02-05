@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View, ImageBackground, Text, Switch } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { useRouter } from 'expo-router';
+// import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { encode as btoa } from 'base-64';
 
@@ -15,6 +15,8 @@ import {
   FETCH_TIMEOUT,
   GET_DRIVER_PATH,
   images,
+  STORAGE_USER_LOGIN,
+  STORAGE_USER_PASSWORD,
   UPDATE_TRUCK_PATH,
 } from '../../constants';
 import { getDeviceId } from '../../utils/deviceId';
@@ -37,8 +39,8 @@ const Profile = ({ navigation }: { navigation: any }) => {
   React.useEffect(() => {
     setIsLoading(true);
     Promise.all([
-      AsyncStorage.getItem('login'),
-      AsyncStorage.getItem('password'),
+      AsyncStorage.getItem(STORAGE_USER_LOGIN),
+      AsyncStorage.getItem(STORAGE_USER_PASSWORD),
       getDeviceId(),
     ])
       .then(([login, password, deviceId]) => {
@@ -96,8 +98,8 @@ const Profile = ({ navigation }: { navigation: any }) => {
     setIsLoading(true);
     setStatus(value);
     Promise.all([
-      AsyncStorage.getItem('login'),
-      AsyncStorage.getItem('password'),
+      AsyncStorage.getItem(STORAGE_USER_LOGIN),
+      AsyncStorage.getItem(STORAGE_USER_PASSWORD),
       getDeviceId(),
     ])
       .then(([login, password, deviceId]) => {
@@ -129,7 +131,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
       });
   };
 
-  const router = useRouter();
+  // const router = useRouter();
 
   return (
     <ImageBackground
@@ -224,7 +226,11 @@ const Profile = ({ navigation }: { navigation: any }) => {
             thumbColor={status ? COLORS.toggleThumbOn : COLORS.toggleThumbOff}
             ios_backgroundColor={COLORS.toggleOff}
             onValueChange={handleChangeState}
-            disabled={profile?.driveTrucks?.length !== 1}
+            disabled={
+              profile?.driveTrucks?.length !== 1 ||
+              (profile?.driveTrucks[0]?.status !== 'Available' &&
+                profile?.driveTrucks[0]?.status !== 'Not Available')
+            }
             value={status}
           />
           <Text>Truck status</Text>

@@ -2,6 +2,7 @@ import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
 import * as TrackingTransparency from 'expo-tracking-transparency';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_USER_PD_STATUS } from '../constants';
 
 export const getAppPermissions = async (): Promise<Record<string, any>> => {
   const [
@@ -11,7 +12,7 @@ export const getAppPermissions = async (): Promise<Record<string, any>> => {
     foregroundLocationPermissionStatus,
     backgroundLocationPermissionStatus,
   ] = await Promise.all([
-    AsyncStorage.getItem('pdstatus'),
+    AsyncStorage.getItem(STORAGE_USER_PD_STATUS),
     TrackingTransparency.getTrackingPermissionsAsync(),
     Notifications.getPermissionsAsync(),
     Location.getForegroundPermissionsAsync(),

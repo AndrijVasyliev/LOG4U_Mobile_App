@@ -18,7 +18,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Loads, Profile } from '../../components';
-import { COLORS, icons } from '../../constants';
+import { COLORS, icons, STORAGE_USER_NAME } from '../../constants';
 import { logout } from '../../utils/logout';
 
 const Tab = createBottomTabNavigator();
@@ -28,7 +28,7 @@ const Home = () => {
   const [userMenuVisible, setUserMenuVisible] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    AsyncStorage.getItem('username')
+    AsyncStorage.getItem(STORAGE_USER_NAME)
       .then((username) => {
         username && setUserName(username);
       })

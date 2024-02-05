@@ -8,7 +8,6 @@ export const FETCH_TIMEOUT = 15000;
 
 // export const BACKEND_ORIGIN = 'https://mobile.4u-logistics.com';
 export const BACKEND_ORIGIN = 'https://admin-test-lt5d.onrender.com';
-export const CHECK_AUTH_PATH = '/mobileApp/checkAuth';
 export const SET_AUTH_PATH = '/mobileApp/setAuth';
 export const GET_DRIVER_PATH = '/mobileApp/driver';
 export const GET_LOADS_PATH = 'mobileApp/getLoad';
@@ -24,3 +23,8 @@ export const LOCATION_DISTANCE_INTERVAL = 250;
 export const GEOFENCE_DISTANCE_INTERVAL = 300;
 export const PERMISSION_GRANTED = PermissionStatus.GRANTED;
 export const PERMISSION_DENIED = PermissionStatus.DENIED;
+export const STORAGE_USER_NAME = 'username';
+export const STORAGE_USER_TYPE = 'usertype';
+export const STORAGE_USER_LOGIN = 'login';
+export const STORAGE_USER_PASSWORD = 'password';
+export const STORAGE_USER_PD_STATUS = 'pdstatus';
