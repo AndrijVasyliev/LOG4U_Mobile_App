@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { ScrollView, Text, View, Platform, StatusBar } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Stack, useRouter, useFocusEffect } from 'expo-router';
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
@@ -233,8 +232,8 @@ const Login = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-      <StatusBar barStyle={'light-content'} />
+    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+      <StatusBar barStyle={'dark-content'} />
       <ProminentDisclosureModal
         visible={prominentDisclosureVisible}
         grant={handlePDGrant}
@@ -276,7 +275,7 @@ const Login = () => {
         <WelcomeText />
       </ScrollView>
       <Spinner visible={isAutentificating} textContent={'Logging in...'} />
-    </SafeAreaView>
+    </View>
   );
 };
 
