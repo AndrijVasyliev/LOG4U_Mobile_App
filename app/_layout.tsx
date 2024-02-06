@@ -3,6 +3,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ToastProvider } from 'react-native-toast-notifications';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import * as Font from 'expo-font';
 // Instruct SplashScreen not to hide yet, we want to do this manually
 SplashScreen.preventAutoHideAsync().catch((reason) =>
   /* reloading the app might trigger some race conditions, ignore them */
@@ -22,8 +23,31 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: 'login',
+  initialRouteName: '(login)',
 };
+
+export default function RootLayout() {
+  const [loaded, error] = Font.useFonts({
+    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  });
+
+  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
+  React.useEffect(() => {
+    if (error) throw error;
+  }, [error]);
+
+  React.useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  if (!loaded) {
+    return null;
+  }
+
+  return <Layout />;
+}
 
 const Layout = () => {
   React.useEffect(() => {
@@ -33,12 +57,10 @@ const Layout = () => {
     <SafeAreaProvider>
       <ToastProvider>
         <Stack>
-          <Stack.Screen name="login" options={{ headerShown: false }} />
+          <Stack.Screen name="(login)" options={{ headerShown: false }} />
           <Stack.Screen name="home" options={{ headerShown: false }} />
         </Stack>
       </ToastProvider>
     </SafeAreaProvider>
   );
 };
-
-export default Layout;

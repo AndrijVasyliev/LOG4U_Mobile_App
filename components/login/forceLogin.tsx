@@ -8,8 +8,8 @@ const ForceLoginModal = ({
   proceed,
 }: {
   visible: boolean;
-  cancel: () => void;
-  proceed: () => void;
+  cancel: VoidFunction;
+  proceed: VoidFunction;
 }) => {
   return (
     <Modal

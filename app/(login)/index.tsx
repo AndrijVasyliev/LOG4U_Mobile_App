@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, Text, View, Platform } from 'react-native';
+import { ScrollView, Text, View, Platform, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Stack, useRouter, useFocusEffect } from 'expo-router';
@@ -234,6 +234,7 @@ const Login = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+      <StatusBar barStyle={'light-content'} />
       <ProminentDisclosureModal
         visible={prominentDisclosureVisible}
         grant={handlePDGrant}

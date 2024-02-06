@@ -15,8 +15,8 @@ const ProminentDisclosureModal = ({
   grant,
 }: {
   visible: boolean;
-  reject: () => void;
-  grant: () => void;
+  reject: VoidFunction;
+  grant: VoidFunction;
 }) => {
   return (
     <Modal
