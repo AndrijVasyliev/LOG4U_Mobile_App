@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, ImageBackground, Text, Switch } from 'react-native';
+import {View, ImageBackground, Text, Switch, StyleSheet} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useFocusEffect } from 'expo-router';
@@ -139,23 +139,9 @@ const Profile = () => {
     <ImageBackground
       source={images.appBackground}
       resizeMode="contain"
-      style={{
-        flexDirection: 'column',
-        width: '100%',
-        height: '100%',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-      }}
+      style={styles.background}
     >
-      <View
-        style={{
-          flexDirection: 'column',
-          width: '100%',
-          height: '100%',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-        }}
-      >
+      <View style={styles.container}>
         <UserDataItem
           iconName="account"
           value={`${profile?.fullName ? profile.fullName : ''}`}
@@ -189,35 +175,14 @@ const Profile = () => {
           }`}
           fieldName="VINCODE"
         />
-        <View
-          style={{
-            flexDirection: 'row',
-            width: '100%',
-            height: 60,
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingLeft: 10,
-            paddingRight: 10,
-          }}
-        >
-          <View
-            style={{
-              width: 150,
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-            }}
-          >
+        <View style={styles.controlContainer}>
+          <View style={styles.iconWrapper}>
             <MaterialCommunityIcons
               name="truck-fast"
               color={COLORS.black}
               size={24}
             />
-            <Text
-              style={{
-                paddingLeft: 5,
-              }}
-            >{`${
+            <Text style={styles.valueText}>{`${
               profile?.driveTrucks?.length === 1
                 ? profile.driveTrucks[0]?.status
                 : ''
@@ -243,5 +208,40 @@ const Profile = () => {
     </ImageBackground>
   );
 };
+
+const styles = StyleSheet.create({
+  background: {
+    alignItems: 'center',
+    flexDirection: 'column',
+    height: '100%',
+    justifyContent: 'flex-start',
+    width: '100%',
+  },
+  container: {
+    alignItems: 'center',
+    flexDirection: 'column',
+    height: '100%',
+    justifyContent: 'flex-start',
+    width: '100%',
+  },
+  controlContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: 60,
+    justifyContent: 'space-between',
+    paddingLeft: 10,
+    paddingRight: 10,
+    width: '100%',
+  },
+  iconWrapper: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    width: 150,
+  },
+  valueText: {
+    paddingLeft: 5,
+  },
+});
 
 export default Profile;

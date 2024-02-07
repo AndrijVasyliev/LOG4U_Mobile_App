@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, ImageBackground } from 'react-native';
+import { ScrollView, ImageBackground, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useFocusEffect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -88,24 +88,11 @@ const Loads = () => {
     <ImageBackground
       source={images.appBackground}
       resizeMode="contain"
-      style={{
-        flexDirection: 'column',
-        width: '100%',
-        height: '100%',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-      }}
+      style={styles.background}
     >
       <ScrollView
-        style={{
-          flexDirection: 'column',
-          width: '100%',
-          height: '100%',
-        }}
-        contentContainerStyle={{
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-        }}
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContainer}
       >
         {loadError ? (
           <ErrorText errMessage={loadError} />
@@ -117,5 +104,24 @@ const Loads = () => {
     </ImageBackground>
   );
 };
+
+const styles = StyleSheet.create({
+  background: {
+    alignItems: 'center',
+    flexDirection: 'column',
+    height: '100%',
+    justifyContent: 'flex-start',
+    width: '100%',
+  },
+  scroll: {
+    flexDirection: 'column',
+    height: '100%',
+    width: '100%',
+  },
+  scrollContainer: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+});
 
 export default Loads;
