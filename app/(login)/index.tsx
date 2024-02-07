@@ -1,5 +1,12 @@
 import * as React from 'react';
-import { ScrollView, Text, View, Platform, StatusBar } from 'react-native';
+import {
+  ScrollView,
+  Text,
+  View,
+  Platform,
+  StatusBar,
+  StyleSheet,
+} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Stack, useRouter, useFocusEffect } from 'expo-router';
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
@@ -233,7 +240,7 @@ const Login = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <View style={styles.container}>
       <StatusBar barStyle={'dark-content'} />
       <ProminentDisclosureModal
         visible={prominentDisclosureVisible}
@@ -245,28 +252,13 @@ const Login = () => {
         proceed={handleForceLoginProceed}
         cancel={handleForceLoginCancel}
       />
-      <Stack.Screen
-        options={{
-          headerStyle: { backgroundColor: COLORS.white },
-          headerShadowVisible: false,
-          headerTitle: '',
-        }}
-      />
       <ScrollView
-        style={{
-          flex: 1,
-        }}
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContainer}
       >
         <Logo />
-        <View
-          style={{
-            flex: 3,
-            flexDirection: 'column',
-            paddingLeft: '5%',
-            paddingRight: '5%',
-          }}
-        >
-          <Text style={{ fontSize: 25 }}>Login</Text>
+        <View style={styles.controlsWrapper}>
+          <Text style={styles.headerText}>Login</Text>
           <Text>Enter your credentials to login</Text>
           <LoginInput value={login} onChange={handleLoginChange} />
           <PasswordInput value={password} onChange={handlePasswordChange} />
@@ -279,5 +271,26 @@ const Login = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    flex: 1,
+    justifyContent: 'center',
+  },
+  controlsWrapper: {
+    flex: 3,
+    flexDirection: 'column',
+    paddingLeft: '5%',
+    paddingRight: '5%',
+  },
+  headerText: { fontSize: 25 },
+  scroll: {},
+  scrollContainer: {
+    marginBottom: 'auto',
+    marginTop: 'auto',
+  },
+});
 
 export default Login;
