@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { COLORS } from '../../constants';
 
@@ -17,27 +17,9 @@ const PasswordInput = ({
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: 'row',
-        width: '100%',
-        height: 40,
-        borderRadius: 10,
-        borderStyle: 'solid',
-        borderColor: COLORS.gray,
-        borderWidth: 1,
-        marginTop: 5,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-      }}
-    >
+    <View style={styles.container}>
       <TextInput
-        style={{
-          paddingLeft: 5,
-          width: '92%',
-          height: 40,
-        }}
+        style={styles.input}
         secureTextEntry={!showPassword}
         value={value}
         onChangeText={onChange}
@@ -53,5 +35,26 @@ const PasswordInput = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    borderColor: COLORS.gray,
+    borderRadius: 10,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    flex: 1,
+    flexDirection: 'row',
+    height: 40,
+    justifyContent: 'flex-start',
+    marginTop: 5,
+    width: '100%',
+  },
+  input: {
+    height: 40,
+    paddingLeft: 5,
+    width: '92%',
+  },
+});
 
 export default PasswordInput;

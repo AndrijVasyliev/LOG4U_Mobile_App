@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Link, Stack } from 'expo-router';
 import { View, Text, StyleSheet } from 'react-native';
+import { Link, Stack } from 'expo-router';
+
 import { COLORS } from '../constants';
 
-export default function NotFoundScreen() {
+const NotFoundScreen = () => {
   return (
     <>
       <Stack.Screen options={{ title: 'Oops!' }} />
@@ -15,7 +16,7 @@ export default function NotFoundScreen() {
       </View>
     </>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -37,3 +38,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export default NotFoundScreen;

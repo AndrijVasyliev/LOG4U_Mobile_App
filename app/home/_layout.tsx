@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { StatusBar } from 'react-native';
 import { Tabs } from 'expo-router';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { StatusBar } from 'react-native';
 
 const TabLayout = () => {
   return (

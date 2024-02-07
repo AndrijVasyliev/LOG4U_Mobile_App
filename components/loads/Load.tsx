@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { Platform, TouchableOpacity, Text, View } from 'react-native';
+import {
+  Platform,
+  TouchableOpacity,
+  Text,
+  View,
+  StyleSheet,
+} from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { useToast } from 'react-native-toast-notifications';
 import { COLORS } from '../../constants';
@@ -16,51 +22,16 @@ const Load = ({ load }: { load: Record<string, any> }) => {
     await Clipboard.setStringAsync(text);
   };
   return (
-    <View
-      style={{
-        flexDirection: 'column',
-        width: '100%',
-        height: 110,
-        borderRadius: 10,
-        borderStyle: 'solid',
-        borderColor: COLORS.gray,
-        borderWidth: 1,
-        marginTop: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingLeft: 10,
-        paddingRight: 10,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+    <View style={styles.container}>
+      <View style={styles.loadNumContainer}>
         <View>
-          <Text
-            style={{
-              paddingLeft: 5,
-              fontWeight: 'bold',
-            }}
-          >{`Load # ${load?.loadNumber}`}</Text>
+          <Text style={styles.loadText}>{`Load # ${load?.loadNumber}`}</Text>
         </View>
         <Text>{`${
           load?.milesByRoads ? load.milesByRoads.toFixed(2) : ''
         } Miles`}</Text>
       </View>
-      <View
-        style={{
-          paddingTop: 10,
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+      <View style={styles.pickContainer}>
         <TouchableOpacity
           ref={pickRef}
           onPress={() =>
@@ -71,25 +42,12 @@ const Load = ({ load }: { load: Record<string, any> }) => {
             )
           }
         >
-          <Text
-            style={{
-              paddingLeft: 5,
-            }}
-            numberOfLines={2}
-          >{`First pickup: ${
+          <Text style={styles.pickText} numberOfLines={2}>{`First pickup: ${
             load?.pick?.formatted_address ? load.pick.formatted_address : ''
           }`}</Text>
         </TouchableOpacity>
       </View>
-      <View
-        style={{
-          paddingTop: 10,
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+      <View style={styles.deliverContainer}>
         <TouchableOpacity
           ref={deliverRef}
           onPress={() =>
@@ -100,12 +58,7 @@ const Load = ({ load }: { load: Record<string, any> }) => {
             )
           }
         >
-          <Text
-            style={{
-              paddingLeft: 5,
-            }}
-            numberOfLines={2}
-          >{`Last delivery: ${
+          <Text style={styles.deliverText} numberOfLines={2}>{`Last delivery: ${
             load?.deliver?.formatted_address
               ? load.deliver.formatted_address
               : ''
@@ -115,5 +68,52 @@ const Load = ({ load }: { load: Record<string, any> }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    borderColor: COLORS.gray,
+    borderRadius: 10,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    flexDirection: 'column',
+    height: 110,
+    justifyContent: 'center',
+    marginTop: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    width: '100%',
+  },
+  deliverContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 10,
+    width: '100%',
+  },
+  deliverText: {
+    paddingLeft: 5,
+  },
+  loadNumContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  loadText: {
+    fontWeight: 'bold',
+    paddingLeft: 5,
+  },
+  pickContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 10,
+    width: '100%',
+  },
+  pickText: {
+    paddingLeft: 5,
+  },
+});
 
 export default Load;

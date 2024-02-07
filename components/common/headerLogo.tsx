@@ -1,14 +1,13 @@
 import * as React from 'react';
+import { Image, StyleSheet } from 'react-native';
 import { icons } from '../../constants';
-import { Image } from 'react-native';
 
 const HeaderLogo = () => {
-  return (
-    <Image
-      source={icons.LOGO_4U_White}
-      style={{ resizeMode: 'contain', height: 40, width: 40 }}
-    />
-  );
+  return <Image source={icons.LOGO_4U_White} style={styles.image} />;
 };
+
+const styles = StyleSheet.create({
+  image: { height: 40, resizeMode: 'contain', width: 40 },
+});
 
 export default HeaderLogo;

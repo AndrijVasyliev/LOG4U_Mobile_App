@@ -133,6 +133,7 @@ const Login = () => {
     }
     console.log('PD Status', pds, log, pas);
     setIsAutentificating(true);
+    setLoginError('');
     const headers = new Headers();
     headers.set('X-User-Login', `${log}`);
     headers.set('X-Device-Id', `${devId}`);

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   Modal,
+  StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -32,62 +33,13 @@ const AppMenuModal = ({
       visible={visible}
       onRequestClose={onRequestClose}
     >
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: COLORS.modalBackground,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
+      <View style={styles.container}>
         <TouchableWithoutFeedback onPress={onRequestClose}>
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              backgroundColor: COLORS.modalBackground,
-            }}
-          />
+          <View style={styles.area} />
         </TouchableWithoutFeedback>
-        <View
-          style={{
-            backgroundColor: COLORS.white,
-            borderRadius: 10,
-            padding: 35,
-            alignItems: 'center',
-            shadowColor: COLORS.black,
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 5,
-          }}
-        >
-          <View
-            style={{
-              width: '100%',
-              height: 40,
-              marginTop: 5,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                width: 100,
-                height: 40,
-                backgroundColor: COLORS.primary,
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              onPress={handleLogout}
-            >
+        <View style={styles.modal}>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleLogout}>
               <Text style={{ color: COLORS.white }}>LOG OUT</Text>
             </TouchableOpacity>
           </View>
@@ -96,5 +48,51 @@ const AppMenuModal = ({
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  area: {
+    backgroundColor: COLORS.modalBackground,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  button: {
+    alignItems: 'center',
+    backgroundColor: COLORS.primary,
+    borderRadius: 10,
+    height: 40,
+    justifyContent: 'center',
+    width: 100,
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    height: 40,
+    justifyContent: 'center',
+    marginTop: 5,
+    width: '100%',
+  },
+  container: {
+    alignItems: 'center',
+    backgroundColor: COLORS.modalBackground,
+    flex: 1,
+    justifyContent: 'center',
+  },
+  modal: {
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    elevation: 5,
+    padding: 35,
+    shadowColor: COLORS.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+});
 
 export default AppMenuModal;

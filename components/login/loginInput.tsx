@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { COLORS } from '../../constants';
 
 const LoginInput = ({
@@ -10,27 +10,9 @@ const LoginInput = ({
   onChange: (newValue: string) => void;
 }) => {
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: 'row',
-        width: '100%',
-        height: 40,
-        borderRadius: 10,
-        borderStyle: 'solid',
-        borderColor: COLORS.gray,
-        borderWidth: 1,
-        marginTop: 5,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-      }}
-    >
+    <View style={styles.container}>
       <TextInput
-        style={{
-          paddingLeft: 5,
-          width: '95%',
-          height: 40,
-        }}
+        style={styles.input}
         value={value}
         onChangeText={onChange}
         placeholder="Enter Login"
@@ -38,5 +20,26 @@ const LoginInput = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    borderColor: COLORS.gray,
+    borderRadius: 10,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    flex: 1,
+    flexDirection: 'row',
+    height: 40,
+    justifyContent: 'flex-start',
+    marginTop: 5,
+    width: '100%',
+  },
+  input: {
+    height: 40,
+    paddingLeft: 5,
+    width: '95%',
+  },
+});
 
 export default LoginInput;

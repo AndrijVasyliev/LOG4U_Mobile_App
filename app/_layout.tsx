@@ -1,5 +1,5 @@
 import * as React from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet } from 'react-native';
 import {
   SafeAreaProvider,
   SafeAreaView,
@@ -9,20 +9,22 @@ import { ToastProvider } from 'react-native-toast-notifications';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
+
+import '../utils/abortSignal';
+import { startLocation } from '../utils/location';
+import { COLORS } from '../constants';
+import HeaderLogo from '../components/common/headerLogo';
+import HeaderButton from '../components/common/headerButton';
+
 // Instruct SplashScreen not to hide yet, we want to do this manually
 SplashScreen.preventAutoHideAsync().catch((reason) =>
   /* reloading the app might trigger some race conditions, ignore them */
   console.log('Error in prevent splash screen', reason),
 );
 
-import '../utils/abortSignal';
-import { startLocation } from '../utils/location';
 startLocation().catch((reason) =>
   console.log('Error starting location from start', reason),
 );
-import { COLORS, icons, STORAGE_USER_NAME } from '../constants';
-import { Image, Text, TouchableOpacity } from 'react-native';
-import HeaderLogo from '../components/common/headerLogo';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -34,7 +36,7 @@ export const unstable_settings = {
   initialRouteName: '(login)',
 };
 
-export default function RootLayout() {
+const RootLayout = () => {
   const [loaded, error] = Font.useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -55,28 +57,16 @@ export default function RootLayout() {
   }
 
   return <Layout />;
-}
+};
 
 const Layout = () => {
-  const [userName, setUserName] = React.useState<string>('');
-  React.useEffect(() => {
-    AsyncStorage.getItem(STORAGE_USER_NAME)
-      .then((username) => {
-        username && setUserName(username);
-      })
-      .catch(() => {
-        return;
-      });
-  }, []);
-
   const insets = useSafeAreaInsets();
   return (
     <SafeAreaProvider>
       <ToastProvider>
         <SafeAreaView
           style={{
-            flex: 1,
-            backgroundColor: COLORS.backgroung,
+            ...styles.container,
             paddingTop: -insets.top,
             paddingBottom: -insets.bottom,
           }}
@@ -92,30 +82,7 @@ const Layout = () => {
                 headerStyle: { backgroundColor: COLORS.primary },
                 headerShadowVisible: false,
                 headerLeft: () => <HeaderLogo />,
-                headerRight: () => (
-                  <>
-                    <TouchableOpacity
-                      style={{
-                        width: 40,
-                        height: 40,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={
-                        () => {
-                          return;
-                        } /*handleToggleUserMenu*/
-                      }
-                    >
-                      <Image
-                        source={icons.AccountCircle}
-                        resizeMode="contain"
-                        style={{ resizeMode: 'contain', height: 20, width: 20 }}
-                      />
-                    </TouchableOpacity>
-                    <Text style={{ color: COLORS.white }}>{userName}</Text>
-                  </>
-                ),
+                headerRight: () => <HeaderButton />,
                 headerTitle: '',
               }}
             />
@@ -125,3 +92,12 @@ const Layout = () => {
     </SafeAreaProvider>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: COLORS.backgroung,
+    flex: 1,
+  },
+});
+
+export default RootLayout;

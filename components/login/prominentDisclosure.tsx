@@ -4,10 +4,10 @@ import {
   Modal,
   ScrollView,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { COLORS } from '../../constants';
+import ModalButton from '../common/modalButton';
 
 const ProminentDisclosureModal = ({
   visible,
@@ -92,52 +92,8 @@ const ProminentDisclosureModal = ({
               flexDirection: 'row',
             }}
           >
-            <View
-              style={{
-                width: '45%',
-                height: 40,
-                marginTop: 5,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  width: 100,
-                  height: 40,
-                  backgroundColor: COLORS.primary,
-                  borderRadius: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                onPress={reject}
-              >
-                <Text style={{ color: COLORS.white }}>Deny</Text>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                width: '45%',
-                height: 40,
-                marginTop: 5,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  width: 100,
-                  height: 40,
-                  backgroundColor: COLORS.primary,
-                  borderRadius: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                onPress={grant}
-              >
-                <Text style={{ color: COLORS.white }}>Allow</Text>
-              </TouchableOpacity>
-            </View>
+            <ModalButton text={'Deny'} onPress={reject} />
+            <ModalButton text={'Allow'} onPress={grant} />
           </View>
         </View>
       </View>

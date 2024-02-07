@@ -1,22 +1,18 @@
 import * as React from 'react';
-import {
-  GestureResponderEvent,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS } from '../../constants';
 
-const LoginButton = ({
-  onClick,
+const ModalButton = ({
+  text,
+  onPress,
 }: {
-  onClick: (event: GestureResponderEvent) => void;
+  text: string;
+  onPress: VoidFunction;
 }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={onClick}>
-        <Text style={styles.buttonText}>LOG IN</Text>
+      <TouchableOpacity style={styles.button} onPress={onPress}>
+        <Text style={styles.buttonText}>{text}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -29,17 +25,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 40,
     justifyContent: 'center',
-    width: '100%',
+    width: 100,
   },
   buttonText: { color: COLORS.white },
   container: {
     alignItems: 'center',
-    flex: 1,
     height: 40,
     justifyContent: 'center',
     marginTop: 5,
-    width: '100%',
+    width: '45%',
   },
 });
 
-export default LoginButton;
+export default ModalButton;
