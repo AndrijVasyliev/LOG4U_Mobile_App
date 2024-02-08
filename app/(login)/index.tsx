@@ -195,7 +195,7 @@ const Login = () => {
               })
               .then(() => {
                 setIsAutentificating(false);
-                router.replace('/home');
+                router.navigate('/home');
               });
           } else if (response && response.status === 401) {
             setLoginError('Login or Password is incorrect');

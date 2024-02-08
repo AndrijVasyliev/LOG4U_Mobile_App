@@ -22,7 +22,7 @@ const AppMenuModal = ({
   const handleLogout = () => {
     logout().then(() => {
       onRequestClose();
-      router.replace('/');
+      router.navigate('/');
     });
   };
 

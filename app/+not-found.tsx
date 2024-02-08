@@ -10,7 +10,7 @@ const NotFoundScreen = () => {
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.replace('/home');
+      router.navigate('/home');
     }
   };
   return (
