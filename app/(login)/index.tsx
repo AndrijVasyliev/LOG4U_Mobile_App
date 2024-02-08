@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { Stack, useRouter, useFocusEffect } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { encode as btoa } from 'base-64';
@@ -40,6 +40,8 @@ import { getDeviceId } from '../../utils/deviceId';
 import { getAppPermissions } from '../../utils/getAppPermissions';
 
 const Login = () => {
+  const [forceLoginVisible, setForceLoginVisible] =
+    React.useState<boolean>(false);
   const [prominentDisclosureVisible, setProminentDisclosureVisible] =
     React.useState<boolean>(false);
   const [pdStatus, setPDStatus] = React.useState<string>('');
@@ -201,6 +203,7 @@ const Login = () => {
             setLoginError('Login or Password is incorrect');
             setIsAutentificating(false);
           } else if (response && response.status === 412) {
+            setForceLoginVisible(true);
             setLoginError('Logged From other device');
             setIsAutentificating(false);
           } else {
@@ -232,43 +235,47 @@ const Login = () => {
   };
 
   const handleForceLoginProceed = () => {
+    setForceLoginVisible(false);
     handleLogin(null, { force: true });
   };
 
   const handleForceLoginCancel = () => {
+    setForceLoginVisible(false);
     setLoginError((prev) => (prev ? '' : prev));
   };
 
   return (
-    <View style={styles.container}>
+    <>
       <StatusBar barStyle={'dark-content'} />
+      <ForceLoginModal
+        visible={forceLoginVisible}
+        proceed={handleForceLoginProceed}
+        cancel={handleForceLoginCancel}
+      />
       <ProminentDisclosureModal
         visible={prominentDisclosureVisible}
         grant={handlePDGrant}
         reject={handlePDReject}
       />
-      <ForceLoginModal
-        visible={loginError === 'Logged From other device'}
-        proceed={handleForceLoginProceed}
-        cancel={handleForceLoginCancel}
-      />
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContainer}
-      >
-        <Logo />
-        <View style={styles.controlsWrapper}>
-          <Text style={styles.headerText}>Login</Text>
-          <Text>Enter your credentials to login</Text>
-          <LoginInput value={login} onChange={handleLoginChange} />
-          <PasswordInput value={password} onChange={handlePasswordChange} />
-          <LoginErrorText errorText={loginError} />
-          <LoginButton onClick={handleLogin} />
-        </View>
-        <WelcomeText />
-      </ScrollView>
+      <View style={styles.container}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.scrollContainer}
+        >
+          <Logo />
+          <View style={styles.controlsWrapper}>
+            <Text style={styles.headerText}>Login</Text>
+            <Text>Enter your credentials to login</Text>
+            <LoginInput value={login} onChange={handleLoginChange} />
+            <PasswordInput value={password} onChange={handlePasswordChange} />
+            <LoginErrorText errorText={loginError} />
+            <LoginButton onClick={handleLogin} />
+          </View>
+          <WelcomeText />
+        </ScrollView>
+      </View>
       <Spinner visible={isAutentificating} textContent={'Logging in...'} />
-    </View>
+    </>
   );
 };
 
@@ -286,7 +293,7 @@ const styles = StyleSheet.create({
     paddingRight: '5%',
   },
   headerText: { fontSize: 25 },
-  scroll: {},
+  scroll: { flex: 1 },
   scrollContainer: {
     marginBottom: 'auto',
     marginTop: 'auto',
