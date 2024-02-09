@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { useRouter, useFocusEffect } from 'expo-router';
+import { Stack, useRouter, useFocusEffect } from 'expo-router';
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { encode as btoa } from 'base-64';
@@ -245,7 +245,7 @@ const Login = () => {
   };
 
   return (
-    <>
+    <View style={styles.container}>
       <StatusBar barStyle={'dark-content'} />
       <ForceLoginModal
         visible={forceLoginVisible}
@@ -257,25 +257,30 @@ const Login = () => {
         grant={handlePDGrant}
         reject={handlePDReject}
       />
-      <View style={styles.container}>
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={styles.scrollContainer}
-        >
-          <Logo />
-          <View style={styles.controlsWrapper}>
-            <Text style={styles.headerText}>Login</Text>
-            <Text>Enter your credentials to login</Text>
-            <LoginInput value={login} onChange={handleLoginChange} />
-            <PasswordInput value={password} onChange={handlePasswordChange} />
-            <LoginErrorText errorText={loginError} />
-            <LoginButton onClick={handleLogin} />
-          </View>
-          <WelcomeText />
-        </ScrollView>
-      </View>
+      <Stack.Screen
+        options={{
+          headerStyle: { backgroundColor: COLORS.white },
+          headerShadowVisible: false,
+          headerTitle: '',
+        }}
+      />
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContainer}
+      >
+        <Logo />
+        <View style={styles.controlsWrapper}>
+          <Text style={styles.headerText}>Login</Text>
+          <Text>Enter your credentials to login</Text>
+          <LoginInput value={login} onChange={handleLoginChange} />
+          <PasswordInput value={password} onChange={handlePasswordChange} />
+          <LoginErrorText errorText={loginError} />
+          <LoginButton onClick={handleLogin} />
+        </View>
+        <WelcomeText />
+      </ScrollView>
       <Spinner visible={isAutentificating} textContent={'Logging in...'} />
-    </>
+    </View>
   );
 };
 
