@@ -6,7 +6,9 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { ToastProvider } from 'react-native-toast-notifications';
-import { Stack } from 'expo-router';
+// import * as Linking from 'expo-linking';
+import * as Notifications from 'expo-notifications';
+import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 
@@ -59,6 +61,43 @@ const RootLayout = () => {
 };
 
 const Layout = () => {
+  const router = useRouter();
+
+  /*React.useEffect(() => {
+    Linking.addEventListener('url', (event) =>
+      console.log('LINK', JSON.stringify(event)),
+    );
+  }, []);*/
+
+  React.useEffect(() => {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+    });
+
+    const notificationListener = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        console.log(JSON.stringify(notification));
+      },
+    );
+
+    const responseListener =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(JSON.stringify(response));
+        const routeTo = response.notification.request.content?.data?.routeTo;
+        if (routeTo) {
+          router.push(routeTo);
+        }
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener);
+      Notifications.removeNotificationSubscription(responseListener);
+    };
+  }, []);
   const insets = useSafeAreaInsets();
   return (
     <SafeAreaProvider>

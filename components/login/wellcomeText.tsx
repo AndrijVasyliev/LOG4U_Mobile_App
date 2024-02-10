@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Linking, ScrollView, StyleSheet, Text } from 'react-native';
+import { ScrollView, StyleSheet, Text } from 'react-native';
+import * as Linking from 'expo-linking';
 import { COLORS } from '../../constants';
 
 const WelcomeText = () => {

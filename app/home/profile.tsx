@@ -1,25 +1,20 @@
 import * as React from 'react';
-import {View, ImageBackground, Text, Switch, StyleSheet} from 'react-native';
+import { View, ImageBackground, Text, Switch, StyleSheet } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { useFocusEffect } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { encode as btoa } from 'base-64';
+import { useFocusEffect, useRouter } from 'expo-router';
 
 import UserDataItem from '../../components/profile/UserDataItem';
 import ErrorText from '../../components/common/ErrorText';
 import {
-  BACKEND_ORIGIN,
-  BUILD_VERSION,
-  COLORS,
-  FETCH_TIMEOUT,
-  GET_DRIVER_PATH,
   images,
-  STORAGE_USER_LOGIN,
-  STORAGE_USER_PASSWORD,
+  BACKEND_ORIGIN,
+  COLORS,
+  GET_DRIVER_PATH,
   UPDATE_TRUCK_PATH,
 } from '../../constants';
-import { getDeviceId } from '../../utils/deviceId';
+import { authFetch } from '../../utils/authFetch';
+import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 
 const Profile = () => {
   const [changedAt, setChangedAt] = React.useState<number>(Date.now());
@@ -29,6 +24,8 @@ const Profile = () => {
   );
   const [profileError, setProfileError] = React.useState<string>('');
   const [status, setStatus] = React.useState<boolean>(false);
+
+  const router = useRouter();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -42,50 +39,31 @@ const Profile = () => {
 
   React.useEffect(() => {
     setIsLoading(true);
-    Promise.all([
-      AsyncStorage.getItem(STORAGE_USER_LOGIN),
-      AsyncStorage.getItem(STORAGE_USER_PASSWORD),
-      getDeviceId(),
-    ])
-      .then(([login, password, deviceId]) => {
-        if (login && password) {
-          const headers = new Headers();
-          headers.set('X-User-Login', `${login}`);
-          headers.set('X-Device-Id', `${deviceId}`);
-          headers.set('X-App-Version', `${BUILD_VERSION}`);
-          headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
-          return fetch(new URL(GET_DRIVER_PATH, BACKEND_ORIGIN), {
-            method: 'GET',
-            headers,
-            signal: AbortSignal.timeout(FETCH_TIMEOUT),
-          })
-            .catch(() => {
-              setProfileError('Network problem: no connection');
-              setIsLoading(false);
-            })
-            .then((response) => {
-              if (!response) {
-                setProfileError('Network problem: slow or unstable connection');
-              } else if (response && response.status === 200) {
-                return response.json().then((driver) => {
-                  setProfile(driver);
-                  setProfileError('');
-                  setIsLoading(false);
-                });
-              } else {
-                setProfileError(
-                  `Incorrect response from server: status = ${response.status}`,
-                );
-              }
-              setIsLoading(false);
-            });
+    authFetch(new URL(GET_DRIVER_PATH, BACKEND_ORIGIN), { method: 'GET' })
+      .then(async (response) => {
+        if (response && response.status === 200) {
+          try {
+            const driver = await response.json();
+            setProfile(driver);
+            setProfileError('');
+            setIsLoading(false);
+          } catch (error) {
+            setProfileError(`Incorrect response from server: ${error.message}`);
+          }
         } else {
-          setProfileError('Not authorized');
-          setIsLoading(false);
+          setProfileError(
+            `Incorrect response from server: status = ${response.status}`,
+          );
         }
+        setIsLoading(false);
       })
-      .catch((e) => {
-        setProfileError(`Something went wrong: ${e.message}`);
+      .catch((error) => {
+        if (error instanceof NotAuthorizedError) {
+          setProfileError('Not authorized');
+          router.navigate('/');
+        } else {
+          setProfileError('Network problem: slow or unstable connection');
+        }
         setIsLoading(false);
       });
   }, [changedAt]);
@@ -101,36 +79,16 @@ const Profile = () => {
   const handleChangeState = (value) => {
     setIsLoading(true);
     setStatus(value);
-    Promise.all([
-      AsyncStorage.getItem(STORAGE_USER_LOGIN),
-      AsyncStorage.getItem(STORAGE_USER_PASSWORD),
-      getDeviceId(),
-    ])
-      .then(([login, password, deviceId]) => {
-        if (login && password) {
-          const headers = new Headers();
-          headers.set('X-User-Login', `${login}`);
-          headers.set('X-Device-Id', `${deviceId}`);
-          headers.set('X-App-Version', `${BUILD_VERSION}`);
-          headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
-          headers.set('Accept', 'application/json');
-          headers.set('Content-Type', 'application/json');
-          return fetch(new URL(UPDATE_TRUCK_PATH, BACKEND_ORIGIN), {
-            method: 'PATCH',
-            headers,
-            signal: AbortSignal.timeout(FETCH_TIMEOUT),
-            body: JSON.stringify({
-              status: value ? 'Available' : 'Not Available',
-            }),
-          }).catch(() => {
-            setProfileError('Network problem: no connection');
-            setIsLoading(false);
-          });
-        }
-      })
+    authFetch(new URL(UPDATE_TRUCK_PATH, BACKEND_ORIGIN), {
+      method: 'PATCH',
+      body: JSON.stringify({
+        status: value ? 'Available' : 'Not Available',
+      }),
+    })
       .then(() => setChangedAt(Date.now()))
-      .catch((e) => {
-        setProfileError(`Something went wrong: ${e.message}`);
+      .catch((error) => {
+        setProfileError(`Something went wrong: ${error.message}`);
+        setIsLoading(false);
         setChangedAt(Date.now());
       });
   };

@@ -80,9 +80,8 @@ const startLocation = async (isStartedAfterLogin = false) => {
     return;
   }
 
-  const locationHasStarted = await Location.hasStartedLocationUpdatesAsync(
-    LOCATION_TRACKING,
-  );
+  const locationHasStarted =
+    await Location.hasStartedLocationUpdatesAsync(LOCATION_TRACKING);
   console.log('Location tracking started (Start)? ', locationHasStarted);
   if (!locationHasStarted) {
     isStarting = false;
@@ -112,9 +111,8 @@ const stopLocation = async () => {
     tasks.push(Location.stopGeofencingAsync(BACKGROUND_GEOFENCE_TASK));
   }
 
-  const isLocationStarted = await Location.hasStartedLocationUpdatesAsync(
-    LOCATION_TRACKING,
-  );
+  const isLocationStarted =
+    await Location.hasStartedLocationUpdatesAsync(LOCATION_TRACKING);
   if (isLocationStarted) {
     console.log('Location was running');
     tasks.push(Location.stopLocationUpdatesAsync(LOCATION_TRACKING));
@@ -124,9 +122,8 @@ const stopLocation = async () => {
   console.log('Stopped');
 };
 const startLocationTask = async () => {
-  const alreadyStarted = await Location.hasStartedLocationUpdatesAsync(
-    LOCATION_TRACKING,
-  );
+  const alreadyStarted =
+    await Location.hasStartedLocationUpdatesAsync(LOCATION_TRACKING);
   if (alreadyStarted) {
     console.log('Location already started');
     return;
@@ -151,9 +148,8 @@ const startLocationTask = async () => {
     timeInterval: LOCATION_UPDATE_INTERVAL,
   });
 
-  const hasStarted = await Location.hasStartedLocationUpdatesAsync(
-    LOCATION_TRACKING,
-  );
+  const hasStarted =
+    await Location.hasStartedLocationUpdatesAsync(LOCATION_TRACKING);
   console.log('Location tracking started? ', hasStarted);
   if (!hasStarted) {
     isStarting = false;

@@ -1,28 +1,21 @@
 import * as React from 'react';
 import { ScrollView, ImageBackground, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { useFocusEffect } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { encode as btoa } from 'base-64';
+import { useFocusEffect, useRouter } from 'expo-router';
 
 import Load from '../../components/loads/Load';
 import ErrorText from '../../components/common/ErrorText';
-import {
-  images,
-  BACKEND_ORIGIN,
-  GET_LOADS_PATH,
-  FETCH_TIMEOUT,
-  BUILD_VERSION,
-  STORAGE_USER_LOGIN,
-  STORAGE_USER_PASSWORD,
-} from '../../constants';
-import { getDeviceId } from '../../utils/deviceId';
+import { images, BACKEND_ORIGIN, GET_LOADS_PATH } from '../../constants';
+import { authFetch } from '../../utils/authFetch';
+import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 
 const Loads = () => {
   const [changedAt, setChangedAt] = React.useState<number>(Date.now());
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [loads, setLoads] = React.useState<Record<string, any>[] | null>(null);
   const [loadError, setLoadError] = React.useState<string>('');
+
+  const router = useRouter();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -36,50 +29,31 @@ const Loads = () => {
 
   React.useEffect(() => {
     setIsLoading(true);
-    Promise.all([
-      AsyncStorage.getItem(STORAGE_USER_LOGIN),
-      AsyncStorage.getItem(STORAGE_USER_PASSWORD),
-      getDeviceId(),
-    ])
-      .then(([login, password, deviceId]) => {
-        if (login && password) {
-          const headers = new Headers();
-          headers.set('X-User-Login', `${login}`);
-          headers.set('X-Device-Id', `${deviceId}`);
-          headers.set('X-App-Version', `${BUILD_VERSION}`);
-          headers.set('Authorization', 'Basic ' + btoa(login + ':' + password));
-          return fetch(new URL(GET_LOADS_PATH, BACKEND_ORIGIN), {
-            method: 'GET',
-            headers,
-            signal: AbortSignal.timeout(FETCH_TIMEOUT),
-          })
-            .catch(() => {
-              setLoadError('Network problem: no connection');
-              setIsLoading(false);
-            })
-            .then((response) => {
-              if (!response) {
-                setLoadError('Network problem: slow or unstable connection');
-              } else if (response && response.status === 200) {
-                return response.json().then((loads) => {
-                  setLoads(loads.items);
-                  setLoadError('');
-                  setIsLoading(false);
-                });
-              } else {
-                setLoadError(
-                  `Incorrect response from server: status = ${response.status}`,
-                );
-              }
-              setIsLoading(false);
-            });
+    authFetch(new URL(GET_LOADS_PATH, BACKEND_ORIGIN), { method: 'GET' })
+      .then(async (response) => {
+        if (response && response.status === 200) {
+          try {
+            const loads = await response.json();
+            setLoads(loads.items);
+            setLoadError('');
+            setIsLoading(false);
+          } catch (error) {
+            setLoadError(`Incorrect response from server: ${error.message}`);
+          }
         } else {
-          setLoadError('Not authorized');
-          setIsLoading(false);
+          setLoadError(
+            `Incorrect response from server: status = ${response.status}`,
+          );
         }
+        setIsLoading(false);
       })
-      .catch((e) => {
-        setLoadError(`Something went wrong: ${e.message}`);
+      .catch((error) => {
+        if (error instanceof NotAuthorizedError) {
+          setLoadError('Not authorized');
+          router.navigate('/');
+        } else {
+          setLoadError('Network problem: slow or unstable connection');
+        }
         setIsLoading(false);
       });
   }, [changedAt]);

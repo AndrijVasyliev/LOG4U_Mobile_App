@@ -1,11 +1,6 @@
 import * as React from 'react';
-import {
-  Linking,
-  Modal,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
+import { Modal, ScrollView, Text, View } from 'react-native';
+import * as Linking from 'expo-linking';
 import { COLORS } from '../../constants';
 import ModalButton from '../common/modalButton';
 
