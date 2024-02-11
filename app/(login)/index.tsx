@@ -80,7 +80,6 @@ const Login = () => {
         }
         setLogin(login);
         setPassword(password);
-        setPDStatus(pdstatus);
         if (login && password && pdstatus) {
           setTimeout(() => handleLogin(null, { login, password, pdstatus }), 1);
         }
@@ -154,25 +153,41 @@ const Login = () => {
             person = await response.json();
           } catch (error) {
             setLoginError(`Incorrect response from server: ${error.message}`);
+            setIsAutentificating(false);
+            return;
           }
           if (person) {
             await Promise.all([
               AsyncStorage.setItem(STORAGE_USER_NAME, person.fullName),
               AsyncStorage.setItem(STORAGE_USER_TYPE, person.type),
             ]);
-            const token = await registerForPushNotificationsAsync();
-            const { status: trackingPermStatus } =
-              await requestTrackingPermissionsAsync();
+            const token = await registerForPushNotificationsAsync().catch(
+              (reason) =>
+                console.log('Error registering for push notifications', reason),
+              // setLoginError(`Push: ${JSON.stringify(reason)}`)
+            );
+            const trackingPermissions =
+              await requestTrackingPermissionsAsync().catch(
+                (reason) =>
+                  console.log('Error requesting tracking permissions', reason),
+                // setLoginError(`Track: ${JSON.stringify(reason)}`)
+              );
             if (
-              trackingPermStatus === PERMISSION_GRANTED &&
+              trackingPermissions &&
+              trackingPermissions.status === PERMISSION_GRANTED &&
               pds === PERMISSION_GRANTED
             ) {
               console.log('Permission to track data is here');
-              await startLocation(true).catch((reason) =>
-                console.log('Error starting location from login', reason),
+              await startLocation(true).catch(
+                (reason) =>
+                  console.log('Error starting location from login', reason),
+                // setLoginError(`Location: ${JSON.stringify(reason)}`)
               );
             }
-            const appPermissions = await getAppPermissions();
+            const appPermissions = await getAppPermissions().catch(
+              (reason) => console.log('Error getting app permissions', reason),
+              // setLoginError(`Permissions: ${JSON.stringify(reason)}`)
+            );
             let mobileDataResp: Response;
             try {
               mobileDataResp = await authFetch(
@@ -187,25 +202,36 @@ const Login = () => {
               );
             } catch (error) {
               setLoginError(`Error setting mobile data: ${error.message}`);
+              setIsAutentificating(false);
+              return;
             }
             if (mobileDataResp.status === 200) {
+              setIsAutentificating(false);
               router.navigate('/home');
+              return;
             } else if (mobileDataResp.status) {
               setLoginError(
                 `Error setting mobile data: status = ${mobileDataResp.status}`,
               );
+              setIsAutentificating(false);
+              return;
+            } else {
+              setLoginError('No response for set mobile data');
+              setIsAutentificating(false);
+              return;
             }
           }
-          setIsAutentificating(false);
         } else if (response && response.status === 412) {
           setForceLoginVisible(true);
           setLoginError('Logged From other device');
           setIsAutentificating(false);
+          return;
         } else {
           setLoginError(
             `Incorrect response from server: status = ${response.status}`,
           );
           setIsAutentificating(false);
+          return;
         }
       })
       .catch((error) => {
