@@ -161,17 +161,13 @@ const Login = () => {
               AsyncStorage.setItem(STORAGE_USER_NAME, person.fullName),
               AsyncStorage.setItem(STORAGE_USER_TYPE, person.type),
             ]);
-            const token = await registerForPushNotificationsAsync().catch(
-              (reason) =>
-                console.log('Error registering for push notifications', reason),
-              // setLoginError(`Push: ${JSON.stringify(reason)}`)
-            );
             const trackingPermissions =
               await requestTrackingPermissionsAsync().catch(
                 (reason) =>
                   console.log('Error requesting tracking permissions', reason),
                 // setLoginError(`Track: ${JSON.stringify(reason)}`)
               );
+            let token: string | void;
             if (
               trackingPermissions &&
               trackingPermissions.status === PERMISSION_GRANTED &&
@@ -182,6 +178,14 @@ const Login = () => {
                 (reason) =>
                   console.log('Error starting location from login', reason),
                 // setLoginError(`Location: ${JSON.stringify(reason)}`)
+              );
+              token = await registerForPushNotificationsAsync().catch(
+                (reason) =>
+                  console.log(
+                    'Error registering for push notifications',
+                    reason,
+                  ),
+                // setLoginError(`Push: ${JSON.stringify(reason)}`)
               );
             }
             const appPermissions = await getAppPermissions().catch(
@@ -195,8 +199,8 @@ const Login = () => {
                 {
                   method: 'PATCH',
                   body: JSON.stringify({
-                    token,
-                    appPermissions,
+                    token: token || '',
+                    appPermissions: appPermissions || {},
                   }),
                 },
               );
