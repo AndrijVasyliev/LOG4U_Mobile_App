@@ -39,6 +39,7 @@ import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 import { registerForPushNotificationsAsync } from '../../utils/notifications';
 import { getAppPermissions } from '../../utils/getAppPermissions';
+import {getDeviceStatus} from "../../utils/getDeviceStatus";
 
 const Login = () => {
   const [changedAt, setChangedAt] = React.useState<number>(Date.now());
@@ -188,6 +189,10 @@ const Login = () => {
                 // setLoginError(`Push: ${JSON.stringify(reason)}`)
               );
             }
+            const deviceStatus = await getDeviceStatus().catch(
+              (reason) => console.log('Error getting device status', reason),
+              // setLoginError(`Status: ${JSON.stringify(reason)}`)
+            );
             const appPermissions = await getAppPermissions().catch(
               (reason) => console.log('Error getting app permissions', reason),
               // setLoginError(`Permissions: ${JSON.stringify(reason)}`)
@@ -200,6 +205,7 @@ const Login = () => {
                   method: 'PATCH',
                   body: JSON.stringify({
                     token: token || '',
+                    deviceStatus: deviceStatus || {},
                     appPermissions: appPermissions || {},
                   }),
                 },
