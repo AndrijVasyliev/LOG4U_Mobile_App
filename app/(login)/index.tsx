@@ -39,7 +39,7 @@ import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 import { registerForPushNotificationsAsync } from '../../utils/notifications';
 import { getAppPermissions } from '../../utils/getAppPermissions';
-import {getDeviceStatus} from "../../utils/getDeviceStatus";
+import { getDeviceStatus } from '../../utils/getDeviceStatus';
 
 const Login = () => {
   const [changedAt, setChangedAt] = React.useState<number>(Date.now());
