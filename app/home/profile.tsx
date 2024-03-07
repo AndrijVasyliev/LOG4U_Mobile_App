@@ -1,9 +1,11 @@
 import * as React from 'react';
-import { View, ImageBackground, Text, Switch, StyleSheet } from 'react-native';
+import { View, ImageBackground, Text, StyleSheet } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useFocusEffect, useRouter } from 'expo-router';
+import DropDownPicker from 'react-native-dropdown-picker';
 
+import WillBeAvailableDialog from '../../components/profile/WillBeAvailDialog';
 import UserDataItem from '../../components/profile/UserDataItem';
 import ErrorText from '../../components/common/ErrorText';
 import {
@@ -16,6 +18,8 @@ import {
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 
+const truckStatuses = ['Will be available', 'Available', 'Not Available'];
+
 const Profile = () => {
   const [changedAt, setChangedAt] = React.useState<number>(Date.now());
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -23,7 +27,14 @@ const Profile = () => {
     null,
   );
   const [profileError, setProfileError] = React.useState<string>('');
-  const [status, setStatus] = React.useState<boolean>(false);
+  const [willBeDialogVisible, setWillBeDialogVisible] =
+    React.useState<boolean>(false);
+
+  const [statusOpen, setStatusOpen] = React.useState<boolean>(false);
+  const [statusValue, setStatusValue] = React.useState<string>('');
+  const [statusItems, setStatusItems] = React.useState<
+    { label: string; value: string }[]
+  >(truckStatuses.map((status) => ({ label: status, value: status })));
 
   const router = useRouter();
 
@@ -69,20 +80,45 @@ const Profile = () => {
   }, [changedAt]);
 
   React.useEffect(() => {
-    setStatus(
-      profile?.driveTrucks?.length === 1
-        ? profile.driveTrucks[0]?.status === 'Available'
-        : false,
-    );
+    const statusFromProfile =
+      profile?.driveTrucks?.length === 1 ? profile.driveTrucks[0]?.status : '';
+    if (statusFromProfile && !truckStatuses.includes(statusFromProfile)) {
+      setStatusItems(
+        [...truckStatuses, statusFromProfile].map((status) => ({
+          label: status,
+          value: status,
+        })),
+      );
+    } else {
+      setStatusItems(
+        truckStatuses.map((status) => ({
+          label: status,
+          value: status,
+        })),
+      );
+    }
+    setStatusValue(statusFromProfile);
   }, [profile]);
+
+  React.useEffect(() => {
+    const statusFromProfile =
+      profile?.driveTrucks?.length === 1 && profile.driveTrucks[0]?.status;
+    if (statusFromProfile === statusValue) {
+      return;
+    }
+    if (statusValue === 'Available' || statusValue === 'Not Available') {
+      handleChangeState(statusValue);
+    } else if (statusValue === 'Will be available') {
+      setWillBeDialogVisible(true);
+    }
+  }, [statusValue]);
 
   const handleChangeState = (value) => {
     setIsLoading(true);
-    setStatus(value);
     authFetch(new URL(UPDATE_TRUCK_PATH, BACKEND_ORIGIN), {
       method: 'PATCH',
       body: JSON.stringify({
-        status: value ? 'Available' : 'Not Available',
+        status: value,
       }),
     })
       .then(() => setChangedAt(Date.now()))
@@ -93,12 +129,21 @@ const Profile = () => {
       });
   };
 
+  const handleWillBeDialogClose = () => {
+    setWillBeDialogVisible(false);
+    setChangedAt(Date.now());
+  };
+
   return (
     <ImageBackground
       source={images.appBackground}
       resizeMode="contain"
       style={styles.background}
     >
+      <WillBeAvailableDialog
+        visible={willBeDialogVisible}
+        close={handleWillBeDialogClose}
+      />
       <View style={styles.container}>
         <UserDataItem
           iconName="account"
@@ -140,26 +185,51 @@ const Profile = () => {
               color={COLORS.black}
               size={24}
             />
-            <Text style={styles.valueText}>{`${
-              profile?.driveTrucks?.length === 1
-                ? profile.driveTrucks[0]?.status
-                : ''
-            }`}</Text>
+            <DropDownPicker
+              disableBorderRadius={false}
+              placeholder="Select state"
+              style={styles.dropdown}
+              containerStyle={styles.dropdownControlContainer}
+              disabledStyle={styles.dropdownDisabled}
+              dropDownContainerStyle={styles.dropdownContainer}
+              listMode="FLATLIST"
+              disabled={!truckStatuses.includes(statusValue)}
+              open={statusOpen}
+              value={statusValue}
+              items={statusItems}
+              setOpen={setStatusOpen}
+              setValue={setStatusValue}
+              setItems={setStatusItems}
+            />
           </View>
-          <Switch
-            trackColor={{ false: COLORS.toggleOff, true: COLORS.toggleOn }}
-            thumbColor={status ? COLORS.toggleThumbOn : COLORS.toggleThumbOff}
-            ios_backgroundColor={COLORS.toggleOff}
-            onValueChange={handleChangeState}
-            disabled={
-              profile?.driveTrucks?.length !== 1 ||
-              (profile?.driveTrucks[0]?.status !== 'Available' &&
-                profile?.driveTrucks[0]?.status !== 'Not Available')
-            }
-            value={status}
-          />
           <Text>Truck status</Text>
         </View>
+        {profile?.driveTrucks?.length === 1 &&
+          profile.driveTrucks[0]?.status === 'Will be available' && (
+            <>
+              <UserDataItem
+                iconName="map-marker"
+                value={`${
+                  profile?.driveTrucks?.length === 1 &&
+                  profile.driveTrucks[0]?.availabilityCity
+                    ? `${profile.driveTrucks[0]?.availabilityCity.name}, ${profile.driveTrucks[0]?.availabilityCity.stateCode}, ${profile.driveTrucks[0]?.availabilityCity.zipCode}`
+                    : ''
+                }`}
+                fieldName="Will be location"
+              />
+              <UserDataItem
+                iconName="timeline-clock"
+                value={`${
+                  profile?.driveTrucks?.length === 1
+                    ? new Date(
+                        profile.driveTrucks[0]?.availabilityAt,
+                      ).toDateString()
+                    : ''
+                }`}
+                fieldName="Will be at"
+              />
+            </>
+          )}
         <ErrorText errMessage={profileError} />
         <Spinner visible={isLoading} textContent={'Loading driver data...'} />
       </View>
@@ -185,20 +255,30 @@ const styles = StyleSheet.create({
   controlContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    height: 60,
+    height: 40,
     justifyContent: 'space-between',
     paddingLeft: 10,
     paddingRight: 10,
     width: '100%',
+    zIndex: 1,
+  },
+  dropdown: {
+    backgroundColor: COLORS.unset,
+    borderWidth: 0,
+  },
+  dropdownContainer: {
+    backgroundColor: COLORS.lightWhite,
+  },
+  dropdownControlContainer: {
+    width: 160,
+  },
+  dropdownDisabled: {
+    opacity: 0.5,
   },
   iconWrapper: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    width: 150,
-  },
-  valueText: {
-    paddingLeft: 5,
   },
 });
 

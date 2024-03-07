@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { COLORS } from '../../constants';
 
-const LoginInput = ({
+const LocationInput = ({
   value,
   onChange,
 }: {
@@ -15,7 +15,7 @@ const LoginInput = ({
         style={styles.input}
         value={value}
         onChangeText={onChange}
-        placeholder="Enter Login"
+        placeholder="Enter Location or Address"
         placeholderTextColor={COLORS.gray2}
       />
     </View>
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderStyle: 'solid',
     borderWidth: 1,
-    flex: 1,
+    // flex: 1,
     flexDirection: 'row',
     height: 40,
     justifyContent: 'flex-start',
@@ -43,4 +43,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginInput;
+export default LocationInput;

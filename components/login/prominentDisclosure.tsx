@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, ScrollView, Text, View } from 'react-native';
+import { Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { COLORS } from '../../constants';
 import ModalButton from '../common/modalButton';
@@ -22,58 +22,19 @@ const ProminentDisclosureModal = ({
         console.log('Modal has been closed.');
       }}
     >
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: COLORS.modalBackground,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: COLORS.white,
-            height: '45%',
-            width: '90%',
-            borderRadius: 10,
-            padding: 35,
-            alignItems: 'center',
-            shadowColor: COLORS.black,
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 5,
-            flexDirection: 'column',
-          }}
-        >
+      <View style={styles.container}>
+        <View style={styles.dialogPaper}>
           <ScrollView
-            style={{
-              flexDirection: 'column',
-              width: '100%',
-            }}
-            contentContainerStyle={{
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-            }}
+            style={styles.dialogContents}
+            contentContainerStyle={styles.dialogContentsContainer}
           >
-            <Text
-              style={{
-                fontSize: 20,
-              }}
-            >
+            <Text style={styles.dialogText}>
               This app collects location data to enable 4U Logistics to provide
               most suitable orders for you, even when the app is closed or not
               in use.
             </Text>
             <Text
-              style={{
-                paddingTop: 20,
-                fontSize: 18,
-                color: COLORS.link,
-              }}
+              style={styles.link}
               onPress={() =>
                 Linking.openURL('https://mobile.4u-logistics.com/pp.html')
               }
@@ -81,12 +42,7 @@ const ProminentDisclosureModal = ({
               You can see the full text of our Privacy Policy here.
             </Text>
           </ScrollView>
-          <View
-            style={{
-              height: 40,
-              flexDirection: 'row',
-            }}
-          >
+          <View style={styles.buttonContainer}>
             <ModalButton text={'Deny'} onPress={reject} />
             <ModalButton text={'Allow'} onPress={grant} />
           </View>
@@ -95,5 +51,51 @@ const ProminentDisclosureModal = ({
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    flexDirection: 'row',
+    height: 40,
+  },
+  container: {
+    alignItems: 'center',
+    backgroundColor: COLORS.modalBackground,
+    flex: 1,
+    justifyContent: 'center',
+  },
+  dialogContents: {
+    flexDirection: 'column',
+    width: '100%',
+  },
+  dialogContentsContainer: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  dialogPaper: {
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    elevation: 5,
+    flexDirection: 'column',
+    height: '45%',
+    padding: 35,
+    shadowColor: COLORS.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    width: '90%',
+  },
+  dialogText: {
+    fontSize: 20,
+  },
+  link: {
+    color: COLORS.link,
+    fontSize: 18,
+    paddingTop: 20,
+  },
+});
 
 export default ProminentDisclosureModal;

@@ -24,6 +24,7 @@ const PasswordInput = ({
         value={value}
         onChangeText={onChange}
         placeholder="Enter Password"
+        placeholderTextColor={COLORS.gray2}
       />
       <TouchableOpacity onPress={handleShowPassword}>
         <MaterialCommunityIcons
