@@ -28,7 +28,8 @@ const AppMenuModal = ({
 
   return (
     <Modal
-      animationType="fade"
+      animated={true}
+      animationType="slide"
       transparent={true}
       visible={visible}
       onRequestClose={onRequestClose}

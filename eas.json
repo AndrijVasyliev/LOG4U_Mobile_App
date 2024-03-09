@@ -24,6 +24,10 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./notional-gist-395315-77f92de29f2a.json"
+      }
+    }
   }
 }

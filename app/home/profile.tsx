@@ -113,13 +113,24 @@ const Profile = () => {
     }
   }, [statusValue]);
 
-  const handleChangeState = (value) => {
+  const handleChangeState = (
+    value: string,
+    availabilityLocation?: [number, number],
+    availabilityAt?: Date,
+  ) => {
     setIsLoading(true);
+    const data: {
+      status: string;
+      availabilityLocation?: [number, number];
+      availabilityAt?: Date;
+    } = {
+      status: value,
+      availabilityLocation,
+      availabilityAt,
+    };
     authFetch(new URL(UPDATE_TRUCK_PATH, BACKEND_ORIGIN), {
       method: 'PATCH',
-      body: JSON.stringify({
-        status: value,
-      }),
+      body: JSON.stringify(data),
     })
       .then(() => setChangedAt(Date.now()))
       .catch((error) => {
@@ -129,9 +140,19 @@ const Profile = () => {
       });
   };
 
-  const handleWillBeDialogClose = () => {
+  const handleStateChange = (
+    value: string,
+    availabilityLocation?: [number, number],
+    availabilityAt?: Date,
+  ) => {
+    handleChangeState(value, availabilityLocation, availabilityAt);
     setWillBeDialogVisible(false);
+  };
+  const handleWillBeDialogClose = () => {
     setChangedAt(Date.now());
+    setTimeout(() => {
+      setWillBeDialogVisible(false);
+    }, 1);
   };
 
   return (
@@ -142,6 +163,7 @@ const Profile = () => {
     >
       <WillBeAvailableDialog
         visible={willBeDialogVisible}
+        onStateChange={handleStateChange}
         close={handleWillBeDialogClose}
       />
       <View style={styles.container}>
@@ -268,6 +290,7 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     backgroundColor: COLORS.lightWhite,
+    borderColor: COLORS.gray,
   },
   dropdownControlContainer: {
     width: 160,

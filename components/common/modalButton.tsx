@@ -4,14 +4,20 @@ import { COLORS } from '../../constants';
 
 const ModalButton = ({
   text,
+  disabled = false,
   onPress,
 }: {
   text: string;
+  disabled?: boolean;
   onPress: VoidFunction;
 }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={onPress}>
+      <TouchableOpacity
+        style={styles.button}
+        disabled={disabled}
+        onPress={onPress}
+      >
         <Text style={styles.buttonText}>{text}</Text>
       </TouchableOpacity>
     </View>

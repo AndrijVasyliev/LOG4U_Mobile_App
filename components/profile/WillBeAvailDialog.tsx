@@ -8,23 +8,34 @@ import DateTimeInput from './dateTimeInput';
 
 const WillBeAvailableDialog = ({
   visible,
+  onStateChange,
   close,
 }: {
   visible: boolean;
+  onStateChange: (
+    newSatus: 'Will be available',
+    availabilityLocation: [number, number],
+    availabilityAt: Date,
+  ) => void;
   close: VoidFunction;
 }) => {
-  const [location, setLocation] = React.useState<string>('');
+  const [location, setLocation] = React.useState<[number, number] | null>(null);
   const [date, setDate] = React.useState<Date | null>(null);
-  const onLocationChange = (newValue: string) => {
-    setLocation(newValue);
-  };
+
+  React.useEffect(() => {
+    if (!visible) {
+      setLocation(null);
+      setDate(null);
+    }
+  }, [visible]);
 
   const setWillBeAvailable = () => {
-    return;
+    onStateChange('Will be available', location, date);
   };
   return (
     <Modal
-      animationType="fade"
+      animated={true}
+      animationType="slide"
       transparent={true}
       visible={visible}
       onRequestClose={() => {
@@ -34,14 +45,18 @@ const WillBeAvailableDialog = ({
       <View style={styles.container}>
         <View style={styles.dialogPaper}>
           <View style={styles.dialogContents}>
-            <LocationInput value={location} onChange={onLocationChange} />
+            <LocationInput onSet={setLocation} />
             <View style={styles.spacer}></View>
-            <DateTimeInput value={date} onChange={setDate} />
+            <DateTimeInput onSet={setDate} />
           </View>
           <View style={styles.spacer}></View>
           <View style={styles.buttonContainer}>
             <ModalButton text={'Close'} onPress={close} />
-            <ModalButton text={'Set'} onPress={setWillBeAvailable} />
+            <ModalButton
+              text={'Set'}
+              disabled={!location || !date}
+              onPress={setWillBeAvailable}
+            />
           </View>
         </View>
       </View>
@@ -71,6 +86,7 @@ const styles = StyleSheet.create({
     paddingLeft: '1%',
     paddingRight: '1%',
     width: '100%',
+    zIndex: 1,
   },
   dialogPaper: {
     alignItems: 'center',

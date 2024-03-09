@@ -6,19 +6,9 @@ import { SingleChange } from 'react-native-ui-datepicker/src/types';
 import ModalButton from '../common/modalButton';
 import { COLORS } from '../../constants';
 
-const DateTimeInput = ({
-  value,
-  onChange,
-}: {
-  value: Date;
-  onChange: (date?: Date) => void;
-}) => {
+const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
   const [pickerVisible, setPickerVisible] = React.useState<boolean>(false);
   const [date, setDate] = React.useState<DateType | undefined>(undefined);
-
-  React.useEffect(() => {
-    setDate(value ? value : undefined);
-  }, [value]);
 
   const onClick = () => {
     setPickerVisible(true);
@@ -30,14 +20,15 @@ const DateTimeInput = ({
     setPickerVisible(false);
   };
   const handleSet = () => {
-    onChange(dayjs(date).toDate());
+    onSet(dayjs(date).toDate());
     setPickerVisible(false);
   };
 
   return (
     <>
       <Modal
-        animationType="fade"
+        animated={true}
+        animationType="slide"
         transparent={true}
         visible={pickerVisible}
         onRequestClose={() => {
@@ -68,8 +59,10 @@ const DateTimeInput = ({
       </Modal>
       <View style={styles.controlContainer}>
         <TouchableOpacity style={styles.button} onPress={onClick}>
-          {value ? (
-            <Text style={styles.valueText}>{`${value.toDateString()}`}</Text>
+          {date ? (
+            <Text
+              style={styles.valueText}
+            >{`${dayjs(date).toDate().toDateString()}`}</Text>
           ) : (
             <Text style={styles.placeholderText}>Enter date</Text>
           )}
@@ -81,7 +74,8 @@ const DateTimeInput = ({
 
 const styles = StyleSheet.create({
   button: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    width: '100%',
   },
   buttonContainer: {
     flexDirection: 'row',
