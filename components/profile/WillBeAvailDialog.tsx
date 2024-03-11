@@ -1,5 +1,10 @@
 import * as React from 'react';
-import { Modal, StyleSheet, View } from 'react-native';
+import {
+  Modal,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 
 import { COLORS } from '../../constants';
 import ModalButton from '../common/modalButton';
@@ -35,7 +40,9 @@ const WillBeAvailableDialog = ({
   return (
     <Modal
       animated={true}
+      hardwareAccelerated={true}
       animationType="slide"
+      presentationStyle="overFullScreen"
       transparent={true}
       visible={visible}
       onRequestClose={() => {
@@ -43,6 +50,9 @@ const WillBeAvailableDialog = ({
       }}
     >
       <View style={styles.container}>
+        <TouchableWithoutFeedback onPress={close}>
+          <View style={styles.area} />
+        </TouchableWithoutFeedback>
         <View style={styles.dialogPaper}>
           <View style={styles.dialogContents}>
             <LocationInput onSet={setLocation} />
@@ -65,6 +75,14 @@ const WillBeAvailableDialog = ({
 };
 
 const styles = StyleSheet.create({
+  area: {
+    backgroundColor: COLORS.modalBackground,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   buttonContainer: {
     flexDirection: 'row',
     height: 40,

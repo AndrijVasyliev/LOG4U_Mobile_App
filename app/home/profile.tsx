@@ -49,7 +49,12 @@ const Profile = () => {
   );
 
   React.useEffect(() => {
-    setIsLoading(true);
+    setIsLoading((prev) => {
+      if (!prev) {
+        return true;
+      }
+      return prev;
+    });
     authFetch(new URL(GET_DRIVER_PATH, BACKEND_ORIGIN), { method: 'GET' })
       .then(async (response) => {
         if (response && response.status === 200) {
@@ -57,7 +62,6 @@ const Profile = () => {
             const driver = await response.json();
             setProfile(driver);
             setProfileError('');
-            setIsLoading(false);
           } catch (error) {
             setProfileError(`Incorrect response from server: ${error.message}`);
           }
@@ -109,7 +113,8 @@ const Profile = () => {
     if (statusValue === 'Available' || statusValue === 'Not Available') {
       handleChangeState(statusValue);
     } else if (statusValue === 'Will be available') {
-      setWillBeDialogVisible(true);
+      setTimeout(() => setWillBeDialogVisible(true), 1);
+      // setWillBeDialogVisible(true);
     }
   }, [statusValue]);
 
@@ -132,7 +137,9 @@ const Profile = () => {
       method: 'PATCH',
       body: JSON.stringify(data),
     })
-      .then(() => setChangedAt(Date.now()))
+      .then(() => {
+        setChangedAt(Date.now());
+      })
       .catch((error) => {
         setProfileError(`Something went wrong: ${error.message}`);
         setIsLoading(false);
@@ -146,13 +153,13 @@ const Profile = () => {
     availabilityAt?: Date,
   ) => {
     handleChangeState(value, availabilityLocation, availabilityAt);
-    setWillBeDialogVisible(false);
+    setTimeout(() => setWillBeDialogVisible(false), 1);
+    // setWillBeDialogVisible(false);
   };
   const handleWillBeDialogClose = () => {
+    setTimeout(() => setWillBeDialogVisible(false), 1);
+    // setWillBeDialogVisible(false);
     setChangedAt(Date.now());
-    setTimeout(() => {
-      setWillBeDialogVisible(false);
-    }, 1);
   };
 
   return (
@@ -161,11 +168,13 @@ const Profile = () => {
       resizeMode="contain"
       style={styles.background}
     >
-      <WillBeAvailableDialog
-        visible={willBeDialogVisible}
-        onStateChange={handleStateChange}
-        close={handleWillBeDialogClose}
-      />
+      <View style={{ zIndex: -1 }}>
+        <WillBeAvailableDialog
+          visible={willBeDialogVisible}
+          onStateChange={handleStateChange}
+          close={handleWillBeDialogClose}
+        />
+      </View>
       <View style={styles.container}>
         <UserDataItem
           iconName="account"

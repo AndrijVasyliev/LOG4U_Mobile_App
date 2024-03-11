@@ -28,7 +28,9 @@ const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
     <>
       <Modal
         animated={true}
+        hardwareAccelerated={true}
         animationType="slide"
+        presentationStyle="overFullScreen"
         transparent={true}
         visible={pickerVisible}
         onRequestClose={() => {

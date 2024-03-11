@@ -268,7 +268,7 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
   }
 };
 
-const debouncedSendLocation = debounce(sendLocation, FETCH_TIMEOUT);
+const debouncedSendLocation = debounce(sendLocation, FETCH_TIMEOUT * 3);
 
 if (!TaskManager.isTaskDefined(LOCATION_TRACKING)) {
   console.log('Registering: ', LOCATION_TRACKING);

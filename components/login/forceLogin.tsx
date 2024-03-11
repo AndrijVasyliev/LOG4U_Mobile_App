@@ -1,5 +1,12 @@
 import * as React from 'react';
-import { Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import { COLORS } from '../../constants';
 import ModalButton from '../common/modalButton';
 
@@ -15,7 +22,9 @@ const ForceLoginModal = ({
   return (
     <Modal
       animated={true}
+      hardwareAccelerated={true}
       animationType="slide"
+      presentationStyle="overFullScreen"
       transparent={true}
       visible={visible}
       onRequestClose={() => {
@@ -23,6 +32,9 @@ const ForceLoginModal = ({
       }}
     >
       <View style={styles.container}>
+        <TouchableWithoutFeedback onPress={cancel}>
+          <View style={styles.area} />
+        </TouchableWithoutFeedback>
         <View style={styles.innerContainer}>
           <ScrollView
             style={styles.textContainer}
@@ -48,6 +60,14 @@ const ForceLoginModal = ({
 };
 
 const styles = StyleSheet.create({
+  area: {
+    backgroundColor: COLORS.modalBackground,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   buttonHolder: {
     flexDirection: 'row',
     height: 40,

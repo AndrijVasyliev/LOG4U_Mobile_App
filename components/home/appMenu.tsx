@@ -29,10 +29,14 @@ const AppMenuModal = ({
   return (
     <Modal
       animated={true}
+      hardwareAccelerated={true}
       animationType="slide"
+      presentationStyle="overFullScreen"
       transparent={true}
       visible={visible}
-      onRequestClose={onRequestClose}
+      onRequestClose={() => {
+        console.log('Modal has been closed.');
+      }}
     >
       <View style={styles.container}>
         <TouchableWithoutFeedback onPress={onRequestClose}>

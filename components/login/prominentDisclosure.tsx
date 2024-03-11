@@ -1,5 +1,12 @@
 import * as React from 'react';
-import { Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import * as Linking from 'expo-linking';
 import { COLORS } from '../../constants';
 import ModalButton from '../common/modalButton';
@@ -16,7 +23,9 @@ const ProminentDisclosureModal = ({
   return (
     <Modal
       animated={true}
+      hardwareAccelerated={true}
       animationType="slide"
+      presentationStyle="overFullScreen"
       transparent={true}
       visible={visible}
       onRequestClose={() => {
@@ -24,6 +33,9 @@ const ProminentDisclosureModal = ({
       }}
     >
       <View style={styles.container}>
+        <TouchableWithoutFeedback onPress={reject}>
+          <View style={styles.area} />
+        </TouchableWithoutFeedback>
         <View style={styles.dialogPaper}>
           <ScrollView
             style={styles.dialogContents}
@@ -54,6 +66,14 @@ const ProminentDisclosureModal = ({
 };
 
 const styles = StyleSheet.create({
+  area: {
+    backgroundColor: COLORS.modalBackground,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   buttonContainer: {
     flexDirection: 'row',
     height: 40,
