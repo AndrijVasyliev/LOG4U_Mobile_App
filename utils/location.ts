@@ -72,7 +72,7 @@ const startLocation = async (isStartedAfterLogin = false) => {
     const currentLocation = await getLocation();
     await Promise.all([
       startGeofenceTask(currentLocation),
-      debouncedSendLocation(currentLocation),
+      throttledSendLocation(currentLocation),
     ]);
   } catch (e) {
     console.log(`Error, while starting location: ${e.message}`);
@@ -197,14 +197,14 @@ const getLocation = async () => {
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-const debounce = (func: Function, delay: number) => {
+const throttle = (func: (...args: any) => any, delay: number) => {
   let interval: ReturnType<typeof setTimeout> | null;
   let calledWIth: Array<any> | null;
-  let res: any;
+  let res: ReturnType<typeof func>;
   return function (...args: Array<any>) {
     calledWIth = args;
     if (!interval) {
-      res = res = func.apply(this, calledWIth);
+      res = func.apply(this, calledWIth);
       calledWIth = null;
       interval = setInterval(() => {
         if (!calledWIth) {
@@ -268,7 +268,7 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
   }
 };
 
-const debouncedSendLocation = debounce(sendLocation, FETCH_TIMEOUT * 3);
+const throttledSendLocation = throttle(sendLocation, FETCH_TIMEOUT * 3);
 
 if (!TaskManager.isTaskDefined(LOCATION_TRACKING)) {
   console.log('Registering: ', LOCATION_TRACKING);
@@ -286,7 +286,7 @@ if (!TaskManager.isTaskDefined(LOCATION_TRACKING)) {
         const currentLocation = locations[0];
         await Promise.all([
           startGeofenceTask(currentLocation),
-          debouncedSendLocation(currentLocation),
+          throttledSendLocation(currentLocation),
           startLocationTask(),
         ]);
         return;
@@ -320,7 +320,7 @@ if (!TaskManager.isTaskDefined(BACKGROUND_GEOFENCE_TASK)) {
         const currentLocation = await getLocation();
         await Promise.all([
           startGeofenceTask(currentLocation),
-          debouncedSendLocation(currentLocation),
+          throttledSendLocation(currentLocation),
           startLocationTask(),
         ]);
         return;

@@ -113,8 +113,8 @@ const Profile = () => {
     if (statusValue === 'Available' || statusValue === 'Not Available') {
       handleChangeState(statusValue);
     } else if (statusValue === 'Will be available') {
-      setTimeout(() => setWillBeDialogVisible(true), 1);
-      // setWillBeDialogVisible(true);
+      // setTimeout(() => setWillBeDialogVisible(true), 1);
+      setWillBeDialogVisible(true);
     }
   }, [statusValue]);
 
@@ -153,12 +153,12 @@ const Profile = () => {
     availabilityAt?: Date,
   ) => {
     handleChangeState(value, availabilityLocation, availabilityAt);
-    setTimeout(() => setWillBeDialogVisible(false), 1);
-    // setWillBeDialogVisible(false);
+    // setTimeout(() => setWillBeDialogVisible(false), 1);
+    setWillBeDialogVisible(false);
   };
   const handleWillBeDialogClose = () => {
-    setTimeout(() => setWillBeDialogVisible(false), 1);
-    // setWillBeDialogVisible(false);
+    // setTimeout(() => setWillBeDialogVisible(false), 1);
+    setWillBeDialogVisible(false);
     setChangedAt(Date.now());
   };
 

@@ -82,7 +82,8 @@ const Login = () => {
         setLogin(login);
         setPassword(password);
         if (login && password && pdstatus) {
-          setTimeout(() => handleLogin(null, { login, password, pdstatus }), 1);
+          // setTimeout(() => handleLogin(null, { login, password, pdstatus }), 1);
+          handleLogin(null, { login, password, pdstatus });
         }
       })
       .catch(() => {

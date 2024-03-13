@@ -21,9 +21,9 @@ const ForceLoginModal = ({
 }) => {
   return (
     <Modal
-      animated={true}
+      animated={false}
       hardwareAccelerated={true}
-      animationType="slide"
+      animationType="none"
       presentationStyle="overFullScreen"
       transparent={true}
       visible={visible}
