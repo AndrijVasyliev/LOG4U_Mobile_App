@@ -176,11 +176,17 @@ const Login = () => {
               pds === PERMISSION_GRANTED
             ) {
               console.log('Permission to track data is here');
-              await startLocation(true).catch(
-                (reason) =>
-                  console.log('Error starting location from login', reason),
-                // setLoginError(`Location: ${JSON.stringify(reason)}`)
-              );
+              if (
+                person.type === 'Driver' ||
+                person.type === 'OwnerDriver' ||
+                person.type === 'CoordinatorDriver'
+              ) {
+                await startLocation(true).catch(
+                  (reason) =>
+                    console.log('Error starting location from login', reason),
+                  // setLoginError(`Location: ${JSON.stringify(reason)}`)
+                );
+              }
               token = await registerForPushNotificationsAsync().catch(
                 (reason) =>
                   console.log(

@@ -31,7 +31,12 @@
       "bundler": "metro"
     },
     "android": {
-      "package": "com.log4u"
+      "package": "com.log4u",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAXrZIMXhNiPaw03zrG7fQQH9hZhP0exCk"
+        }
+      }
     },
     "extra": {
       "eas": {
@@ -40,6 +45,9 @@
     },
     "ios": {
       "bundleIdentifier": "com.log4u",
+      "config": {
+        "googleMapsApiKey": "AIzaSyA0s5QTfaGUrGr2rq6YQNiWlRLBm2iWfks"
+      },
       "infoPlist": {
         "UIBackgroundModes": ["location", "fetch"]
       }
