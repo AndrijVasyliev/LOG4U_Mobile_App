@@ -59,6 +59,23 @@ const TabLayout = () => {
           }}
         />
         <Tabs.Screen
+          name="trucks"
+          options={{
+            title: 'Trucks',
+            href:
+              userType === 'Owner' || userType === 'OwnerDriver'
+                ? { pathname: '/home/trucks' }
+                : null,
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons
+                name="format-list-text"
+                color={color}
+                size={size}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
           name="map"
           options={{
             title: 'Map',

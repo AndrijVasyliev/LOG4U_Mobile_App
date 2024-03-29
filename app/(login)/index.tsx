@@ -224,7 +224,11 @@ const Login = () => {
             }
             if (mobileDataResp.status === 200) {
               setIsAutentificating(false);
-              router.navigate('/home');
+              if (person.type === 'Owner') {
+                router.navigate('/home/trucks');
+              } else {
+                router.navigate('/home/profile');
+              }
               return;
             } else if (mobileDataResp.status) {
               setLoginError(

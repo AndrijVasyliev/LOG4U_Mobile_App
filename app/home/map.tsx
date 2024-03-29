@@ -8,7 +8,6 @@ import MapView, {
   Callout /*, PROVIDER_GOOGLE*/,
 } from 'react-native-maps';
 
-// import Load from '../../components/loads/Load';
 import ErrorText from '../../components/common/ErrorText';
 import { images, BACKEND_ORIGIN, GET_OWNER_PATH } from '../../constants';
 import { authFetch } from '../../utils/authFetch';
@@ -133,7 +132,10 @@ const Map = () => {
             ))}
           </MapView>
         )}
-        <Spinner visible={isLoading} textContent={'Loading loads list...'} />
+        <Spinner
+          visible={isLoading}
+          textContent={'Loading trucks for map...'}
+        />
       </View>
     </ImageBackground>
   );
