@@ -15,6 +15,7 @@ import * as Font from 'expo-font';
 import '../utils/abortSignal';
 import { startLocation } from '../utils/location';
 import { COLORS } from '../constants';
+import { UserDataProvider } from '../providers/userData';
 import HeaderLogo from '../components/common/headerLogo';
 import HeaderButton from '../components/common/headerButton';
 
@@ -109,22 +110,24 @@ const Layout = () => {
             paddingBottom: -insets.bottom,
           }}
         >
-          <Stack initialRouteName="(login)">
-            <Stack.Screen
-              name="(login)/index"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="home"
-              options={{
-                headerStyle: { backgroundColor: COLORS.primary },
-                headerShadowVisible: false,
-                headerLeft: () => <HeaderLogo />,
-                headerRight: () => <HeaderButton />,
-                headerTitle: '',
-              }}
-            />
-          </Stack>
+          <UserDataProvider>
+            <Stack initialRouteName="(login)">
+              <Stack.Screen
+                name="(login)/index"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="home"
+                options={{
+                  headerStyle: { backgroundColor: COLORS.primary },
+                  headerShadowVisible: false,
+                  headerLeft: () => <HeaderLogo />,
+                  headerRight: () => <HeaderButton />,
+                  headerTitle: '',
+                }}
+              />
+            </Stack>
+          </UserDataProvider>
         </SafeAreaView>
       </ToastProvider>
     </SafeAreaProvider>

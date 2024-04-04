@@ -1,21 +1,14 @@
 import * as React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COLORS, icons, STORAGE_USER_NAME } from '../../constants';
+import { COLORS, icons } from '../../constants';
 import AppMenuModal from '../home/appMenu';
+import { useUserData } from '../../hooks/userData';
 
 const HeaderButton = () => {
   const [menuVisible, setMenuVisible] = React.useState<boolean>(false);
-  const [userName, setUserName] = React.useState<string>('');
-  React.useEffect(() => {
-    AsyncStorage.getItem(STORAGE_USER_NAME)
-      .then((username) => {
-        username && setUserName(username);
-      })
-      .catch(() => {
-        return;
-      });
-  }, []);
+
+  const [userData] = useUserData();
+
   const handleOpenMenu = () => {
     setMenuVisible(true);
   };
@@ -33,7 +26,7 @@ const HeaderButton = () => {
           style={styles.logo}
         />
       </TouchableOpacity>
-      <Text style={styles.username}>{userName}</Text>
+      <Text style={styles.username}>{userData.fullName}</Text>
     </>
   );
 };

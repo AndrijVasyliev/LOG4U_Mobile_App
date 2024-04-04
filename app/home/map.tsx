@@ -9,7 +9,8 @@ import MapView, {
 } from 'react-native-maps';
 
 import ErrorText from '../../components/common/ErrorText';
-import { images, BACKEND_ORIGIN, GET_OWNER_PATH } from '../../constants';
+import {images, BACKEND_ORIGIN, GET_OWNER_PATH, GET_COORDINATOR_PATH} from '../../constants';
+import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 
@@ -21,6 +22,7 @@ const Map = () => {
   );
   const [mapError, setMapError] = React.useState<string>('');
 
+  const [userData, setUserData] = useUserData();
   const router = useRouter();
   const mapRef = React.useRef();
 
@@ -36,16 +38,36 @@ const Map = () => {
 
   React.useEffect(() => {
     setIsLoading(true);
-    authFetch(new URL(GET_OWNER_PATH, BACKEND_ORIGIN), { method: 'GET' })
+    let path = '';
+    switch (userData?.type) {
+      case 'Coordinator':
+      case 'CoordinatorDriver':
+        path = GET_COORDINATOR_PATH;
+        break;
+      case 'Owner':
+      case 'OwnerDriver':
+        path = GET_OWNER_PATH;
+        break;
+    }
+    authFetch(new URL(path, BACKEND_ORIGIN), { method: 'GET' })
       .then(async (response) => {
         if (response && response.status === 200) {
           try {
-            const owner = await response.json();
-            setTrucks(
-              owner?.ownTrucks
-                ? owner.ownTrucks.filter((truck) => !!truck.lastLocation)
-                : [],
-            );
+            const person = await response.json();
+            let trucks = [];
+            switch (userData?.type) {
+              case 'Coordinator':
+              case 'CoordinatorDriver':
+                trucks = person?.coordinateTrucks
+                  ? person.coordinateTrucks
+                  : [];
+                break;
+              case 'Owner':
+              case 'OwnerDriver':
+                trucks = person?.ownTrucks ? person.ownTrucks : [];
+                break;
+            }
+            setTrucks(trucks);
             setMapError('');
             setIsLoading(false);
           } catch (error) {
@@ -62,12 +84,13 @@ const Map = () => {
         if (error instanceof NotAuthorizedError) {
           setMapError('Not authorized');
           router.navigate('/');
+          setUserData(null);
         } else {
           setMapError('Network problem: slow or unstable connection');
         }
         setIsLoading(false);
       });
-  }, [changedAt]);
+  }, [userData, setUserData, changedAt]);
 
   React.useEffect(() => {
     if (mapRef.current && trucks) {

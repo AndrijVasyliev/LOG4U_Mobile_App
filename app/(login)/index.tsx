@@ -27,19 +27,31 @@ import {
   SET_AUTH_PATH,
   PERMISSION_DENIED,
   PERMISSION_GRANTED,
-  STORAGE_USER_TYPE,
-  STORAGE_USER_NAME,
   STORAGE_USER_LOGIN,
   STORAGE_USER_PASSWORD,
   STORAGE_USER_PD_STATUS,
   SET_APP_DATA_PATH,
 } from '../../constants';
+import { useUserData } from '../../hooks/userData';
 import { getDeviceId } from '../../utils/deviceId';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 import { registerForPushNotificationsAsync } from '../../utils/notifications';
 import { getAppPermissions } from '../../utils/getAppPermissions';
 import { getDeviceStatus } from '../../utils/getDeviceStatus';
+
+export type Person = {
+  id: string;
+  type:
+    | 'Driver'
+    | 'Owner'
+    | 'OwnerDriver'
+    | 'Coordinator'
+    | 'CoordinatorDriver';
+  fullName: string;
+  appLogin: string;
+  deviceId: string;
+};
 
 const Login = () => {
   const [changedAt, setChangedAt] = React.useState<number>(Date.now());
@@ -53,6 +65,8 @@ const Login = () => {
   const [loginError, setLoginError] = React.useState<string>('');
   const [isAutentificating, setIsAutentificating] =
     React.useState<boolean>(false);
+
+  const [, setUserData] = useUserData();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -150,7 +164,7 @@ const Login = () => {
           response && response.status,
         );
         if (response && response.status === 200) {
-          let person: any;
+          let person: Person;
           try {
             person = await response.json();
           } catch (error) {
@@ -159,10 +173,6 @@ const Login = () => {
             return;
           }
           if (person) {
-            await Promise.all([
-              AsyncStorage.setItem(STORAGE_USER_NAME, person.fullName),
-              AsyncStorage.setItem(STORAGE_USER_TYPE, person.type),
-            ]);
             const trackingPermissions =
               await requestTrackingPermissionsAsync().catch(
                 (reason) =>
@@ -224,7 +234,8 @@ const Login = () => {
             }
             if (mobileDataResp.status === 200) {
               setIsAutentificating(false);
-              if (person.type === 'Owner') {
+              setUserData({ ...person, appPassword: pas });
+              if (person.type === 'Owner' || person.type === 'Coordinator') {
                 router.navigate('/home/trucks');
               } else {
                 router.navigate('/home/profile');

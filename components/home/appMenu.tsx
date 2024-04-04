@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { COLORS } from '../../constants';
+import { useUserData } from '../../hooks/userData';
 import { logout } from '../../utils/logout';
 
 const AppMenuModal = ({
@@ -18,11 +19,13 @@ const AppMenuModal = ({
   visible: boolean;
   onRequestClose: VoidFunction;
 }) => {
+  const [, setUserData] = useUserData();
   const router = useRouter();
   const handleLogout = () => {
     logout().then(() => {
       onRequestClose();
       router.navigate('/');
+      setUserData(null);
     });
   };
 

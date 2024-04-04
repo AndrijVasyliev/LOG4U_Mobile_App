@@ -6,6 +6,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import ProfileItem from '../../components/profile/profile';
 import ErrorText from '../../components/common/ErrorText';
 import { images, BACKEND_ORIGIN, GET_DRIVER_PATH } from '../../constants';
+import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 
@@ -15,6 +16,7 @@ const Profile = () => {
   const [truck, setTruck] = React.useState<Record<string, any> | null>(null);
   const [profileError, setProfileError] = React.useState<string>('');
 
+  const [, setUserData] = useUserData();
   const router = useRouter();
 
   useFocusEffect(
@@ -60,12 +62,13 @@ const Profile = () => {
         if (error instanceof NotAuthorizedError) {
           setProfileError('Not authorized');
           router.navigate('/');
+          setUserData(null);
         } else {
           setProfileError('Network problem: slow or unstable connection');
         }
         setIsLoading(false);
       });
-  }, [changedAt]);
+  }, [setUserData, changedAt]);
 
   return (
     <ImageBackground

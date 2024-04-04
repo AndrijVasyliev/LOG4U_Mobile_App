@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as Location from 'expo-location';
 import { Text, View, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,6 +11,30 @@ import { BACKEND_ORIGIN, COLORS, UPDATE_TRUCK_PATH } from '../../constants';
 import { authFetch } from '../../utils/authFetch';
 
 const truckStatuses = ['Will be available', 'Available', 'Not Available'];
+
+const toFormattedLocation = (
+  geocodedResult: Location.LocationGeocodedAddress,
+): string => {
+  try {
+    console.log(JSON.stringify(geocodedResult));
+    // const street = `${geocodedResult.street ? geocodedResult.street : ''}`;
+    // const streetNumber = `${geocodedResult.streetNumber ? geocodedResult.streetNumber : ''}`;
+    const city = `${geocodedResult.city ? geocodedResult.city : ''}`;
+    const region = `${geocodedResult.region ? geocodedResult.region : ''}`;
+    const country = `${geocodedResult.country ? geocodedResult.country : ''}`;
+    const postalCode = `${geocodedResult.postalCode ? geocodedResult.postalCode : ''}`;
+    // let res = street + `${street && streetNumber ? ', ' : ''}` + streetNumber;
+    let res = city;
+    if (!res) {
+      res = res + `${res && region ? ', ' : ''}` + region;
+      res = res + `${res && country ? ', ' : ''}` + country;
+    }
+    res = res + `${res && postalCode ? ', ' : ''}` + postalCode;
+    return res;
+  } catch (error) {
+    return '';
+  }
+};
 
 const Profile = ({
   truck,
@@ -29,6 +54,21 @@ const Profile = ({
   const [statusItems, setStatusItems] = React.useState<
     { label: string; value: string }[]
   >(truckStatuses.map((status) => ({ label: status, value: status })));
+  const [locationName, setLocationName] = React.useState<string>('');
+
+  React.useEffect(() => {
+    if (truck && truck.availabilityLocation) {
+      Location.reverseGeocodeAsync({
+        latitude: truck.availabilityLocation[0],
+        longitude: truck.availabilityLocation[1],
+      }).then(
+        (geocodeRes) => setLocationName(toFormattedLocation(geocodeRes[0])),
+        () => setLocationName(''),
+      );
+    } else {
+      setLocationName('');
+    }
+  }, [truck]);
 
   React.useEffect(() => {
     const statusFromProfile = truck ? truck.status : '';
@@ -181,11 +221,7 @@ const Profile = ({
         <>
           <UserDataItem
             iconName="map-marker"
-            value={`${
-              truck && truck.availabilityCity
-                ? `${truck.availabilityCity.name}, ${truck.availabilityCity.stateCode}, ${truck.availabilityCity.zipCode}`
-                : ''
-            }`}
+            value={locationName}
             fieldName="Will be location"
           />
           <UserDataItem

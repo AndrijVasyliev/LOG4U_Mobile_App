@@ -15,8 +15,10 @@ import {
   images,
   BACKEND_ORIGIN,
   GET_OWNER_PATH,
+  GET_COORDINATOR_PATH,
   COLORS,
 } from '../../constants';
+import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 
@@ -27,8 +29,11 @@ const Trucks = () => {
     null,
   );
   const [truckError, setTruckError] = React.useState<string>('');
-  const [selectedTruckId, setSelectedTuckId] = React.useState<string | null>(null);
+  const [selectedTruckId, setSelectedTuckId] = React.useState<string | null>(
+    null,
+  );
 
+  const [userData, setUserData] = useUserData();
   const router = useRouter();
 
   useFocusEffect(
@@ -43,16 +48,36 @@ const Trucks = () => {
 
   React.useEffect(() => {
     setIsLoading(true);
-    authFetch(new URL(GET_OWNER_PATH, BACKEND_ORIGIN), { method: 'GET' })
+    let path = '';
+    switch (userData?.type) {
+      case 'Coordinator':
+      case 'CoordinatorDriver':
+        path = GET_COORDINATOR_PATH;
+        break;
+      case 'Owner':
+      case 'OwnerDriver':
+        path = GET_OWNER_PATH;
+        break;
+    }
+    authFetch(new URL(path, BACKEND_ORIGIN), { method: 'GET' })
       .then(async (response) => {
         if (response && response.status === 200) {
           try {
-            const owner = await response.json();
-            setTrucks(
-              owner?.ownTrucks
-                ? owner.ownTrucks.filter((truck) => !!truck.lastLocation)
-                : [],
-            );
+            const person = await response.json();
+            let trucks = [];
+            switch (userData?.type) {
+              case 'Coordinator':
+              case 'CoordinatorDriver':
+                trucks = person?.coordinateTrucks
+                  ? person.coordinateTrucks
+                  : [];
+                break;
+              case 'Owner':
+              case 'OwnerDriver':
+                trucks = person?.ownTrucks ? person.ownTrucks : [];
+                break;
+            }
+            setTrucks(trucks);
             setTruckError('');
             setIsLoading(false);
           } catch (error) {
@@ -69,12 +94,13 @@ const Trucks = () => {
         if (error instanceof NotAuthorizedError) {
           setTruckError('Not authorized');
           router.navigate('/');
+          setUserData(null);
         } else {
           setTruckError('Network problem: slow or unstable connection');
         }
         setIsLoading(false);
       });
-  }, [changedAt]);
+  }, [userData, setUserData, changedAt]);
 
   return (
     <ImageBackground

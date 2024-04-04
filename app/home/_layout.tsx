@@ -2,20 +2,10 @@ import * as React from 'react';
 import { StatusBar } from 'react-native';
 import { Tabs } from 'expo-router';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { STORAGE_USER_TYPE } from '../../constants';
+import { useUserData } from '../../hooks/userData';
 
 const TabLayout = () => {
-  const [userType, setUserType] = React.useState<string>('');
-  React.useEffect(() => {
-    AsyncStorage.getItem(STORAGE_USER_TYPE)
-      .then((usertype) => {
-        usertype && setUserType(usertype);
-      })
-      .catch(() => {
-        return;
-      });
-  }, []);
+  const [userData] = useUserData();
   return (
     <>
       <StatusBar barStyle={'light-content'} />
@@ -29,9 +19,9 @@ const TabLayout = () => {
           options={{
             title: 'Profile',
             href:
-              userType === 'Driver' ||
-              userType === 'OwnerDriver' ||
-              userType === 'CoordinatorDriver'
+              userData?.type === 'Driver' ||
+              userData?.type === 'OwnerDriver' ||
+              userData?.type === 'CoordinatorDriver'
                 ? { pathname: '/home/profile' }
                 : null,
             tabBarIcon: ({ color, size }) => (
@@ -48,9 +38,9 @@ const TabLayout = () => {
           options={{
             title: 'Loads',
             href:
-              userType === 'Driver' ||
-              userType === 'OwnerDriver' ||
-              userType === 'CoordinatorDriver'
+              userData?.type === 'Driver' ||
+              userData?.type === 'OwnerDriver' ||
+              userData?.type === 'CoordinatorDriver'
                 ? { pathname: '/home/loads' }
                 : null,
             tabBarIcon: ({ color, size }) => (
@@ -63,7 +53,10 @@ const TabLayout = () => {
           options={{
             title: 'Trucks',
             href:
-              userType === 'Owner' || userType === 'OwnerDriver'
+              userData?.type === 'Owner' ||
+              userData?.type === 'OwnerDriver' ||
+              userData?.type === 'Coordinator' ||
+              userData?.type === 'CoordinatorDriver'
                 ? { pathname: '/home/trucks' }
                 : null,
             tabBarIcon: ({ color, size }) => (
@@ -80,7 +73,10 @@ const TabLayout = () => {
           options={{
             title: 'Map',
             href:
-              userType === 'Owner' || userType === 'OwnerDriver'
+              userData?.type === 'Owner' ||
+              userData?.type === 'OwnerDriver' ||
+              userData?.type === 'Coordinator' ||
+              userData?.type === 'CoordinatorDriver'
                 ? { pathname: '/home/map' }
                 : null,
             tabBarIcon: ({ color, size }) => (

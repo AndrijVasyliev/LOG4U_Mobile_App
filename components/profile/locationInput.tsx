@@ -7,20 +7,24 @@ import { COLORS } from '../../constants';
 const toFormattedAddress = (
   geocodedResult: Location.LocationGeocodedAddress,
 ): string => {
-  const street = `${geocodedResult.street ? geocodedResult.street : ''}`;
-  const streetNumber = `${geocodedResult.streetNumber ? geocodedResult.streetNumber : ''}`;
-  const city = `${geocodedResult.city ? geocodedResult.city : ''}`;
-  const region = `${geocodedResult.region ? geocodedResult.region : ''}`;
-  const country = `${geocodedResult.country ? geocodedResult.country : ''}`;
-  const postalCode = `${geocodedResult.postalCode ? geocodedResult.postalCode : ''}`;
-  let res = street + `${street && streetNumber ? ', ' : ''}` + streetNumber;
-  res = res + `${res && city ? ', ' : ''}` + city;
-  if (city != region) {
-    res = res + `${res && region ? ', ' : ''}` + region;
+  try {
+    const street = `${geocodedResult.street ? geocodedResult.street : ''}`;
+    const streetNumber = `${geocodedResult.streetNumber ? geocodedResult.streetNumber : ''}`;
+    const city = `${geocodedResult.city ? geocodedResult.city : ''}`;
+    const region = `${geocodedResult.region ? geocodedResult.region : ''}`;
+    const country = `${geocodedResult.country ? geocodedResult.country : ''}`;
+    const postalCode = `${geocodedResult.postalCode ? geocodedResult.postalCode : ''}`;
+    let res = street + `${street && streetNumber ? ', ' : ''}` + streetNumber;
+    res = res + `${res && city ? ', ' : ''}` + city;
+    if (city != region) {
+      res = res + `${res && region ? ', ' : ''}` + region;
+    }
+    res = res + `${res && country ? ', ' : ''}` + country;
+    res = res + `${res && postalCode ? ', ' : ''}` + postalCode;
+    return res;
+  } catch (error) {
+    return '';
   }
-  res = res + `${res && country ? ', ' : ''}` + country;
-  res = res + `${res && postalCode ? ', ' : ''}` + postalCode;
-  return res;
 };
 
 const LocationInput = ({
@@ -62,21 +66,29 @@ const LocationInput = ({
       .then((value) => {
         if (value && value.length) {
           return Promise.all(
-            value.map(
-              (coordsElement) =>
-                new Promise((resolve, reject) => {
-                  Location.reverseGeocodeAsync(coordsElement)
-                    .then((result) => {
-                      resolve(
-                        result.map((geocodedResult) => ({
-                          coordsElement,
-                          geocodedResult,
-                        })),
-                      );
-                    })
-                    .catch((error) => reject(error));
-                }),
-            ),
+            value
+              .filter(
+                (coordsElement) =>
+                  Number.isFinite(coordsElement?.latitude) &&
+                  Number.isFinite(coordsElement?.longitude),
+              )
+              .map(
+                (coordsElement) =>
+                  new Promise((resolve, reject) => {
+                    Location.reverseGeocodeAsync(coordsElement)
+                      .then((result) => {
+                        resolve(
+                          result
+                            .filter((geocodedResult) => geocodedResult)
+                            .map((geocodedResult) => ({
+                              coordsElement,
+                              geocodedResult,
+                            })),
+                        );
+                      })
+                      .catch((error) => reject(error));
+                  }),
+              ),
           );
         } else {
           setLocationItems([]);
@@ -86,28 +98,34 @@ const LocationInput = ({
       .then((res) => {
         if (res && res.length) {
           setLocationItems(
-            res.flat(1).map(
-              (
-                element: {
-                  coordsElement: Location.LocationGeocodedLocation;
-                  geocodedResult: Location.LocationGeocodedAddress;
-                },
-                index,
-              ) => ({
-                ...element,
-                label: element?.geocodedResult
-                  ? toFormattedAddress(element.geocodedResult)
-                  : '',
-                value: index,
-              }),
-            ),
+            res
+              .flat(1)
+              .filter((element) => element)
+              .map(
+                (
+                  element: {
+                    coordsElement: Location.LocationGeocodedLocation;
+                    geocodedResult: Location.LocationGeocodedAddress;
+                  },
+                  index,
+                ) => ({
+                  ...element,
+                  label: element?.geocodedResult
+                    ? toFormattedAddress(element.geocodedResult)
+                    : '',
+                  value: index,
+                }),
+              ),
           );
         } else {
           setLocationItems([]);
         }
         setLocationLoading(false);
       })
-      .catch(() => setLocationItems([]));
+      .catch(() => {
+        setLocationItems([]);
+        setLocationLoading(false);
+      });
   };
 
   return (

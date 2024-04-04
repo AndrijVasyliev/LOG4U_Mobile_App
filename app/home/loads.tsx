@@ -6,6 +6,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import Load from '../../components/loads/Load';
 import ErrorText from '../../components/common/ErrorText';
 import { images, BACKEND_ORIGIN, GET_LOADS_PATH } from '../../constants';
+import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 
@@ -15,6 +16,7 @@ const Loads = () => {
   const [loads, setLoads] = React.useState<Record<string, any>[] | null>(null);
   const [loadError, setLoadError] = React.useState<string>('');
 
+  const [, setUserData] = useUserData();
   const router = useRouter();
 
   useFocusEffect(
@@ -51,12 +53,13 @@ const Loads = () => {
         if (error instanceof NotAuthorizedError) {
           setLoadError('Not authorized');
           router.navigate('/');
+          setUserData(null);
         } else {
           setLoadError('Network problem: slow or unstable connection');
         }
         setIsLoading(false);
       });
-  }, [changedAt]);
+  }, [setUserData, changedAt]);
 
   return (
     <ImageBackground
