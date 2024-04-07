@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Location from 'expo-location';
 import DropDownPicker, { ItemType } from 'react-native-dropdown-picker';
-import { COLORS } from '../../constants';
+import { COLORS, GEOCODING_THROTTLE_INTERVAL } from '../../constants';
+import { throttle } from '../../utils/throttle';
 
 const toFormattedAddress = (
   geocodedResult: Location.LocationGeocodedAddress,
@@ -35,6 +37,8 @@ const LocationInput = ({
   const [locationOpen, setLocationOpen] = React.useState<boolean>(false);
   const [locationLoading, setLocationLoading] = React.useState<boolean>(false);
   const [locationValue, setLocationValue] = React.useState<number>(NaN);
+  const [locationSearchValue, setLocationSearchValue] =
+    React.useState<string>('');
   const [locationItems, setLocationItems] = React.useState<ItemType<number>[]>(
     [],
   );
@@ -59,6 +63,11 @@ const LocationInput = ({
       onSet(value);
     }
   }, [locationOpen]);
+
+  React.useEffect(() => {
+    setLocationValue(NaN);
+    throttledSearch(locationSearchValue);
+  }, [locationSearchValue]);
 
   const handleSearchChange = (value: string) => {
     setLocationLoading(true);
@@ -90,15 +99,16 @@ const LocationInput = ({
                   }),
               ),
           );
-        } else {
+        } /* else {
           setLocationItems([]);
         }
-        setLocationLoading(false);
+        setLocationLoading(false);*/
       })
       .then((res) => {
         if (res && res.length) {
-          setLocationItems(
-            res
+          let locationItems = [];
+          try {
+            locationItems = res
               .flat(1)
               .filter((element) => element)
               .map(
@@ -115,8 +125,11 @@ const LocationInput = ({
                     : '',
                   value: index,
                 }),
-              ),
-          );
+              );
+          } catch (error) {
+            /* empty */
+          }
+          setLocationItems(locationItems);
         } else {
           setLocationItems([]);
         }
@@ -127,6 +140,11 @@ const LocationInput = ({
         setLocationLoading(false);
       });
   };
+
+  const throttledSearch = React.useMemo(
+    () => throttle(handleSearchChange, GEOCODING_THROTTLE_INTERVAL),
+    [],
+  );
 
   return (
     <View style={styles.container}>
@@ -140,8 +158,9 @@ const LocationInput = ({
         }}
         searchPlaceholderTextColor={COLORS.gray2}
         disableLocalSearch={true}
-        onChangeSearchText={handleSearchChange}
+        onChangeSearchText={setLocationSearchValue}
         style={styles.dropdown}
+        textStyle={styles.text}
         containerStyle={styles.dropdownControlContainer}
         disabledStyle={styles.dropdownDisabled}
         placeholderStyle={styles.dropdownPlaceholder}
@@ -149,6 +168,26 @@ const LocationInput = ({
         searchContainerStyle={styles.dropdownSearchContainer}
         searchTextInputStyle={styles.dropdownSearch}
         listMode="FLATLIST"
+        labelProps={{
+          numberOfLines: 2,
+        }}
+        ArrowUpIconComponent={() => (
+          <MaterialCommunityIcons
+            name="menu-up"
+            color={COLORS.black}
+            size={24}
+          />
+        )}
+        ArrowDownIconComponent={() => (
+          <MaterialCommunityIcons
+            name="menu-down"
+            color={COLORS.black}
+            size={24}
+          />
+        )}
+        TickIconComponent={() => (
+          <MaterialCommunityIcons name="check" color={COLORS.black} size={24} />
+        )}
         disabled={false}
         searchable={true}
         open={locationOpen}
@@ -200,6 +239,7 @@ const styles = StyleSheet.create({
   dropdownSearchContainer: {
     borderBottomColor: COLORS.gray3,
   },
+  text: {},
 });
 
 export default LocationInput;

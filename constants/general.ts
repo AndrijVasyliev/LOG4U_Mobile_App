@@ -29,3 +29,4 @@ export const PERMISSION_DENIED = PermissionStatus.DENIED;
 export const STORAGE_USER_LOGIN = 'login';
 export const STORAGE_USER_PASSWORD = 'password';
 export const STORAGE_USER_PD_STATUS = 'pdstatus';
+export const GEOCODING_THROTTLE_INTERVAL = 500;

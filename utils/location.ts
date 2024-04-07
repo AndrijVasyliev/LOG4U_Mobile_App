@@ -19,6 +19,7 @@ import {
   BUILD_VERSION,
 } from '../constants';
 import { getDeviceId } from './deviceId';
+import { throttle } from './throttle';
 
 let isStarting = false;
 
@@ -196,29 +197,6 @@ const getLocation = async () => {
   return currentLocation;
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-const throttle = (func: (...args: any) => any, delay: number) => {
-  let interval: ReturnType<typeof setTimeout> | null;
-  let calledWIth: Array<any> | null;
-  let res: ReturnType<typeof func>;
-  return function (...args: Array<any>) {
-    calledWIth = args;
-    if (!interval) {
-      res = func.apply(this, calledWIth);
-      calledWIth = null;
-      interval = setInterval(() => {
-        if (!calledWIth) {
-          clearInterval(interval);
-          interval = null;
-          return;
-        }
-        res = func.apply(this, calledWIth);
-        calledWIth = null;
-      }, delay);
-    }
-    return res;
-  };
-};
 const sendLocation = async (currentLocation: Location.LocationObject) => {
   if (currentLocation) {
     const deviceId = await getDeviceId();

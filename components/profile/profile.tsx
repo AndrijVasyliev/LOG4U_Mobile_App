@@ -7,6 +7,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 import WillBeAvailableDialog from './WillBeAvailDialog';
 import UserDataItem from './UserDataItem';
+import FileList from './fileList';
 import { BACKEND_ORIGIN, COLORS, UPDATE_TRUCK_PATH } from '../../constants';
 import { authFetch } from '../../utils/authFetch';
 
@@ -176,6 +177,11 @@ const Profile = ({
           fieldName="Phone"
         />
       )}
+      <FileList
+        objectId={truck?.id}
+        objectType="Person"
+        caption="Person`s docs"
+      />
       <UserDataItem
         iconName="truck"
         value={`${truck ? truck.truckNumber : ''}`}
@@ -204,6 +210,27 @@ const Profile = ({
               disabledStyle={styles.dropdownDisabled}
               dropDownContainerStyle={styles.dropdownContainer}
               listMode="SCROLLVIEW"
+              ArrowUpIconComponent={() => (
+                <MaterialCommunityIcons
+                  name="menu-up"
+                  color={COLORS.black}
+                  size={24}
+                />
+              )}
+              ArrowDownIconComponent={() => (
+                <MaterialCommunityIcons
+                  name="menu-down"
+                  color={COLORS.black}
+                  size={24}
+                />
+              )}
+              TickIconComponent={() => (
+                <MaterialCommunityIcons
+                  name="check"
+                  color={COLORS.black}
+                  size={24}
+                />
+              )}
               dropDownDirection="TOP"
               disabled={!truckStatuses.includes(statusValue)}
               open={statusOpen}
@@ -233,6 +260,11 @@ const Profile = ({
           />
         </>
       )}
+      <FileList
+        objectId={truck?.id}
+        objectType="Truck"
+        caption="Truck`s docs"
+      />
       <Spinner visible={isLoading} textContent={'Updating truck...'} />
     </>
   );
