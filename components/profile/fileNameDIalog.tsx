@@ -1,42 +1,41 @@
 import * as React from 'react';
 import {
   Modal,
+  View,
+  Text,
   StyleSheet,
   TouchableWithoutFeedback,
-  View,
 } from 'react-native';
-
-import { COLORS } from '../../constants';
+import FileNameInput from './fileNameInput';
+import {
+  COLORS,
+  MAX_FILE_NAME_LENGTH,
+  MIN_FILE_NAME_LENGTH,
+} from '../../constants';
 import ModalButton from '../common/modalButton';
-import LocationInput from './locationInput';
-import DateTimeInput from './dateTimeInput';
 
-const WillBeAvailableDialog = ({
-  visible,
-  onStateChange,
-  close,
+const FileNameDialog = ({
+  opened,
+  OnSubmit,
+  OnClose,
 }: {
-  visible: boolean;
-  onStateChange: (
-    newSatus: 'Will be available',
-    availabilityLocation: [number, number],
-    availabilityAt: Date,
-  ) => void;
-  close: VoidFunction;
+  opened: boolean;
+  OnSubmit: (fileName: string) => void;
+  OnClose: () => void;
 }) => {
-  const [location, setLocation] = React.useState<[number, number] | null>(null);
-  const [date, setDate] = React.useState<Date | null>(null);
+  const [fileName, setFileName] = React.useState<string>('');
 
   React.useEffect(() => {
-    if (!visible) {
-      setLocation(null);
-      setDate(null);
-    }
-  }, [visible]);
+    setFileName('');
+  }, [opened]);
 
-  const setWillBeAvailable = () => {
-    onStateChange('Will be available', location, date);
+  const handleUpload = () => {
+    OnSubmit(fileName);
   };
+  const handleCloseDialog = () => {
+    OnClose();
+  };
+
   return (
     <Modal
       animated={false}
@@ -44,28 +43,35 @@ const WillBeAvailableDialog = ({
       animationType="none"
       presentationStyle="overFullScreen"
       transparent={true}
-      visible={visible}
+      visible={opened}
       onRequestClose={() => {
         console.log('Modal has been closed.');
       }}
     >
       <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={close}>
+        <TouchableWithoutFeedback onPress={handleCloseDialog}>
           <View style={styles.area} />
         </TouchableWithoutFeedback>
         <View style={styles.dialogPaper}>
           <View style={styles.dialogContents}>
-            <LocationInput onSet={setLocation} />
-            <View style={styles.spacer}></View>
-            <DateTimeInput onSet={setDate} />
+            <Text style={styles.message}>
+              Enter the name for your document.
+            </Text>
+            <FileNameInput value={fileName} onChange={setFileName} />
+            <Text style={styles.note}>
+              {`Note: Name must be from ${MIN_FILE_NAME_LENGTH} to ${MAX_FILE_NAME_LENGTH} characters long.`}
+            </Text>
           </View>
           <View style={styles.spacer}></View>
           <View style={styles.buttonContainer}>
-            <ModalButton text={'Close'} onPress={close} />
+            <ModalButton text={'Close'} onPress={handleCloseDialog} />
             <ModalButton
-              text={'Set'}
-              disabled={!location || !date}
-              onPress={setWillBeAvailable}
+              text={'Upload'}
+              disabled={
+                fileName.length < MIN_FILE_NAME_LENGTH ||
+                fileName.length > MAX_FILE_NAME_LENGTH
+              }
+              onPress={handleUpload}
             />
           </View>
         </View>
@@ -99,6 +105,7 @@ const styles = StyleSheet.create({
   },
   dialogContents: {
     alignItems: 'center',
+    flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
     paddingLeft: '1%',
@@ -111,7 +118,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 5,
     flexDirection: 'column',
-    height: 230,
+    height: 270,
     padding: 35,
     shadowColor: COLORS.black,
     shadowOffset: {
@@ -122,9 +129,18 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     width: '90%',
   },
+  message: {
+    flex: 1,
+    fontSize: 15,
+  },
+  note: {
+    flex: 1,
+    fontSize: 13,
+    paddingTop: 20,
+  },
   spacer: {
     height: 10,
   },
 });
 
-export default WillBeAvailableDialog;
+export default FileNameDialog;

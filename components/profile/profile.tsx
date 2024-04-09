@@ -17,14 +17,10 @@ const toFormattedLocation = (
   geocodedResult: Location.LocationGeocodedAddress,
 ): string => {
   try {
-    console.log(JSON.stringify(geocodedResult));
-    // const street = `${geocodedResult.street ? geocodedResult.street : ''}`;
-    // const streetNumber = `${geocodedResult.streetNumber ? geocodedResult.streetNumber : ''}`;
     const city = `${geocodedResult.city ? geocodedResult.city : ''}`;
     const region = `${geocodedResult.region ? geocodedResult.region : ''}`;
     const country = `${geocodedResult.country ? geocodedResult.country : ''}`;
     const postalCode = `${geocodedResult.postalCode ? geocodedResult.postalCode : ''}`;
-    // let res = street + `${street && streetNumber ? ', ' : ''}` + streetNumber;
     let res = city;
     if (!res) {
       res = res + `${res && region ? ', ' : ''}` + region;
@@ -178,7 +174,7 @@ const Profile = ({
         />
       )}
       <FileList
-        objectId={truck?.id}
+        objectId={truck?.driver?.id}
         objectType="Person"
         caption="Person`s docs"
       />

@@ -66,6 +66,9 @@ const LocationInput = ({
 
   React.useEffect(() => {
     setLocationValue(NaN);
+  }, [locationItems]);
+
+  React.useEffect(() => {
     throttledSearch(locationSearchValue);
   }, [locationSearchValue]);
 
@@ -214,7 +217,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginTop: 5,
     width: '100%',
-    zIndex: 1,
   },
   dropdown: {
     backgroundColor: COLORS.unset,

@@ -23,7 +23,13 @@
       [
         "expo-tracking-transparency",
         {
-          "userTrackingPermission": "Allow 4U Track app to collect location and device ID data that can be used for tracking your device. This data is used by 4U Logistics to provide most suitable orders for you. Any of your personal data, including geolocation, is not disclosed to third parties."
+          "userTrackingPermission": "Allow $(PRODUCT_NAME) to collect location and device ID data that can be used for tracking your device. This data is used by 4U Logistics to provide most suitable orders for you. Any of your personal data, including geolocation, is not disclosed to third parties."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos"
         }
       ]
     ],
