@@ -44,9 +44,12 @@ const File = ({
       password: userData.appPassword,
       deviceId,
     }).forEach((hVal, hKey) => (headers[hKey] = hVal));
+    const filename = file.comment
+      ? file.comment + '.' + file.filename.split('.').slice(-1)[0]
+      : file.filename;
     const downloadResult = await FileSystem.downloadAsync(
       new URL(`${FILES_PATH}/${file.id}/download`, BACKEND_ORIGIN).toString(),
-      FileSystem.cacheDirectory + file.filename,
+      FileSystem.cacheDirectory + filename,
       { headers },
     );
 
