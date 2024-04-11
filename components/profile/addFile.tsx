@@ -28,7 +28,7 @@ const AddFile = ({
     setFileUri('');
   }, [objectId, objectType]);
 
-  const [userData] = useUserData();
+  const [userData, setUserData] = useUserData();
   const router = useRouter();
 
   const handleSubmit = (fileName: string) => {
@@ -95,6 +95,7 @@ const AddFile = ({
     if (uploadResult.status === 401) {
       await logout();
       router.navigate('/');
+      setUserData(null);
     }
 
     setIsLoading(false);

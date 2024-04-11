@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  // Platform,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -32,7 +32,7 @@ const File = ({
 }) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  const [userData] = useUserData();
+  const [userData, setUserData] = useUserData();
   const router = useRouter();
 
   const download = async () => {
@@ -56,17 +56,29 @@ const File = ({
     if (downloadResult.status === 401) {
       await logout();
       router.navigate('/');
+      setUserData(null);
     }
 
     if (downloadResult.status === 200 && downloadResult.uri) {
-      await Sharing.shareAsync(downloadResult.uri);
+      setTimeout(
+        () =>
+          saveFile(
+            downloadResult.uri,
+            filename,
+            downloadResult.headers['content-type'],
+          ),
+        150,
+      );
+      /*await saveFile(
+        downloadResult.uri,
+        filename,
+        downloadResult.headers['content-type'],
+      );*/
     }
     setIsLoading(false);
-    // Save the downloaded file
-    // saveFile(result.uri, file.filename, result.headers['Content-Type']);
   };
 
-  /* async function saveFile(uri, filename, mimetype) {
+  const saveFile = async (uri, filename, mimetype) => {
     if (Platform.OS === 'android') {
       const permissions =
         await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
@@ -93,7 +105,7 @@ const File = ({
     } else {
       Sharing.shareAsync(uri);
     }
-  }*/
+  };
 
   let name = file.comment || file.filename;
   name =

@@ -24,7 +24,7 @@ const FileList = ({
   objectType?: 'Truck' | 'Person';
   caption: string;
 }) => {
-  const [changedAt, setChangedAt] = React.useState<number>(Date.now());
+  const [changedAt, setChangedAt] = React.useState<number>(0);
   const [expanded, setExpanded] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [files, setFiles] = React.useState<Record<string, any>[] | null>(null);
@@ -33,7 +33,16 @@ const FileList = ({
   const router = useRouter();
 
   React.useEffect(() => {
-    if (!expanded || !objectId || !objectType) {
+    if (expanded) {
+      setChangedAt(Date.now());
+    }
+  }, [expanded]);
+
+  React.useEffect(() => {
+    if (!changedAt) {
+      return;
+    }
+    if (!objectId || !objectType) {
       setFiles(null);
       setFilesError('');
       return;
@@ -73,7 +82,7 @@ const FileList = ({
         }
         setIsLoading(false);
       });
-  }, [changedAt, expanded, objectId, objectType]);
+  }, [changedAt, objectId, objectType]);
 
   return (
     <>

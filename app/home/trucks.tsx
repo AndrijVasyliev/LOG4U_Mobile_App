@@ -23,7 +23,7 @@ import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 
 const Trucks = () => {
-  const [changedAt, setChangedAt] = React.useState<number>(Date.now());
+  const [changedAt, setChangedAt] = React.useState<number>(0);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [trucks, setTrucks] = React.useState<Record<string, any>[] | null>(
     null,
@@ -47,6 +47,9 @@ const Trucks = () => {
   );
 
   React.useEffect(() => {
+    if (!changedAt) {
+      return;
+    }
     setIsLoading(true);
     let path = '';
     switch (userData?.type) {

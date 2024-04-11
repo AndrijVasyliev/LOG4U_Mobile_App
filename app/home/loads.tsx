@@ -11,7 +11,7 @@ import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 
 const Loads = () => {
-  const [changedAt, setChangedAt] = React.useState<number>(Date.now());
+  const [changedAt, setChangedAt] = React.useState<number>(0);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [loads, setLoads] = React.useState<Record<string, any>[] | null>(null);
   const [loadError, setLoadError] = React.useState<string>('');
@@ -30,6 +30,9 @@ const Loads = () => {
   );
 
   React.useEffect(() => {
+    if (!changedAt) {
+      return;
+    }
     setIsLoading(true);
     authFetch(new URL(GET_LOADS_PATH, BACKEND_ORIGIN), { method: 'GET' })
       .then(async (response) => {

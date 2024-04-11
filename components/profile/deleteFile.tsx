@@ -10,10 +10,16 @@ import {
 import { useRouter } from 'expo-router';
 import Spinner from 'react-native-loading-spinner-overlay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {BACKEND_ORIGIN, COLORS, FILES_PATH, MAX_FILE_NAME_LENGTH} from '../../constants';
+import {
+  BACKEND_ORIGIN,
+  COLORS,
+  FILES_PATH,
+  MAX_FILE_NAME_LENGTH,
+} from '../../constants';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 import ModalButton from '../common/modalButton';
+import { useUserData } from '../../hooks/userData';
 
 const DeleteFile = ({
   file,
@@ -25,6 +31,7 @@ const DeleteFile = ({
   const [dialogVisible, setDialogVisible] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
+  const [, setUserData] = useUserData();
   const router = useRouter();
 
   const handleOpenDialog = () => {
@@ -47,6 +54,7 @@ const DeleteFile = ({
       .catch((error) => {
         if (error instanceof NotAuthorizedError) {
           router.navigate('/');
+          setUserData(null);
         }
         setIsLoading(false);
         setChangedAt(Date.now());

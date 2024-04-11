@@ -173,11 +173,13 @@ const Profile = ({
           fieldName="Phone"
         />
       )}
-      <FileList
-        objectId={truck?.driver?.id}
-        objectType="Person"
-        caption="Person`s docs"
-      />
+      {!expanded ? null : (
+        <FileList
+          objectId={truck?.driver?.id}
+          objectType="Person"
+          caption="Person`s docs"
+        />
+      )}
       <UserDataItem
         iconName="truck"
         value={`${truck ? truck.truckNumber : ''}`}
@@ -256,11 +258,13 @@ const Profile = ({
           />
         </>
       )}
-      <FileList
-        objectId={truck?.id}
-        objectType="Truck"
-        caption="Truck`s docs"
-      />
+      {!expanded ? null : (
+        <FileList
+          objectId={truck?.id}
+          objectType="Truck"
+          caption="Truck`s docs"
+        />
+      )}
       <Spinner visible={isLoading} textContent={'Updating truck...'} />
     </>
   );

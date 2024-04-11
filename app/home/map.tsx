@@ -9,13 +9,18 @@ import MapView, {
 } from 'react-native-maps';
 
 import ErrorText from '../../components/common/ErrorText';
-import {images, BACKEND_ORIGIN, GET_OWNER_PATH, GET_COORDINATOR_PATH} from '../../constants';
+import {
+  images,
+  BACKEND_ORIGIN,
+  GET_OWNER_PATH,
+  GET_COORDINATOR_PATH,
+} from '../../constants';
 import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 
 const Map = () => {
-  const [changedAt, setChangedAt] = React.useState<number>(Date.now());
+  const [changedAt, setChangedAt] = React.useState<number>(0);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [trucks, setTrucks] = React.useState<Record<string, any>[] | null>(
     null,
@@ -37,6 +42,9 @@ const Map = () => {
   );
 
   React.useEffect(() => {
+    if (!changedAt) {
+      return;
+    }
     setIsLoading(true);
     let path = '';
     switch (userData?.type) {
@@ -67,7 +75,7 @@ const Map = () => {
                 trucks = person?.ownTrucks ? person.ownTrucks : [];
                 break;
             }
-            setTrucks(trucks);
+            setTrucks(trucks.filter((truck) => truck.lastLocation));
             setMapError('');
             setIsLoading(false);
           } catch (error) {

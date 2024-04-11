@@ -11,7 +11,7 @@ import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 
 const Profile = () => {
-  const [changedAt, setChangedAt] = React.useState<number>(Date.now());
+  const [changedAt, setChangedAt] = React.useState<number>(0);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [truck, setTruck] = React.useState<Record<string, any> | null>(null);
   const [profileError, setProfileError] = React.useState<string>('');
@@ -30,6 +30,9 @@ const Profile = () => {
   );
 
   React.useEffect(() => {
+    if (!changedAt) {
+      return;
+    }
     setIsLoading((prev) => {
       if (!prev) {
         return true;

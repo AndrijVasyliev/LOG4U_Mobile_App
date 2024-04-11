@@ -54,7 +54,7 @@ export type Person = {
 };
 
 const Login = () => {
-  const [changedAt, setChangedAt] = React.useState<number>(Date.now());
+  const [changedAt, setChangedAt] = React.useState<number>(0);
   const [forceLoginVisible, setForceLoginVisible] =
     React.useState<boolean>(false);
   const [prominentDisclosureVisible, setProminentDisclosureVisible] =
@@ -79,6 +79,9 @@ const Login = () => {
   );
 
   React.useEffect(() => {
+    if (!changedAt) {
+      return;
+    }
     Promise.all([
       AsyncStorage.getItem(STORAGE_USER_LOGIN),
       AsyncStorage.getItem(STORAGE_USER_PASSWORD),
