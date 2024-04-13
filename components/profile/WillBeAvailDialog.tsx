@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     paddingLeft: '1%',
     paddingRight: '1%',
     width: '100%',
+    zIndex: 1,
   },
   dialogPaper: {
     alignItems: 'center',

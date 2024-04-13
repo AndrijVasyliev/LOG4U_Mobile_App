@@ -6,8 +6,8 @@ export const BUILD_VERSION =
 
 export const FETCH_TIMEOUT = 15000;
 
-// export const BACKEND_ORIGIN = 'https://mobile.4u-logistics.com';
-export const BACKEND_ORIGIN = 'https://admin-test-lt5d.onrender.com';
+export const BACKEND_ORIGIN = 'https://mobile.4u-logistics.com';
+// export const BACKEND_ORIGIN = 'https://admin-test-lt5d.onrender.com';
 // export const BACKEND_ORIGIN = 'http://192.168.0.148:8181';
 export const SET_AUTH_PATH = '/mobileApp/setAuth';
 export const SET_APP_DATA_PATH = '/mobileApp/setAppData';
