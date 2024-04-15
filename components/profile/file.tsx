@@ -69,11 +69,6 @@ const File = ({
           ),
         150,
       );
-      /*await saveFile(
-        downloadResult.uri,
-        filename,
-        downloadResult.headers['content-type'],
-      );*/
     }
     setIsLoading(false);
   };

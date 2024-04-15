@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
@@ -11,6 +11,7 @@ import { getDeviceId } from '../../utils/deviceId';
 import { getHeaders } from '../../utils/getHeaders';
 import { logout } from '../../utils/logout';
 import { useUserData } from '../../hooks/userData';
+import FileErrorDialog from "./fileErrorDialog";
 
 const AddFile = ({
   objectId,
@@ -23,6 +24,7 @@ const AddFile = ({
 }) => {
   const [fileUri, setFileUri] = React.useState<string>('');
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [uploadError, setUploadError] = React.useState<number>(0);
 
   React.useEffect(() => {
     setFileUri('');
@@ -37,6 +39,10 @@ const AddFile = ({
   };
   const handleCloseDialog = () => {
     setFileUri('');
+  };
+
+  const handleFileErrorClose = () => {
+    setUploadError(0);
   };
 
   const pickImage = async () => {
@@ -98,6 +104,10 @@ const AddFile = ({
       setUserData(null);
     }
 
+    if (uploadResult.status !== 201) {
+      setUploadError(uploadResult.status);
+    }
+
     setIsLoading(false);
   };
 
@@ -108,6 +118,7 @@ const AddFile = ({
         OnClose={handleCloseDialog}
         OnSubmit={handleSubmit}
       />
+      <FileErrorDialog errorCode={uploadError} OnClose={handleFileErrorClose}/>
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => {

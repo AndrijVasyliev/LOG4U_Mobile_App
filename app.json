@@ -13,9 +13,9 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
-          "locationAlwaysPermission": "Allow $(PRODUCT_NAME) to use your location",
-          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location",
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location. This data is used by 4U Logistics to provide most suitable orders for you. Geolocation data is not disclosed to third parties.",
+          "locationAlwaysPermission": "Allow $(PRODUCT_NAME) to use your location. This data is used by 4U Logistics to provide most suitable orders for you. Geolocation data is not disclosed to third parties.",
+          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location. This data is used by 4U Logistics to provide most suitable orders for you. Geolocation data is not disclosed to third parties.",
           "isIosBackgroundLocationEnabled": true,
           "isAndroidBackgroundLocationEnabled": true
         }
@@ -29,7 +29,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos"
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your image library, so you can select and upload to 4U Logistics photos of yours and yours trucks documents, i.e. drivers licence, insurance policy, vehicle registration."
         }
       ]
     ],
