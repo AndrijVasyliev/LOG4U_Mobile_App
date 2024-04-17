@@ -6,17 +6,11 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
-import FileNameInput from './fileNameInput';
-import {
-  COLORS,
-  MAX_FILE_NAME_LENGTH,
-  MIN_FILE_NAME_LENGTH,
-} from '../../constants';
+import { COLORS } from '../../constants';
 import ModalButton from '../common/modalButton';
 
 const FileErrorDialog = ({
   errorCode,
-  OnSubmit,
   OnClose,
 }: {
   errorCode: number;
@@ -44,11 +38,11 @@ const FileErrorDialog = ({
         </TouchableWithoutFeedback>
         <View style={styles.dialogPaper}>
           <View style={styles.dialogContents}>
-            <Text style={styles.title}>
-              Error uploading file
-            </Text>
+            <Text style={styles.title}>Error uploading file</Text>
             <Text style={styles.message}>
-              { errorCode === 413 ? 'File is too big' : `Unknown error: ${errorCode}`}
+              {errorCode === 413
+                ? 'File is too big'
+                : `Unknown error: ${errorCode}`}
             </Text>
           </View>
           <View style={styles.spacer}></View>
@@ -110,10 +104,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     width: '60%',
   },
-  title: {
-    flex: 1,
-    fontSize: 15,
-  },
   message: {
     flex: 1,
     fontSize: 13,
@@ -121,6 +111,10 @@ const styles = StyleSheet.create({
   },
   spacer: {
     height: 15,
+  },
+  title: {
+    flex: 1,
+    fontSize: 15,
   },
 });
 
