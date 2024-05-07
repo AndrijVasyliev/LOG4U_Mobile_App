@@ -228,7 +228,7 @@ const sendLocation = async (currentLocation: Location.LocationObject) => {
     try {
       await fetch(uri, init).then((response) => {
         console.log(
-          'Login response status code: ',
+          'Location response status code: ',
           response && response.status,
         );
         if (response && response.status === 412) {

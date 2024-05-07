@@ -3,6 +3,12 @@ import { StatusBar } from 'react-native';
 import { Tabs } from 'expo-router';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useUserData } from '../../hooks/userData';
+import {
+  isLoadsEnabled,
+  isMapEnabled,
+  isProfileEnabled,
+  isTrucksEnabled,
+} from '../../utils/isEnabled';
 
 const TabLayout = () => {
   const [userData] = useUserData();
@@ -18,12 +24,9 @@ const TabLayout = () => {
           name="profile"
           options={{
             title: 'Profile',
-            href:
-              userData?.type === 'Driver' ||
-              userData?.type === 'OwnerDriver' ||
-              userData?.type === 'CoordinatorDriver'
-                ? { pathname: '/home/profile' }
-                : null,
+            href: isProfileEnabled(userData)
+              ? { pathname: '/home/profile' }
+              : null,
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons
                 name="account"
@@ -37,12 +40,7 @@ const TabLayout = () => {
           name="loads"
           options={{
             title: 'Loads',
-            href:
-              userData?.type === 'Driver' ||
-              userData?.type === 'OwnerDriver' ||
-              userData?.type === 'CoordinatorDriver'
-                ? { pathname: '/home/loads' }
-                : null,
+            href: isLoadsEnabled(userData) ? { pathname: '/home/loads' } : null,
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="truck" color={color} size={size} />
             ),
@@ -52,13 +50,9 @@ const TabLayout = () => {
           name="trucks"
           options={{
             title: 'Trucks',
-            href:
-              userData?.type === 'Owner' ||
-              userData?.type === 'OwnerDriver' ||
-              userData?.type === 'Coordinator' ||
-              userData?.type === 'CoordinatorDriver'
-                ? { pathname: '/home/trucks' }
-                : null,
+            href: isTrucksEnabled(userData)
+              ? { pathname: '/home/trucks' }
+              : null,
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons
                 name="format-list-text"
@@ -72,13 +66,7 @@ const TabLayout = () => {
           name="map"
           options={{
             title: 'Map',
-            href:
-              userData?.type === 'Owner' ||
-              userData?.type === 'OwnerDriver' ||
-              userData?.type === 'Coordinator' ||
-              userData?.type === 'CoordinatorDriver'
-                ? { pathname: '/home/map' }
-                : null,
+            href: isMapEnabled(userData) ? { pathname: '/home/map' } : null,
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons
                 name="map-outline"

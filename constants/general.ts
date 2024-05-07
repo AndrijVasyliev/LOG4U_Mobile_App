@@ -9,6 +9,13 @@ export const FETCH_TIMEOUT = 15000;
 export const BACKEND_ORIGIN = 'https://mobile.4u-logistics.com';
 // export const BACKEND_ORIGIN = 'https://admin-test-lt5d.onrender.com';
 // export const BACKEND_ORIGIN = 'http://192.168.0.148:8181';
+export const GOOGLE_GEOCODE_API =
+  'https://maps.googleapis.com/maps/api/geocode/';
+export const GOOGLE_PLACES_API =
+  'https://maps.googleapis.com/maps/api/place/autocomplete/';
+export const GOOGLE_RESPONSE_TYPE = 'json';
+export const GOOGLE_API_KEY_IOS = 'AIzaSyA0s5QTfaGUrGr2rq6YQNiWlRLBm2iWfks';
+export const GOOGLE_API_KEY_ANDROID = 'AIzaSyAXrZIMXhNiPaw03zrG7fQQH9hZhP0exCk';
 export const BACKEND_PREFIX = 'mobileApp';
 export const SET_AUTH_PATH = `${BACKEND_PREFIX}/setAuth`;
 export const SET_APP_DATA_PATH = `${BACKEND_PREFIX}/setAppData`;

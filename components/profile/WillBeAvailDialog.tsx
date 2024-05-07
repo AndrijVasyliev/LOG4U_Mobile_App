@@ -5,11 +5,18 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-import { COLORS } from '../../constants';
+import {
+  COLORS,
+  FETCH_TIMEOUT,
+  GOOGLE_GEOCODE_API,
+  GOOGLE_RESPONSE_TYPE,
+} from '../../constants';
 import ModalButton from '../common/modalButton';
 import LocationInput from './locationInput';
 import DateTimeInput from './dateTimeInput';
+import { getGoogleApiKey } from '../../utils/getGoogleApiKey';
 
 const WillBeAvailableDialog = ({
   visible,
@@ -25,6 +32,7 @@ const WillBeAvailableDialog = ({
   close: VoidFunction;
 }) => {
   const [location, setLocation] = React.useState<[number, number] | null>(null);
+  const [locationLoading, setLocationLoading] = React.useState<boolean>(false);
   const [date, setDate] = React.useState<Date | null>(null);
 
   React.useEffect(() => {
@@ -33,6 +41,57 @@ const WillBeAvailableDialog = ({
       setDate(null);
     }
   }, [visible]);
+
+  const handleSetLocation = (placeId: string) => {
+    if (!placeId) {
+      return;
+    }
+    setLocationLoading(true);
+    const uri = new URL(GOOGLE_RESPONSE_TYPE, GOOGLE_GEOCODE_API);
+    uri.searchParams.set('place_id', placeId);
+    uri.searchParams.set('key', getGoogleApiKey());
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+    const init = {
+      method: 'GET',
+      signal: controller.signal,
+    };
+    console.log(
+      `Geocoding Places for ${uri.toString()}: ${JSON.stringify(init)}`,
+    );
+    fetch(uri, init)
+      .then((response) => {
+        console.log(
+          'Geocode response status code: ',
+          response && response.status,
+        );
+        if (!response || response.status !== 200) {
+          throw new Error('Incorrect or no response');
+        }
+        return response;
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(JSON.stringify(response.results));
+        if (
+          response?.results?.length &&
+          response.results[0]?.geometry?.location
+        ) {
+          const location = response.results[0]?.geometry?.location;
+          setLocation([location.lat, location.lng]);
+        } else {
+          setLocation(null);
+        }
+      })
+      .catch((error) => {
+        console.log('Error Geocoding for Place', error);
+        setLocation(null);
+      })
+      .finally(() => {
+        clearTimeout(timeoutId);
+        setLocationLoading(false);
+      });
+  };
 
   const setWillBeAvailable = () => {
     onStateChange('Will be available', location, date);
@@ -55,7 +114,7 @@ const WillBeAvailableDialog = ({
         </TouchableWithoutFeedback>
         <View style={styles.dialogPaper}>
           <View style={styles.dialogContents}>
-            <LocationInput onSet={setLocation} />
+            <LocationInput onSet={handleSetLocation} />
             <View style={styles.spacer}></View>
             <DateTimeInput onSet={setDate} />
           </View>
@@ -70,6 +129,7 @@ const WillBeAvailableDialog = ({
           </View>
         </View>
       </View>
+      <Spinner visible={locationLoading} textContent={'Setting location...'} />
     </Modal>
   );
 };

@@ -1,12 +1,21 @@
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import * as Location from 'expo-location';
+// import * as Location from 'expo-location';
 import DropDownPicker, { ItemType } from 'react-native-dropdown-picker';
-import { COLORS, GEOCODING_THROTTLE_INTERVAL } from '../../constants';
+import {
+  // BACKEND_ORIGIN,
+  COLORS,
+  FETCH_TIMEOUT,
+  GEOCODING_THROTTLE_INTERVAL,
+  GOOGLE_PLACES_API,
+  GOOGLE_RESPONSE_TYPE,
+  // SET_LOCATION_PATH
+} from '../../constants';
 import { throttle } from '../../utils/throttle';
+import { getGoogleApiKey } from '../../utils/getGoogleApiKey';
 
-const toFormattedAddress = (
+/*const toFormattedAddress = (
   geocodedResult: Location.LocationGeocodedAddress,
 ): string => {
   try {
@@ -27,25 +36,22 @@ const toFormattedAddress = (
   } catch (error) {
     return '';
   }
-};
+};*/
 
-const LocationInput = ({
-  onSet,
-}: {
-  onSet: (newValue: [number, number]) => void;
-}) => {
+const LocationInput = ({ onSet }: { onSet: (newValue: string) => void }) => {
   const [locationOpen, setLocationOpen] = React.useState<boolean>(false);
   const [locationLoading, setLocationLoading] = React.useState<boolean>(false);
-  const [locationValue, setLocationValue] = React.useState<number>(NaN);
+  const [locationValue, setLocationValue] = React.useState<string>('');
   const [locationSearchValue, setLocationSearchValue] =
     React.useState<string>('');
-  const [locationItems, setLocationItems] = React.useState<ItemType<number>[]>(
+  const [locationItems, setLocationItems] = React.useState<ItemType<string>[]>(
     [],
   );
 
   React.useEffect(() => {
     if (!locationOpen && !Number.isNaN(locationValue)) {
-      const selected = locationItems.find(
+      onSet(locationValue);
+      /*const selected = locationItems.find(
         (item) => item.value === locationValue,
       );
       const value =
@@ -60,12 +66,12 @@ const LocationInput = ({
           //@ts-expect-error
           selected.coordsElement.longitude as number,
         ] as [number, number]);
-      onSet(value);
+      onSet(value);*/
     }
   }, [locationOpen]);
 
   React.useEffect(() => {
-    setLocationValue(NaN);
+    setLocationValue('');
   }, [locationItems]);
 
   React.useEffect(() => {
@@ -73,6 +79,52 @@ const LocationInput = ({
   }, [locationSearchValue]);
 
   const handleSearchChange = (value: string) => {
+    if (!value) {
+      return;
+    }
+    setLocationLoading(true);
+    const uri = new URL(GOOGLE_RESPONSE_TYPE, GOOGLE_PLACES_API);
+    uri.searchParams.set('input', value);
+    uri.searchParams.set('key', getGoogleApiKey());
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+    const init = {
+      method: 'GET',
+      signal: controller.signal,
+    };
+    console.log(
+      `Getting Places for ${uri.toString()}: ${JSON.stringify(init)}`,
+    );
+    fetch(uri, init)
+      .then((response) => {
+        if (!response || response.status !== 200) {
+          throw new Error('Incorrect or no response');
+        }
+        return response;
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(JSON.stringify(response.predictions));
+        const locationItems = [];
+        response?.predictions?.forEach((place) =>
+          locationItems.push({
+            label: place.description,
+            value: place.place_id,
+          }),
+        );
+        setLocationItems(locationItems);
+      })
+      .catch((error) => {
+        console.log('Error getting Places', error);
+        setLocationItems([]);
+      })
+      .finally(() => {
+        clearTimeout(timeoutId);
+        setLocationLoading(false);
+      });
+  };
+
+  /*const handleSearchChange = (value: string) => {
     setLocationLoading(true);
     Location.geocodeAsync(value)
       .then((value) => {
@@ -102,10 +154,10 @@ const LocationInput = ({
                   }),
               ),
           );
-        } /* else {
+        } /!* else {
           setLocationItems([]);
         }
-        setLocationLoading(false);*/
+        setLocationLoading(false);*!/
       })
       .then((res) => {
         if (res && res.length) {
@@ -130,7 +182,7 @@ const LocationInput = ({
                 }),
               );
           } catch (error) {
-            /* empty */
+            /!* empty *!/
           }
           setLocationItems(locationItems);
         } else {
@@ -142,7 +194,7 @@ const LocationInput = ({
         setLocationItems([]);
         setLocationLoading(false);
       });
-  };
+  };*/
 
   const throttledSearch = React.useMemo(
     () => throttle(handleSearchChange, GEOCODING_THROTTLE_INTERVAL),
@@ -151,7 +203,7 @@ const LocationInput = ({
 
   return (
     <View style={styles.container}>
-      <DropDownPicker<number>
+      <DropDownPicker<string>
         disableBorderRadius={false}
         modalAnimationType="slide"
         placeholder="Select Location"

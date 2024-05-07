@@ -18,6 +18,7 @@ import {
 import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
+import { isMapEnabled } from '../../utils/isEnabled';
 
 const Map = () => {
   const [changedAt, setChangedAt] = React.useState<number>(0);
@@ -34,7 +35,10 @@ const Map = () => {
   useFocusEffect(
     React.useCallback(() => {
       console.log('Map screen is focused');
-      setChangedAt(Date.now());
+      if (isMapEnabled(userData)) {
+        console.log('Map updating');
+        setChangedAt(Date.now());
+      }
       return () => {
         console.log('Map screen is unfocused');
       };

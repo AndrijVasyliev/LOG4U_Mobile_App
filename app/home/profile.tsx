@@ -9,6 +9,7 @@ import { images, BACKEND_ORIGIN, GET_DRIVER_PATH } from '../../constants';
 import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
+import { isProfileEnabled } from '../../utils/isEnabled';
 
 const Profile = () => {
   const [changedAt, setChangedAt] = React.useState<number>(0);
@@ -16,13 +17,16 @@ const Profile = () => {
   const [truck, setTruck] = React.useState<Record<string, any> | null>(null);
   const [profileError, setProfileError] = React.useState<string>('');
 
-  const [, setUserData] = useUserData();
+  const [userData, setUserData] = useUserData();
   const router = useRouter();
 
   useFocusEffect(
     React.useCallback(() => {
       console.log('Profile screen is focused');
-      setChangedAt(Date.now());
+      if (isProfileEnabled(userData)) {
+        console.log('Profile updating');
+        setChangedAt(Date.now());
+      }
       return () => {
         console.log('Profile screen is unfocused');
       };

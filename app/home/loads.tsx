@@ -9,6 +9,7 @@ import { images, BACKEND_ORIGIN, GET_LOADS_PATH } from '../../constants';
 import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
+import { isLoadsEnabled } from '../../utils/isEnabled';
 
 const Loads = () => {
   const [changedAt, setChangedAt] = React.useState<number>(0);
@@ -16,13 +17,16 @@ const Loads = () => {
   const [loads, setLoads] = React.useState<Record<string, any>[] | null>(null);
   const [loadError, setLoadError] = React.useState<string>('');
 
-  const [, setUserData] = useUserData();
+  const [userData, setUserData] = useUserData();
   const router = useRouter();
 
   useFocusEffect(
     React.useCallback(() => {
       console.log('Loads screen is focused');
-      setChangedAt(Date.now());
+      if (isLoadsEnabled(userData)) {
+        console.log('Loads updating');
+        setChangedAt(Date.now());
+      }
       return () => {
         console.log('Loads screen is unfocused');
       };

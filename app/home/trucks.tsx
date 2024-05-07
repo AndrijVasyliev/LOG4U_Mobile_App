@@ -21,6 +21,7 @@ import {
 import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
+import { isTrucksEnabled } from '../../utils/isEnabled';
 
 const Trucks = () => {
   const [changedAt, setChangedAt] = React.useState<number>(0);
@@ -39,7 +40,10 @@ const Trucks = () => {
   useFocusEffect(
     React.useCallback(() => {
       console.log('Trucks screen is focused');
-      setChangedAt(Date.now());
+      if (isTrucksEnabled(userData)) {
+        console.log('Trucks updating');
+        setChangedAt(Date.now());
+      }
       return () => {
         console.log('Trucks screen is unfocused');
       };
