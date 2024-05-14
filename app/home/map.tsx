@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, Text, ImageBackground, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useFocusEffect, useRouter } from 'expo-router';
+import * as Location from 'expo-location';
 import { A } from '@expo/html-elements';
 import MapView, {
   Marker,
@@ -19,6 +20,7 @@ import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 import { isMapEnabled } from '../../utils/isEnabled';
+import { toFormattedLocation } from '../../utils/toFormattedLocation';
 
 const Map = () => {
   const [changedAt, setChangedAt] = React.useState<number>(0);
@@ -79,7 +81,22 @@ const Map = () => {
                 trucks = person?.ownTrucks ? person.ownTrucks : [];
                 break;
             }
-            setTrucks(trucks.filter((truck) => truck.lastLocation));
+            trucks = trucks.filter((truck) => truck.lastLocation);
+            await Promise.all(
+              trucks.map((truck) =>
+                Location.reverseGeocodeAsync({
+                  latitude: truck.lastLocation[0],
+                  longitude: truck.lastLocation[1],
+                })
+                  .then((geocodeRes) => toFormattedLocation(geocodeRes[0]))
+                  .catch(() => ''),
+              ),
+            ).then((geocodedResults) =>
+              trucks.forEach(
+                (truck, index) => (truck.lastCity = geocodedResults[index]),
+              ),
+            );
+            setTrucks(trucks);
             setMapError('');
             setIsLoading(false);
           } catch (error) {
@@ -160,7 +177,7 @@ const Map = () => {
                     </A>
                     <Text
                       style={styles.calloutText}
-                    >{`${truck?.lastCity ? truck.lastCity.name + ', ' + truck.lastCity.stateCode + ', ' + truck.lastCity.zipCode : ''}`}</Text>
+                    >{`${truck?.lastCity ? truck.lastCity : ''}`}</Text>
                   </View>
                 </Callout>
               </Marker>

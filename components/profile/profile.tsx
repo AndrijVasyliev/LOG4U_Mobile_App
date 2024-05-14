@@ -10,28 +10,9 @@ import UserDataItem from './UserDataItem';
 import FileList from './fileList';
 import { BACKEND_ORIGIN, COLORS, UPDATE_TRUCK_PATH } from '../../constants';
 import { authFetch } from '../../utils/authFetch';
+import { toFormattedLocation } from '../../utils/toFormattedLocation';
 
 const truckStatuses = ['Will be available', 'Available', 'Not Available'];
-
-const toFormattedLocation = (
-  geocodedResult: Location.LocationGeocodedAddress,
-): string => {
-  try {
-    const city = `${geocodedResult.city ? geocodedResult.city : ''}`;
-    const region = `${geocodedResult.region ? geocodedResult.region : ''}`;
-    const country = `${geocodedResult.country ? geocodedResult.country : ''}`;
-    const postalCode = `${geocodedResult.postalCode ? geocodedResult.postalCode : ''}`;
-    let res = city;
-    if (!res) {
-      res = res + `${res && region ? ', ' : ''}` + region;
-      res = res + `${res && country ? ', ' : ''}` + country;
-    }
-    res = res + `${res && postalCode ? ', ' : ''}` + postalCode;
-    return res;
-  } catch (error) {
-    return '';
-  }
-};
 
 const Profile = ({
   truck,
