@@ -222,7 +222,7 @@ const LocationInput = ({ onSet }: { onSet: (newValue: string) => void }) => {
         dropDownContainerStyle={styles.dropdownContainer}
         searchContainerStyle={styles.dropdownSearchContainer}
         searchTextInputStyle={styles.dropdownSearch}
-        listMode="FLATLIST"
+        listMode="SCROLLVIEW"
         labelProps={{
           numberOfLines: 2,
         }}

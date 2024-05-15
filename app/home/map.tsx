@@ -123,11 +123,15 @@ const Map = () => {
 
   React.useEffect(() => {
     if (mapRef.current && trucks) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      mapRef.current.fitToSuppliedMarkers(trucks.map((truck) => truck.id));
+      setTimeout(
+        () =>
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          mapRef.current.fitToSuppliedMarkers(trucks.map((truck) => truck.id)),
+        1,
+      );
     }
-  }, [trucks]);
+  }, [mapRef.current, trucks]);
 
   return (
     <ImageBackground
@@ -142,6 +146,7 @@ const Map = () => {
           <MapView
             ref={mapRef}
             /*provider={PROVIDER_GOOGLE}*/
+            loadingEnabled={true}
             style={styles.map}
           >
             {trucks?.map((truck) => (

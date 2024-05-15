@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
   containerContent: {
     alignItems: 'center',
     justifyContent: 'flex-start',
+    width: '100%',
   },
   head: {
     fontSize: 18,

@@ -349,18 +349,21 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     flex: 1,
     justifyContent: 'center',
+    width: '100%',
   },
   controlsWrapper: {
     flex: 3,
     flexDirection: 'column',
     paddingLeft: '5%',
     paddingRight: '5%',
+    width: '100%',
   },
   headerText: { fontSize: 25 },
-  scroll: { flex: 1 },
+  scroll: { flex: 1, width: '100%' },
   scrollContainer: {
     marginBottom: 'auto',
     marginTop: 'auto',
+    width: '100%',
   },
 });
 
