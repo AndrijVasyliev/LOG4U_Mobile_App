@@ -12,6 +12,7 @@ export type UserData = {
     | 'Coordinator'
     | 'CoordinatorDriver';
   deviceId: string;
+  useGoogleMaps?: boolean;
 };
 
 export const UserDataContext = React.createContext<

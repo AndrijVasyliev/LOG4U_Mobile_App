@@ -2,7 +2,7 @@
   "expo": {
     "name": "4U TRACK",
     "slug": "LOG4U",
-    "version": "1.2.14",
+    "version": "1.2.15",
     "runtimeVersion": {
       "policy": "appVersion"
     },
@@ -40,7 +40,7 @@
       "package": "com.log4u",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyAXrZIMXhNiPaw03zrG7fQQH9hZhP0exCk"
+          "apiKey": "AIzaSyAMYnJBvj6xChSaS3em70ulDcP961BQ6pk"
         }
       }
     },
@@ -52,7 +52,7 @@
     "ios": {
       "bundleIdentifier": "com.log4u",
       "config": {
-        "googleMapsApiKey": "AIzaSyA0s5QTfaGUrGr2rq6YQNiWlRLBm2iWfks"
+        "googleMapsApiKey": "AIzaSyAViHHWTbT2p_SnNdQwUOQFFC9jba2XPvU"
       },
       "infoPlist": {
         "UIBackgroundModes": ["location", "fetch"]

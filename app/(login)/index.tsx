@@ -51,6 +51,7 @@ export type Person = {
   fullName: string;
   appLogin: string;
   deviceId: string;
+  useGoogleMaps?: boolean;
 };
 
 const Login = () => {

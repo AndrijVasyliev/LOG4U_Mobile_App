@@ -1,13 +1,16 @@
 import * as React from 'react';
-import { View, Text, ImageBackground, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  ImageBackground,
+  StyleSheet,
+  Platform,
+} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useFocusEffect, useRouter } from 'expo-router';
 import * as Location from 'expo-location';
 import { A } from '@expo/html-elements';
-import MapView, {
-  Marker,
-  Callout /*, PROVIDER_GOOGLE*/,
-} from 'react-native-maps';
+import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 
 import ErrorText from '../../components/common/ErrorText';
 import {
@@ -145,7 +148,11 @@ const Map = () => {
         ) : (
           <MapView
             ref={mapRef}
-            /*provider={PROVIDER_GOOGLE}*/
+            provider={
+              Platform.OS === 'android' || userData?.useGoogleMaps
+                ? PROVIDER_GOOGLE
+                : undefined
+            }
             loadingEnabled={true}
             style={styles.map}
           >
