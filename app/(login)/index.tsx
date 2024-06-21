@@ -20,7 +20,7 @@ import PasswordInput from '../../components/login/passwordInput';
 import LoginButton from '../../components/login/loginButton';
 import LoginErrorText from '../../components/login/loginErrorText';
 import WelcomeText from '../../components/login/wellcomeText';
-import { startLocation } from '../../utils/location';
+import { AdditionalLocationOptions, startLocation } from '../../utils/location';
 import {
   BACKEND_ORIGIN,
   COLORS,
@@ -49,9 +49,11 @@ export type Person = {
     | 'Coordinator'
     | 'CoordinatorDriver';
   fullName: string;
+  isAppInDebugMode?: boolean;
   appLogin: string;
   deviceId: string;
   useGoogleMaps?: boolean;
+  locationOptions?: AdditionalLocationOptions;
 };
 
 const Login = () => {
@@ -195,7 +197,7 @@ const Login = () => {
                 person.type === 'OwnerDriver' ||
                 person.type === 'CoordinatorDriver'
               ) {
-                await startLocation(true).catch(
+                await startLocation(person.locationOptions).catch(
                   (reason) =>
                     console.log('Error starting location from login', reason),
                   // setLoginError(`Location: ${JSON.stringify(reason)}`)

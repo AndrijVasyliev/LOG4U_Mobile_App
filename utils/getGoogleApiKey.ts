@@ -8,4 +8,4 @@ export const getGoogleApiKey = () => {
   if (Platform.OS === 'ios') {
     return GOOGLE_API_KEY_IOS;
   }
-}
+};

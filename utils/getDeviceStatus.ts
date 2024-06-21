@@ -1,7 +1,6 @@
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import * as Application from 'expo-application';
-import * as Location from 'expo-location';
 
 export const getDeviceStatus = async (): Promise<Record<string, any>> => {
   const {
@@ -33,17 +32,14 @@ export const getDeviceStatus = async (): Promise<Record<string, any>> => {
     maxMemory,
     appInstalledAt,
     appUpdatedAt,
-    locationProviderStatus,
   ] = await Promise.all([
     Device.getUptimeAsync(),
     Platform.OS === 'android' ? Device.getMaxMemoryAsync() : null,
     Application.getInstallationTimeAsync(),
     Platform.OS === 'android' ? Application.getLastUpdateTimeAsync() : null,
-    Location.getProviderStatusAsync(),
   ]);
   return {
     uptime,
-    locationProviderStatus,
     deviceName,
     app: {
       appInstalledAt,

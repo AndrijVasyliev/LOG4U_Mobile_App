@@ -9,12 +9,18 @@ export const getAppPermissions = async (): Promise<Record<string, any>> => {
     prominentDisclosureStatus,
     trackingTransparencyStatus,
     notificationsStatus,
+    providerStatus,
+    serviceEnabled,
+    locationAvailable,
     foregroundLocationPermissionStatus,
     backgroundLocationPermissionStatus,
   ] = await Promise.all([
     AsyncStorage.getItem(STORAGE_USER_PD_STATUS),
     TrackingTransparency.getTrackingPermissionsAsync(),
     Notifications.getPermissionsAsync(),
+    Location.getProviderStatusAsync(),
+    Location.hasServicesEnabledAsync(),
+    Location.isBackgroundLocationAvailableAsync(),
     Location.getForegroundPermissionsAsync(),
     Location.getBackgroundPermissionsAsync(),
   ]);
@@ -25,7 +31,12 @@ export const getAppPermissions = async (): Promise<Record<string, any>> => {
     },
     trackingTransparencyStatus,
     notificationsStatus,
-    foregroundLocationPermissionStatus,
-    backgroundLocationPermissionStatus,
+    locationStatus: {
+      providerStatus,
+      serviceEnabled,
+      locationAvailable,
+      foregroundLocationPermissionStatus,
+      backgroundLocationPermissionStatus,
+    },
   };
 };

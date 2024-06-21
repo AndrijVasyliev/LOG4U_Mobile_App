@@ -13,7 +13,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 
 import '../utils/abortSignal';
-import { startLocation } from '../utils/location';
 import { COLORS } from '../constants';
 import { UserDataProvider } from '../providers/userData';
 import HeaderLogo from '../components/common/headerLogo';
@@ -23,10 +22,6 @@ import HeaderButton from '../components/common/headerButton';
 SplashScreen.preventAutoHideAsync().catch((reason) =>
   /* reloading the app might trigger some race conditions, ignore them */
   console.log('Error in prevent splash screen', reason),
-);
-
-startLocation().catch((reason) =>
-  console.log('Error starting location from start', reason),
 );
 
 export {
