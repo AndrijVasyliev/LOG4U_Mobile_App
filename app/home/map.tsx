@@ -54,6 +54,7 @@ const Map = () => {
     if (!changedAt) {
       return;
     }
+    const updateId = changedAt;
     setIsLoading(true);
     let path = '';
     switch (userData?.type) {
@@ -85,23 +86,27 @@ const Map = () => {
                 break;
             }
             trucks = trucks.filter((truck) => truck.lastLocation);
+            trucks.forEach((truck) => (truck.lastCity = 'Loading ...'));
+            setTrucks(trucks);
+            setMapError('');
+            setIsLoading(false);
+
             await Promise.all(
-              trucks.map((truck) =>
+              trucks.map((truck, index) =>
                 Location.reverseGeocodeAsync({
                   latitude: truck.lastLocation[0],
                   longitude: truck.lastLocation[1],
                 })
                   .then((geocodeRes) => toFormattedLocation(geocodeRes[0]))
-                  .catch(() => ''),
-              ),
-            ).then((geocodedResults) =>
-              trucks.forEach(
-                (truck, index) => (truck.lastCity = geocodedResults[index]),
+                  .then((geocodedResult) => {
+                    if (updateId === changedAt) {
+                      trucks[index].lastCity = geocodedResult;
+                      setTrucks([...trucks]);
+                    }
+                  })
+                  .catch(() => (trucks[index].lastCity = 'Error geocoding.')),
               ),
             );
-            setTrucks(trucks);
-            setMapError('');
-            setIsLoading(false);
           } catch (error) {
             setMapError(`Incorrect response from server: ${error.message}`);
           }

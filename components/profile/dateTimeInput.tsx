@@ -5,6 +5,7 @@ import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 import { SingleChange } from 'react-native-ui-datepicker/src/types';
 import ModalButton from '../common/modalButton';
 import { COLORS } from '../../constants';
+import { toCorrected } from '../../utils/dateTimeConverters';
 
 const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
   const [pickerVisible, setPickerVisible] = React.useState<boolean>(false);
@@ -20,7 +21,7 @@ const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
     setPickerVisible(false);
   };
   const handleSet = () => {
-    onSet(dayjs(date).toDate());
+    onSet(toCorrected(dayjs(date).toDate()));
     setPickerVisible(false);
   };
 

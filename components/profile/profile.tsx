@@ -11,6 +11,8 @@ import FileList from './fileList';
 import { BACKEND_ORIGIN, COLORS, UPDATE_TRUCK_PATH } from '../../constants';
 import { authFetch } from '../../utils/authFetch';
 import { toFormattedLocation } from '../../utils/toFormattedLocation';
+import { fromISOCorrected } from '../../utils/dateTimeConverters';
+import { dateTimeFormatter } from '../../utils/dateTimeFormatters';
 
 const truckStatuses = ['Will be available', 'Available', 'Not Available'];
 
@@ -233,7 +235,9 @@ const Profile = ({
           <UserDataItem
             iconName="timeline-clock"
             value={`${
-              truck ? new Date(truck.availabilityAt).toDateString() : ''
+              truck
+                ? dateTimeFormatter.format(fromISOCorrected(truck.availabilityAt))
+                : ''
             }`}
             fieldName="Will be at"
           />
