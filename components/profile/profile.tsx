@@ -91,17 +91,17 @@ const Profile = ({
   const handleChangeState = (
     value: string,
     availabilityLocation?: [number, number],
-    availabilityAt?: Date,
+    availabilityAtLocal?: Date,
   ) => {
     setIsLoading(true);
     const data: {
       status: string;
       availabilityLocation?: [number, number];
-      availabilityAt?: Date;
+      availabilityAtLocal?: Date;
     } = {
       status: value,
       availabilityLocation,
-      availabilityAt,
+      availabilityAtLocal,
     };
     authFetch(new URL(`${UPDATE_TRUCK_PATH}/${truck.id}`, BACKEND_ORIGIN), {
       method: 'PATCH',
@@ -120,9 +120,9 @@ const Profile = ({
   const handleStateChange = (
     value: string,
     availabilityLocation?: [number, number],
-    availabilityAt?: Date,
+    availabilityAtLocal?: Date,
   ) => {
-    handleChangeState(value, availabilityLocation, availabilityAt);
+    handleChangeState(value, availabilityLocation, availabilityAtLocal);
     setWillBeDialogVisible(false);
   };
   const handleWillBeDialogClose = () => {
@@ -236,7 +236,9 @@ const Profile = ({
             iconName="timeline-clock"
             value={`${
               truck
-                ? dateTimeFormatter.format(fromISOCorrected(truck.availabilityAt))
+                ? dateTimeFormatter.format(
+                    fromISOCorrected(truck.availabilityAtLocal),
+                  )
                 : ''
             }`}
             fieldName="Will be at"

@@ -27,7 +27,7 @@ const WillBeAvailableDialog = ({
   onStateChange: (
     newSatus: 'Will be available',
     availabilityLocation: [number, number],
-    availabilityAt: Date,
+    availabilityAtLocal: Date,
   ) => void;
   close: VoidFunction;
 }) => {
