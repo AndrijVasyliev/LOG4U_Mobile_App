@@ -235,7 +235,7 @@ const Profile = ({
           <UserDataItem
             iconName="timeline-clock"
             value={`${
-              truck
+              truck && truck.availabilityAtLocal
                 ? dateTimeFormatter.format(
                     fromISOCorrected(truck.availabilityAtLocal),
                   )
