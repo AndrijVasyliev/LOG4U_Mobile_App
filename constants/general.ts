@@ -9,6 +9,7 @@ export const FETCH_TIMEOUT = 15000;
 export const BACKEND_ORIGIN = 'https://mobile.4u-logistics.com';
 // export const BACKEND_ORIGIN = 'https://admin-test-lt5d.onrender.com';
 // export const BACKEND_ORIGIN = 'http://192.168.0.148:8181';
+// export const BACKEND_ORIGIN = 'http://172.20.10.2:8181';
 export const GOOGLE_GEOCODE_API =
   'https://maps.googleapis.com/maps/api/geocode/';
 export const GOOGLE_PLACES_API =
