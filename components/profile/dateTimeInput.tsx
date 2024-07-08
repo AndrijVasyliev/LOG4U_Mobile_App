@@ -47,7 +47,7 @@ const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
                 selectedItemColor={COLORS.primary}
                 displayFullDays={true}
                 timePicker={true}
-                minDate={new Date()}
+                minDate={new Date(Date.now() - 24 * 60 * 60 * 1000)}
                 date={date}
                 onChange={handleDateChange}
               />
