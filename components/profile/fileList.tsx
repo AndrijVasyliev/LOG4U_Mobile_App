@@ -15,13 +15,16 @@ import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 import { useRouter } from 'expo-router';
 import ErrorText from '../common/ErrorText';
 
+export const FILE_OF_TYPES = ['Truck', 'Person', 'Load'] as const;
+export type FileOfType = (typeof FILE_OF_TYPES)[number];
+
 const FileList = ({
   objectId,
   objectType,
   caption,
 }: {
   objectId?: string;
-  objectType?: 'Truck' | 'Person';
+  objectType?: FileOfType;
   caption: string;
 }) => {
   const [changedAt, setChangedAt] = React.useState<number>(0);
@@ -50,7 +53,7 @@ const FileList = ({
     setIsLoading(true);
     authFetch(
       new URL(
-        `${FILES_PATH}?limit=${MAX_FILES_TO_LOAD}&offset=0&${objectType.toLowerCase()}=${objectId}`,
+        `${FILES_PATH}?limit=${MAX_FILES_TO_LOAD}&offset=0&linkedTo=${objectId}&fileOf=${objectType}`,
         BACKEND_ORIGIN,
       ),
       { method: 'GET' },
