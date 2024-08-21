@@ -8,7 +8,7 @@ const UserDataItem = ({
   value,
   fieldName,
 }: {
-  iconName: string;
+  iconName?: string;
   value: string;
   fieldName: string;
 }) => {

@@ -1,11 +1,22 @@
 import * as React from 'react';
-import { ScrollView, ImageBackground, StyleSheet } from 'react-native';
+import {
+  ScrollView,
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useFocusEffect, useRouter } from 'expo-router';
 
 import Load from '../../components/loads/Load';
 import ErrorText from '../../components/common/ErrorText';
-import { images, BACKEND_ORIGIN, GET_LOADS_PATH } from '../../constants';
+import {
+  images,
+  BACKEND_ORIGIN,
+  GET_LOADS_PATH,
+  COLORS,
+} from '../../constants';
 import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
@@ -16,6 +27,9 @@ const Loads = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [loads, setLoads] = React.useState<Record<string, any>[] | null>(null);
   const [loadError, setLoadError] = React.useState<string>('');
+  const [selectedLoadId, setSelectedLoadId] = React.useState<string | null>(
+    null,
+  );
 
   const [userData, setUserData] = useUserData();
   const router = useRouter();
@@ -81,7 +95,20 @@ const Loads = () => {
         {loadError ? (
           <ErrorText errMessage={loadError} />
         ) : (
-          loads?.map((load) => <Load key={load.id} load={load} />)
+          loads?.map((load) => (
+            <View key={load.id} style={styles.loadContainer}>
+              <TouchableOpacity
+                style={styles.touchableLoadContainer}
+                onPress={() =>
+                  setSelectedLoadId((prev) =>
+                    prev === load.id ? null : load.id,
+                  )
+                }
+              >
+                <Load load={load} expanded={selectedLoadId === load.id} />
+              </TouchableOpacity>
+            </View>
+          ))
         )}
         <Spinner visible={isLoading} textContent={'Loading loads list...'} />
       </ScrollView>
@@ -97,6 +124,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     width: '100%',
   },
+  loadContainer: {
+    borderColor: COLORS.gray,
+    borderRadius: 10,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    height: 'auto',
+    marginTop: 5,
+    width: '100%',
+  },
   scroll: {
     flexDirection: 'column',
     height: '100%',
@@ -106,6 +142,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
+  touchableLoadContainer: {},
 });
 
 export default Loads;
