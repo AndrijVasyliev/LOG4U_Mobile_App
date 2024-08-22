@@ -19,7 +19,11 @@ const Load = ({
           >{`Load # ${load?.loadNumber} (${load.status})`}</Text>
         </View>
         <Text style={styles.loadMilesText}>{`${
-          load?.milesByRoads ? load.milesByRoads.toFixed(2) : '?'
+          load?.milesByRoads
+            ? load.milesByRoads.toFixed(2)
+            : load?.milesHaversine
+              ? 'Approx. ' + load.milesHaversine.toFixed(2)
+              : '?'
         } Miles`}</Text>
       </View>
       {expanded ? null : (
