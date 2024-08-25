@@ -38,6 +38,7 @@
     },
     "android": {
       "package": "com.log4u",
+      "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAMYnJBvj6xChSaS3em70ulDcP961BQ6pk"
