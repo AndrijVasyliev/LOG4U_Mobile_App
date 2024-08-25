@@ -32,7 +32,7 @@ import {
   STORAGE_USER_PD_STATUS,
   SET_APP_DATA_PATH,
 } from '../../constants';
-import { useUserData } from '../../hooks/userData';
+import { UserData, useUserData } from '../../hooks/userData';
 import { getDeviceId } from '../../utils/deviceId';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
@@ -240,7 +240,7 @@ const Login = () => {
             }
             if (mobileDataResp.status === 200) {
               setIsAutentificating(false);
-              setUserData({ ...person, appPassword: pas });
+              setUserData({ ...person, appPassword: pas } as UserData);
               if (person.type === 'Owner' || person.type === 'Coordinator') {
                 router.navigate('/home/trucks');
               } else {
