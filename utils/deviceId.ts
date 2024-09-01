@@ -16,7 +16,7 @@ export const getDeviceId = async () => {
       deviceId = 't:' + uuidv4().toString();
     }
   } catch (error) {
-    console.log('Error, getting device Id: ', error);
+    console.log('Error getting device Id: ', error);
   }
   return deviceId;
 };

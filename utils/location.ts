@@ -67,7 +67,7 @@ const startLocation = async (addLocationParams: AdditionalLocationOptions) => {
     }
     console.log('Permission to access location present');
   } catch (error) {
-    console.log('Error, getting permissions: ', error);
+    console.log('Error getting permissions: ', error);
     isStarting = false;
     return;
   }
@@ -88,7 +88,7 @@ const startLocation = async (addLocationParams: AdditionalLocationOptions) => {
     const currentLocation = await getLocation();
     await throttledSendLocation(currentLocation);
   } catch (e) {
-    console.log(`Error, while starting location: ${e.message}`);
+    console.log(`Error starting location: ${e.message}`);
     isStarting = false;
     return;
   }
@@ -188,26 +188,29 @@ const throttledSendLocation = throttle(sendLocation, FETCH_TIMEOUT * 3);
 
 if (!TaskManager.isTaskDefined(LOCATION_TRACKING)) {
   console.log('Registering: ', LOCATION_TRACKING);
-  TaskManager.defineTask(LOCATION_TRACKING, async ({ data, error }) => {
-    console.log(`${new Date().toISOString()}: Location task`);
+  TaskManager.defineTask<{ locations: Location.LocationObject[] }>(
+    LOCATION_TRACKING,
+    async ({ data, error, executionInfo }) => {
+      console.log(`${new Date().toISOString()}: Location task`, executionInfo);
 
-    if (error) {
-      console.log('Location task ERROR:', error);
-      return;
-    }
-    if (data) {
-      const { locations } = data as { locations: Location.LocationObject[] };
-      console.log(`Location data: ${JSON.stringify(data)}`);
-      try {
-        const currentLocation = locations[0];
-        await throttledSendLocation(currentLocation);
+      if (error) {
+        console.log('Location task ERROR:', error);
         return;
-      } catch (error) {
-        console.log('Error, sending location', error);
       }
-    }
-    return;
-  });
+      if (data) {
+        const { locations } = data;
+        console.log(`Location data: ${JSON.stringify(data)}`);
+        try {
+          const currentLocation = locations[0];
+          await throttledSendLocation(currentLocation);
+          return;
+        } catch (error) {
+          console.log('Error sending location', error);
+        }
+      }
+      return;
+    },
+  );
 } else {
   console.log('Already registered: ', LOCATION_TRACKING);
 }

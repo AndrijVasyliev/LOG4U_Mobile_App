@@ -28,6 +28,7 @@ export const UPDATE_TRUCK_PATH = `${BACKEND_PREFIX}/updateTruck`;
 export const SET_LOCATION_PATH = `${BACKEND_PREFIX}/setTruckLocation`;
 export const FILES_PATH = `${BACKEND_PREFIX}/file`;
 export const LOCATION_TRACKING = 'location-tracking';
+export const BACKGROUND_NOTIFICATION_TASK = 'background-notification';
 export const BACKGROUND_FETCH_TASK = 'background-fetch';
 export const BACKGROUND_GEOFENCE_TASK = 'background-geofence';
 export const LOCATION_NOTIFICATION_BODY = '4U TRACK is tracking your location';
