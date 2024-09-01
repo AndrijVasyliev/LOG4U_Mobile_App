@@ -69,13 +69,13 @@ if (!TaskManager.isTaskDefined(BACKGROUND_NOTIFICATION_TASK)) {
           payload,
           remoteMessage,
         );
-        Notifications.scheduleNotificationAsync({
+        /*Notifications.scheduleNotificationAsync({
           content: {
             title: 'LOG4U',
             body: `${JSON.stringify(data)}`,
           },
           trigger: null,
-        });
+        });*/
       }
       return;
     },
