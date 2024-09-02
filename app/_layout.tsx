@@ -137,6 +137,7 @@ const Layout = () => {
           },
         );
         if (checkAuthResponse?.status !== 200) {
+          Notifications.removePushTokenSubscription(pushTokenListener);
           console.log('Logged from other device!');
           return;
         }
