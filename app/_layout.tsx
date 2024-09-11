@@ -138,7 +138,11 @@ const Layout = () => {
         );
         if (checkAuthResponse?.status !== 200) {
           Notifications.removePushTokenSubscription(pushTokenListener);
-          console.log('Logged from other device!');
+          if (checkAuthResponse?.status === 412) {
+            console.log('Logged from other device!');
+          } else {
+            console.log('Some error!');
+          }
           return;
         }
         await authFetch(new URL(SET_APP_DATA_PATH, BACKEND_ORIGIN), {
