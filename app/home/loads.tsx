@@ -7,7 +7,12 @@ import {
   View,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { useFocusEffect, useRouter } from 'expo-router';
+import {
+  useFocusEffect,
+  useRouter,
+  usePathname,
+  useLocalSearchParams,
+} from 'expo-router';
 
 import Load from '../../components/loads/Load';
 import ErrorText from '../../components/common/ErrorText';
@@ -27,12 +32,17 @@ const Loads = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [loads, setLoads] = React.useState<Record<string, any>[] | null>(null);
   const [loadError, setLoadError] = React.useState<string>('');
-  const [selectedLoadId, setSelectedLoadId] = React.useState<string | null>(
-    null,
-  );
+
+  const scrollViewRef = React.useRef<ScrollView>(null);
+  const elementRef = React.useRef<Map<string, View>>(new Map());
 
   const [userData, setUserData] = useUserData();
   const router = useRouter();
+  const path = usePathname();
+  const { selectedLoadId, renew } = useLocalSearchParams<{
+    selectedLoadId?: string;
+    renew?: 'data' | 'none';
+  }>();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -46,6 +56,14 @@ const Loads = () => {
       };
     }, []),
   );
+
+  React.useEffect(() => {
+    if (renew === 'data' && !isLoading && isLoadsEnabled(userData)) {
+      console.log('Loads renewing');
+      router.setParams({ renew: 'none' });
+      setChangedAt(Date.now());
+    }
+  }, [renew]);
 
   React.useEffect(() => {
     if (!changedAt) {
@@ -82,6 +100,36 @@ const Loads = () => {
       });
   }, [setUserData, changedAt]);
 
+  React.useEffect(() => {
+    if (!selectedLoadId) {
+      console.log('No selected load');
+      return;
+    }
+    if (!scrollViewRef.current) {
+      console.log('No scrollView');
+      return;
+    }
+    const loadNode = elementRef.current.get(selectedLoadId);
+    if (!loadNode) {
+      console.log('No Load item found', selectedLoadId);
+      return;
+    }
+
+    const id = requestAnimationFrame(() => loadNode.measureLayout(
+      scrollViewRef.current,
+      (x, y) => {
+        console.log('Scrolling', y);
+        scrollViewRef.current.scrollTo({ y, animated: true });
+      },
+      () => {
+        console.log('Error measuring layout');
+      },
+    ));
+
+    // Cleanup the animation frame on unmount
+    return () => cancelAnimationFrame(id);
+  }, [loads /*isLoading*/, selectedLoadId]);
+
   return (
     <ImageBackground
       source={images.appBackground}
@@ -89,6 +137,7 @@ const Loads = () => {
       style={styles.background}
     >
       <ScrollView
+        ref={scrollViewRef}
         style={styles.scroll}
         contentContainerStyle={styles.scrollContainer}
       >
@@ -96,14 +145,31 @@ const Loads = () => {
           <ErrorText errMessage={loadError} />
         ) : (
           loads?.map((load) => (
-            <View key={load.id} style={styles.loadContainer}>
+            <View
+              key={load.id}
+              ref={(node) => {
+                const ref = elementRef.current;
+                if (!ref) {
+                  return;
+                }
+                if (node) {
+                  ref.set(load.id, node);
+                } else {
+                  ref.delete(load.id);
+                }
+              }}
+              style={styles.loadContainer}
+            >
               <TouchableOpacity
                 style={styles.touchableLoadContainer}
-                onPress={() =>
-                  setSelectedLoadId((prev) =>
-                    prev === load.id ? null : load.id,
-                  )
-                }
+                onPress={() => {
+                  if (selectedLoadId === load.id) {
+                    router.replace(path);
+                    // router.setParams({ selectedLoadId: '' });
+                  } else {
+                    router.setParams({ selectedLoadId: load.id });
+                  }
+                }}
               >
                 <Load load={load} expanded={selectedLoadId === load.id} />
               </TouchableOpacity>

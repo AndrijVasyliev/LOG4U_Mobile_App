@@ -33,9 +33,10 @@ const Map = () => {
   );
   const [mapError, setMapError] = React.useState<string>('');
 
+  const mapRef = React.useRef();
+
   const [userData, setUserData] = useUserData();
   const router = useRouter();
-  const mapRef = React.useRef();
 
   useFocusEffect(
     React.useCallback(() => {

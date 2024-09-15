@@ -16,7 +16,7 @@ const Load = ({
         <View>
           <Text
             style={styles.loadMainText}
-          >{`Load # ${load?.loadNumber} (${load.status})`}</Text>
+          >{`Load # ${load?.loadNumber} [${load.status}]`}</Text>
         </View>
         <Text style={styles.loadMilesText}>{`${
           load?.milesByRoads
@@ -26,6 +26,10 @@ const Load = ({
               : '?'
         } Miles`}</Text>
       </View>
+      <UserDataItem
+        value={`${load?.weight ? load?.weight : ''}`}
+        fieldName="Weight"
+      />
       {expanded ? null : (
         <UserDataItem
           value={`${load?.stops?.at(0)?.facility?.name ? load.stops.at(0).facility.name : ''}`}

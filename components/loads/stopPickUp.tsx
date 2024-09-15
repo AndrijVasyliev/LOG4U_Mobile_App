@@ -12,6 +12,7 @@ import { useToast } from 'react-native-toast-notifications';
 import UserDataItem from '../profile/UserDataItem';
 import { fromTimeFrame } from '../../utils/fromTimeFrame';
 import { toFormattedLocation } from '../../utils/toFormattedLocation';
+import { getStatusText } from '../../utils/getStopStatus';
 
 const StopPickUp = ({
   stopNumber,
@@ -22,7 +23,14 @@ const StopPickUp = ({
   pickUpNumber: number;
   stop: Record<string, any>;
 }) => {
+  const status = getStatusText(stop?.status);
+
   const [locationName, setLocationName] = React.useState<string>('');
+
+  const addressRef = React.useRef(null);
+  const locationRef = React.useRef(null);
+
+  const toast = useToast();
 
   React.useEffect(() => {
     if (stop?.facility?.facilityLocation) {
@@ -38,10 +46,6 @@ const StopPickUp = ({
     }
   }, [stop]);
 
-  const addressRef = React.useRef(null);
-  const locationRef = React.useRef(null);
-
-  const toast = useToast();
   const copyToClipboard = async (text: string, toastMsg: string) => {
     if (Platform.OS === 'ios') {
       toast.hideAll();
@@ -49,11 +53,14 @@ const StopPickUp = ({
     }
     await Clipboard.setStringAsync(text);
   };
+
   return (
     <View key={stop.stopId} style={styles.pickContainer}>
       <View style={styles.stopNumContainer}>
         <View>
-          <Text style={styles.stopMainText}>{`Stop (${stopNumber})`}</Text>
+          <Text
+            style={styles.stopMainText}
+          >{`Stop (${stopNumber})  ${status ? '[' + status + ']' : ''}`}</Text>
         </View>
         <Text style={styles.stopAddText}>{`PickUp #${pickUpNumber}`}</Text>
       </View>
