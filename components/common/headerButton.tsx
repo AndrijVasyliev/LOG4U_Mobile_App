@@ -26,7 +26,7 @@ const HeaderButton = () => {
           style={styles.logo}
         />
       </TouchableOpacity>
-      <Text style={styles.username}>{userData.fullName}</Text>
+      <Text style={styles.username}>{userData?.fullName || ''}</Text>
     </>
   );
 };

@@ -171,7 +171,7 @@ const Map = () => {
                   longitude: truck.lastLocation[1],
                 }}
                 title={`${truck.truckNumber}`}
-                description={`${truck.status}${(truck.coordinator || truck.owner).fullName}`}
+                description={`${truck.status}${(truck.coordinator || truck.owner)?.fullName}`}
               >
                 <Callout>
                   <View style={styles.calloutContainer}>
