@@ -7,7 +7,7 @@ import File from './file';
 import {
   BACKEND_ORIGIN,
   COLORS,
-  FILES_PATH,
+  FILE_PATH,
   MAX_FILES_TO_LOAD,
 } from '../../constants';
 import { authFetch } from '../../utils/authFetch';
@@ -53,7 +53,7 @@ const FileList = ({
     setIsLoading(true);
     authFetch(
       new URL(
-        `${FILES_PATH}?limit=${MAX_FILES_TO_LOAD}&offset=0&linkedTo=${objectId}&fileOf=${objectType}`,
+        `${FILE_PATH}?limit=${MAX_FILES_TO_LOAD}&offset=0&linkedTo=${objectId}&fileOf=${objectType}`,
         BACKEND_ORIGIN,
       ),
       { method: 'GET' },

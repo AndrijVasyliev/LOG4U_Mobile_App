@@ -13,7 +13,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {
   BACKEND_ORIGIN,
   COLORS,
-  FILES_PATH,
+  FILE_PATH,
   MAX_FILE_NAME_LENGTH,
 } from '../../constants';
 import { authFetch } from '../../utils/authFetch';
@@ -44,7 +44,7 @@ const DeleteFile = ({
   const handleDeleteFile = () => {
     setDialogVisible(false);
     setIsLoading(true);
-    authFetch(new URL(`${FILES_PATH}/${file.id}`, BACKEND_ORIGIN), {
+    authFetch(new URL(`${FILE_PATH}/${file.id}`, BACKEND_ORIGIN), {
       method: 'DELETE',
     })
       .then(() => {

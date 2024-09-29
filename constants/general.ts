@@ -6,9 +6,9 @@ export const BUILD_VERSION =
 
 export const FETCH_TIMEOUT = 15000;
 
-export const BACKEND_ORIGIN = 'https://mobile.4u-logistics.com';
+// export const BACKEND_ORIGIN = 'https://mobile.4u-logistics.com';
 // export const BACKEND_ORIGIN = 'https://admin-test-lt5d.onrender.com';
-// export const BACKEND_ORIGIN = 'http://192.168.0.148:8181';
+export const BACKEND_ORIGIN = 'http://192.168.0.148:8181';
 // export const BACKEND_ORIGIN = 'http://172.20.10.2:8181';
 export const GOOGLE_GEOCODE_API =
   'https://maps.googleapis.com/maps/api/geocode/';
@@ -20,13 +20,13 @@ export const GOOGLE_API_KEY_ANDROID = 'AIzaSyAXrZIMXhNiPaw03zrG7fQQH9hZhP0exCk';
 export const BACKEND_PREFIX = 'mobileApp';
 export const SET_AUTH_PATH = `${BACKEND_PREFIX}/setAuth`;
 export const SET_APP_DATA_PATH = `${BACKEND_PREFIX}/setAppData`;
-export const GET_DRIVER_PATH = `${BACKEND_PREFIX}/driver`;
-export const GET_OWNER_PATH = `${BACKEND_PREFIX}/owner`;
-export const GET_COORDINATOR_PATH = `${BACKEND_PREFIX}/coordinator`;
-export const GET_LOADS_PATH = `${BACKEND_PREFIX}/getLoad`;
-export const UPDATE_TRUCK_PATH = `${BACKEND_PREFIX}/updateTruck`;
+export const DRIVER_PATH = `${BACKEND_PREFIX}/driver`;
+export const OWNER_PATH = `${BACKEND_PREFIX}/owner`;
+export const COORDINATOR_PATH = `${BACKEND_PREFIX}/coordinator`;
+export const LOAD_PATH = `${BACKEND_PREFIX}/load`;
+export const TRUCK_PATH = `${BACKEND_PREFIX}/truck`;
 export const SET_LOCATION_PATH = `${BACKEND_PREFIX}/setTruckLocation`;
-export const FILES_PATH = `${BACKEND_PREFIX}/file`;
+export const FILE_PATH = `${BACKEND_PREFIX}/file`;
 export const LOCATION_TRACKING = 'location-tracking';
 export const BACKGROUND_NOTIFICATION_TASK = 'background-notification';
 export const BACKGROUND_FETCH_TASK = 'background-fetch';

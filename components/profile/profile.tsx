@@ -8,7 +8,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import WillBeAvailableDialog from './WillBeAvailDialog';
 import UserDataItem from './UserDataItem';
 import FileList from './fileList';
-import { BACKEND_ORIGIN, COLORS, UPDATE_TRUCK_PATH } from '../../constants';
+import { BACKEND_ORIGIN, COLORS, TRUCK_PATH } from '../../constants';
 import { authFetch } from '../../utils/authFetch';
 import { toFormattedLocation } from '../../utils/toFormattedLocation';
 import { fromISOCorrected } from '../../utils/dateTimeConverters';
@@ -103,18 +103,13 @@ const Profile = ({
       availabilityLocation,
       availabilityAtLocal,
     };
-    authFetch(new URL(`${UPDATE_TRUCK_PATH}/${truck.id}`, BACKEND_ORIGIN), {
+    authFetch(new URL(`${TRUCK_PATH}/${truck.id}`, BACKEND_ORIGIN), {
       method: 'PATCH',
       body: JSON.stringify(data),
-    })
-      .then(() => {
-        setIsLoading(false);
-        onChanged(Date.now());
-      })
-      .catch(() => {
-        setIsLoading(false);
-        onChanged(Date.now());
-      });
+    }).finally(() => {
+      setIsLoading(false);
+      setTimeout(() => onChanged(Date.now()), 1);
+    });
   };
 
   const handleStateChange = (

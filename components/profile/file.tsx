@@ -14,7 +14,7 @@ import DeleteFile from './deleteFile';
 import {
   BACKEND_ORIGIN,
   COLORS,
-  FILES_PATH,
+  FILE_PATH,
   MAX_FILE_NAME_LENGTH,
 } from '../../constants';
 import { useRouter } from 'expo-router';
@@ -48,7 +48,7 @@ const File = ({
       ? file.comment + '.' + file.filename.split('.').slice(-1)[0]
       : file.filename;
     const downloadResult = await FileSystem.downloadAsync(
-      new URL(`${FILES_PATH}/${file.id}/download`, BACKEND_ORIGIN).toString(),
+      new URL(`${FILE_PATH}/${file.id}/download`, BACKEND_ORIGIN).toString(),
       FileSystem.cacheDirectory + filename,
       { headers },
     );

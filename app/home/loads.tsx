@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  HostComponent,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
@@ -19,7 +20,7 @@ import ErrorText from '../../components/common/ErrorText';
 import {
   images,
   BACKEND_ORIGIN,
-  GET_LOADS_PATH,
+  LOAD_PATH,
   COLORS,
 } from '../../constants';
 import { useUserData } from '../../hooks/userData';
@@ -70,7 +71,7 @@ const Loads = () => {
       return;
     }
     setIsLoading(true);
-    authFetch(new URL(GET_LOADS_PATH, BACKEND_ORIGIN), { method: 'GET' })
+    authFetch(new URL(LOAD_PATH, BACKEND_ORIGIN), { method: 'GET' })
       .then(async (response) => {
         if (response && response.status === 200) {
           try {
@@ -116,7 +117,7 @@ const Loads = () => {
     }
 
     const id = requestAnimationFrame(() => loadNode.measureLayout(
-      scrollViewRef.current,
+      scrollViewRef.current as HostComponent<unknown>,
       (x, y) => {
         console.log('Scrolling', y);
         scrollViewRef.current.scrollTo({ y, animated: true });
@@ -171,7 +172,7 @@ const Loads = () => {
                   }
                 }}
               >
-                <Load load={load} expanded={selectedLoadId === load.id} />
+                <Load load={load} expanded={selectedLoadId === load.id} onChanged={setChangedAt} />
               </TouchableOpacity>
             </View>
           ))

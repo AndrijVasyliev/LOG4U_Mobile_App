@@ -5,7 +5,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 
 import ProfileItem from '../../components/profile/profile';
 import ErrorText from '../../components/common/ErrorText';
-import { images, BACKEND_ORIGIN, GET_DRIVER_PATH } from '../../constants';
+import { images, BACKEND_ORIGIN, DRIVER_PATH } from '../../constants';
 import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
@@ -43,7 +43,7 @@ const Profile = () => {
       }
       return prev;
     });
-    authFetch(new URL(GET_DRIVER_PATH, BACKEND_ORIGIN), { method: 'GET' })
+    authFetch(new URL(DRIVER_PATH, BACKEND_ORIGIN), { method: 'GET' })
       .then(async (response) => {
         if (response && response.status === 200) {
           try {

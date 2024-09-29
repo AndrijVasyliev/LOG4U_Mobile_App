@@ -16,8 +16,8 @@ import ErrorText from '../../components/common/ErrorText';
 import {
   images,
   BACKEND_ORIGIN,
-  GET_OWNER_PATH,
-  GET_COORDINATOR_PATH,
+  OWNER_PATH,
+  COORDINATOR_PATH,
 } from '../../constants';
 import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
@@ -61,11 +61,11 @@ const Map = () => {
     switch (userData?.type) {
       case 'Coordinator':
       case 'CoordinatorDriver':
-        path = GET_COORDINATOR_PATH;
+        path = COORDINATOR_PATH;
         break;
       case 'Owner':
       case 'OwnerDriver':
-        path = GET_OWNER_PATH;
+        path = OWNER_PATH;
         break;
     }
     authFetch(new URL(path, BACKEND_ORIGIN), { method: 'GET' })

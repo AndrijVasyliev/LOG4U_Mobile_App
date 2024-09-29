@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FileNameDialog from './fileNameDIalog';
-import { BACKEND_ORIGIN, COLORS, FILES_PATH } from '../../constants';
+import { BACKEND_ORIGIN, COLORS, FILE_PATH } from '../../constants';
 import { getDeviceId } from '../../utils/deviceId';
 import { getHeaders } from '../../utils/getHeaders';
 import { logout } from '../../utils/logout';
@@ -83,7 +83,7 @@ const AddFile = ({
       deviceId,
     }).forEach((hVal, hKey) => (headers[hKey] = hVal));
     const uploadResult = await FileSystem.uploadAsync(
-      new URL(`${FILES_PATH}`, BACKEND_ORIGIN).toString(),
+      new URL(`${FILE_PATH}`, BACKEND_ORIGIN).toString(),
       fileUri,
       {
         parameters: {
