@@ -13,6 +13,7 @@ import UserDataItem from '../profile/UserDataItem';
 import { fromTimeFrame } from '../../utils/fromTimeFrame';
 import { toFormattedLocation } from '../../utils/toFormattedLocation';
 import { getStatusText } from '../../utils/getStopStatus';
+import { COLORS } from '../../constants';
 
 const StopDelivery = ({
   stopNumber,
@@ -59,7 +60,13 @@ const StopDelivery = ({
       <View style={styles.stopNumContainer}>
         <View>
           <Text
-            style={styles.stopMainText}
+            style={
+              stop?.status === 'New'
+                ? styles.stopNewText
+                : stop?.status === 'Completed'
+                  ? styles.stopCompletedText
+                  : styles.stopInProgressText
+            }
           >{`Stop (${stopNumber}) ${status ? '[' + status + ']' : ''}`}</Text>
         </View>
         <Text style={styles.stopAddText}>{`Delivery #${deliveryNumber}`}</Text>
@@ -121,7 +128,18 @@ const styles = StyleSheet.create({
   stopAddText: {
     paddingRight: 5,
   },
-  stopMainText: {
+  stopCompletedText: {
+    color: COLORS.green,
+    fontWeight: '500',
+    paddingLeft: 5,
+  },
+  stopInProgressText: {
+    color: COLORS.orange,
+    fontWeight: '500',
+    paddingLeft: 5,
+  },
+  stopNewText: {
+    color: COLORS.blue,
     fontWeight: '500',
     paddingLeft: 5,
   },

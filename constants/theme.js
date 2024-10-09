@@ -12,6 +12,9 @@ const COLORS = {
 
   black: '#000000',
   red: '#ff0000',
+  green: '#00ff00',
+  blue: '#0000ff',
+  orange: '#ff8000',
 
   link: '#0000ff',
 
