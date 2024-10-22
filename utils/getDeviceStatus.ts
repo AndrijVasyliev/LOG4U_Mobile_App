@@ -27,12 +27,7 @@ export const getDeviceStatus = async (): Promise<Record<string, any>> => {
     applicationName,
     applicationId,
   } = Application;
-  const [
-    uptime,
-    maxMemory,
-    appInstalledAt,
-    appUpdatedAt,
-  ] = await Promise.all([
+  const [uptime, maxMemory, appInstalledAt, appUpdatedAt] = await Promise.all([
     Device.getUptimeAsync(),
     Platform.OS === 'android' ? Device.getMaxMemoryAsync() : null,
     Application.getInstallationTimeAsync(),

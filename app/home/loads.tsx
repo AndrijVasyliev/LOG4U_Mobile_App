@@ -17,12 +17,7 @@ import {
 
 import Load from '../../components/loads/Load';
 import ErrorText from '../../components/common/ErrorText';
-import {
-  images,
-  BACKEND_ORIGIN,
-  LOAD_PATH,
-  COLORS,
-} from '../../constants';
+import { images, BACKEND_ORIGIN, LOAD_PATH, COLORS } from '../../constants';
 import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
@@ -116,16 +111,18 @@ const Loads = () => {
       return;
     }
 
-    const id = requestAnimationFrame(() => loadNode.measureLayout(
-      scrollViewRef.current as HostComponent<unknown>,
-      (x, y) => {
-        console.log('Scrolling', y);
-        scrollViewRef.current.scrollTo({ y, animated: true });
-      },
-      () => {
-        console.log('Error measuring layout');
-      },
-    ));
+    const id = requestAnimationFrame(() =>
+      loadNode.measureLayout(
+        scrollViewRef.current as HostComponent<unknown>,
+        (x, y) => {
+          console.log('Scrolling', y);
+          scrollViewRef.current.scrollTo({ y, animated: true });
+        },
+        () => {
+          console.log('Error measuring layout');
+        },
+      ),
+    );
 
     // Cleanup the animation frame on unmount
     return () => cancelAnimationFrame(id);
@@ -172,7 +169,11 @@ const Loads = () => {
                   }
                 }}
               >
-                <Load load={load} expanded={selectedLoadId === load.id} onChanged={setChangedAt} />
+                <Load
+                  load={load}
+                  expanded={selectedLoadId === load.id}
+                  onChanged={setChangedAt}
+                />
               </TouchableOpacity>
             </View>
           ))
