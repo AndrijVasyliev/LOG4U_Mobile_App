@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import Stops from './Stops';
-import AcceptLoadAlert from './acceptLoadAlert';
+import ConfirmationLoadAlert from './confirmationLoadAlert';
 import UserDataItem from '../profile/UserDataItem';
 
 const Load = ({
@@ -13,32 +13,11 @@ const Load = ({
   expanded?: boolean;
   onChanged?: (number) => void;
 }) => {
-  const [isAcceptLoadVisible, setIsAcceptLoadVisible] =
-    React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    if (
-      expanded &&
-      !isAcceptLoadVisible &&
-      load.status === 'In Progress' &&
-      load.stops[0].status === 'New'
-    ) {
-      setIsAcceptLoadVisible(true);
-    } else if (!expanded && isAcceptLoadVisible) {
-      setIsAcceptLoadVisible(false);
-    } else if (
-      isAcceptLoadVisible &&
-      (load.status !== 'In Progress' || load.stops[0].status !== 'New')
-    ) {
-      setIsAcceptLoadVisible(false);
-    }
-  }, [expanded, load]);
-
   return (
     <>
-      <AcceptLoadAlert
-        visible={isAcceptLoadVisible}
+      <ConfirmationLoadAlert
         load={load}
+        expanded={expanded}
         onChanged={onChanged}
       />
       <View style={styles.loadNumContainer}>
@@ -71,7 +50,9 @@ const Load = ({
           fieldName="To"
         />
       )}
-      {!expanded ? null : <Stops stops={load.stops} />}
+      {!expanded ? null : (
+        <Stops loadId={load.id} stops={load.stops} onChanged={onChanged} />
+      )}
     </>
   );
 };

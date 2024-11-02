@@ -206,6 +206,7 @@ const LocationInput = ({ onSet }: { onSet: (newValue: string) => void }) => {
       <DropDownPicker<string>
         disableBorderRadius={false}
         modalAnimationType="slide"
+        dropDownDirection="TOP"
         placeholder="Select Location"
         translation={{
           SEARCH_PLACEHOLDER: 'Start to enter location',

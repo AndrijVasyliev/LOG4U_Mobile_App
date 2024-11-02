@@ -12,34 +12,70 @@ import { BACKEND_ORIGIN, COLORS, LOAD_PATH } from '../../constants';
 import ModalButton from '../common/modalButton';
 import { authFetch } from '../../utils/authFetch';
 
-const AcceptLoadAlert = ({
-  visible,
+const ConfirmationLoadAlert = ({
   load,
+  expanded = false,
   onChanged = () => {},
 }: {
-  visible: boolean;
   load: Record<string, any>;
+  expanded?: boolean;
   onChanged?: (number) => void;
 }) => {
+  const [alertData, setAlertData] = React.useState<{
+    alertText: string;
+    stopType: 'PickUp' | 'Delivery';
+    stopId: string;
+    nextStatus: string;
+  } | void>(undefined);
   const [acceptLoading, setAcceptLoading] = React.useState<boolean>(false);
-  const [isVisible, setIsVisible] = React.useState<boolean>(visible);
 
   React.useEffect(() => {
-    setIsVisible(visible);
-  }, [visible]);
+    if (
+      expanded &&
+      !alertData &&
+      load.status === 'In Progress' &&
+      load.stops[0].status === 'New'
+    ) {
+      setAlertData({
+        alertText: `New Load#${load.loadNumber} has been assigned`,
+        stopType: 'PickUp',
+        stopId: load.stops[0].stopId,
+        nextStatus: 'On route to PU',
+      });
+    } else if (
+      expanded &&
+      !alertData &&
+      load.status === 'In Progress' &&
+      load.stops.find((stop) => stop.status === 'GTG')
+    ) {
+      const gtgStopIndex = load.stops.findIndex(
+        (stop) => stop.status === 'GTG',
+      );
+      const stop = load.stops[gtgStopIndex];
+      setAlertData({
+        alertText: `You are good to go from Stop#${gtgStopIndex + 1} on Load#${load.loadNumber}`,
+        stopType: stop.type,
+        stopId: stop.stopId,
+        nextStatus: 'Completed',
+      });
+    } else if (!expanded && alertData) {
+      setAlertData(undefined);
+    }
+  }, [expanded, load]);
 
   const handleAcceptLoad = () => {
+    if (!alertData) {
+      return;
+    }
     setAcceptLoading(true);
-    const stops = load.stops as { stopId: string }[];
-    const firstStopId = stops[0].stopId;
     const data: {
       status: string;
     } = {
-      status: 'On route to PU',
+      status: alertData.nextStatus,
     };
     authFetch(
       new URL(
-        `${LOAD_PATH}/${load.id}/stopPickUp/${firstStopId}`,
+        `${LOAD_PATH}/${load.id}/stop${alertData.stopType}/${alertData.stopId}`,
         BACKEND_ORIGIN,
       ),
       {
@@ -48,7 +84,7 @@ const AcceptLoadAlert = ({
       },
     ).finally(() => {
       setAcceptLoading(false);
-      setIsVisible(false);
+      setAlertData(undefined);
       setTimeout(() => onChanged(Date.now()), 1);
     });
   };
@@ -60,7 +96,7 @@ const AcceptLoadAlert = ({
       animationType="none"
       presentationStyle="overFullScreen"
       transparent={true}
-      visible={isVisible}
+      visible={!!alertData}
       onRequestClose={() => {
         console.log('Modal has been closed.');
       }}
@@ -71,7 +107,7 @@ const AcceptLoadAlert = ({
         </TouchableWithoutFeedback>
         <View style={styles.dialogPaper}>
           <View style={styles.dialogContents}>
-            <Text>New load#{load.loadNumber} has been assigned</Text>
+            <Text>{alertData ? alertData.alertText : ''}</Text>
           </View>
           <View style={styles.spacer}></View>
           <View style={styles.buttonContainer}>
@@ -142,4 +178,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AcceptLoadAlert;
+export default ConfirmationLoadAlert;

@@ -9,24 +9,39 @@ import {
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { useToast } from 'react-native-toast-notifications';
+import Spinner from 'react-native-loading-spinner-overlay';
 import UserDataItem from '../profile/UserDataItem';
 import { fromTimeFrame } from '../../utils/fromTimeFrame';
 import { toFormattedLocation } from '../../utils/toFormattedLocation';
 import { getStatusText } from '../../utils/getStopStatus';
-import { COLORS } from '../../constants';
+import { authFetch } from '../../utils/authFetch';
+import { BACKEND_ORIGIN, COLORS, LOAD_PATH } from '../../constants';
+
+import IconButton from '../common/IconButton';
 
 const StopPickUp = ({
-  stopNumber,
-  pickUpNumber,
-  stop,
+  loadId,
+  index,
+  stops,
+  setSelectedDriversInfo,
+  onChanged = () => {},
 }: {
-  stopNumber: number;
-  pickUpNumber: number;
-  stop: Record<string, any>;
+  loadId: string;
+  index: number;
+  stops: Record<string, any>[];
+  setSelectedDriversInfo?: (number) => void;
+  onChanged?: (number) => void;
 }) => {
+  const stop = stops[index];
+  const stopNumber = index + 1;
+  const pickUpNumber = stops
+    .slice(0, index + 1)
+    .filter((stop) => stop.type === 'PickUp').length;
+
   const status = getStatusText(stop?.status);
 
   const [locationName, setLocationName] = React.useState<string>('');
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const addressRef = React.useRef(null);
   const locationRef = React.useRef(null);
@@ -55,10 +70,56 @@ const StopPickUp = ({
     await Clipboard.setStringAsync(text);
   };
 
+  const handleSetOnSite = () => {
+    setIsLoading(true);
+    const data: {
+      status: string;
+    } = {
+      status: 'On site PU',
+    };
+    authFetch(
+      new URL(
+        `${LOAD_PATH}/${loadId}/stopPickUp/${stop.stopId}`,
+        BACKEND_ORIGIN,
+      ),
+      {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      },
+    ).finally(() => {
+      setIsLoading(false);
+      setTimeout(() => onChanged(Date.now()), 1);
+    });
+  };
+  const handleSelectDriversInfo = () => {
+    setSelectedDriversInfo(index);
+  };
+  const handleSetWaitingGTG = () => {
+    setIsLoading(true);
+    const data: {
+      status: string;
+    } = {
+      status: 'Loaded, Waiting GTG',
+    };
+    authFetch(
+      new URL(
+        `${LOAD_PATH}/${loadId}/stopPickUp/${stop.stopId}`,
+        BACKEND_ORIGIN,
+      ),
+      {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      },
+    ).finally(() => {
+      setIsLoading(false);
+      setTimeout(() => onChanged(Date.now()), 1);
+    });
+  };
+
   return (
-    <View key={stop.stopId} style={styles.pickContainer}>
-      <View style={styles.stopNumContainer}>
-        <View>
+    <>
+      <View key={stop.stopId} style={styles.pickContainer}>
+        <View style={styles.stopNumContainer}>
           <Text
             style={
               stop?.status === 'New'
@@ -68,52 +129,71 @@ const StopPickUp = ({
                   : styles.stopInProgressText
             }
           >{`Stop (${stopNumber})  ${status ? '[' + status + ']' : ''}`}</Text>
+          {stop.status !== 'On route to PU' ? null : (
+            <IconButton
+              iconName="truck-check-outline"
+              onClick={handleSetOnSite}
+            />
+          )}
+          {stop.status !== 'On site PU' ? null : (
+            <IconButton
+              iconName="file-document-edit-outline"
+              onClick={handleSelectDriversInfo}
+            />
+          )}
+          {stop.status !== 'On site PU' ? null : (
+            <IconButton
+              iconName="truck-delivery-outline"
+              onClick={handleSetWaitingGTG}
+            />
+          )}
+          <Text style={styles.stopAddText}>{`PickUp #${pickUpNumber}`}</Text>
         </View>
-        <Text style={styles.stopAddText}>{`PickUp #${pickUpNumber}`}</Text>
+        <UserDataItem
+          value={`${stop?.facility?.name ? stop.facility.name : ''}`}
+          fieldName="Facility name"
+        />
+        <TouchableOpacity
+          ref={addressRef}
+          onPress={() =>
+            stop?.facility?.address &&
+            copyToClipboard(
+              `${stop.facility.address + (stop?.facility?.address2 ? ', ' + stop.facility.address2 : '')}`,
+              'Facility address copied to clipboard',
+            )
+          }
+        >
+          <UserDataItem
+            value={`${stop?.facility?.address ? stop.facility.address : ''}`}
+            fieldName="Address Line 1"
+          />
+          <UserDataItem
+            value={`${stop?.facility?.address2 ? stop.facility.address2 : ''}`}
+            fieldName="Address Line 2"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          ref={locationRef}
+          onPress={() =>
+            locationName &&
+            copyToClipboard(
+              `${locationName}`,
+              'Facility location copied to clipboard',
+            )
+          }
+        >
+          <UserDataItem
+            value={`${locationName ? locationName : ''}`}
+            fieldName="Location"
+          />
+        </TouchableOpacity>
+        <UserDataItem
+          value={`${stop?.timeFrame ? fromTimeFrame(stop.timeFrame) : ''}`}
+          fieldName="Time frame"
+        />
       </View>
-      <UserDataItem
-        value={`${stop?.facility?.name ? stop.facility.name : ''}`}
-        fieldName="Facility name"
-      />
-      <TouchableOpacity
-        ref={addressRef}
-        onPress={() =>
-          stop?.facility?.address &&
-          copyToClipboard(
-            `${stop.facility.address + (stop?.facility?.address2 ? ', ' + stop.facility.address2 : '')}`,
-            'Facility address copied to clipboard',
-          )
-        }
-      >
-        <UserDataItem
-          value={`${stop?.facility?.address ? stop.facility.address : ''}`}
-          fieldName="Address Line 1"
-        />
-        <UserDataItem
-          value={`${stop?.facility?.address2 ? stop.facility.address2 : ''}`}
-          fieldName="Address Line 2"
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        ref={locationRef}
-        onPress={() =>
-          locationName &&
-          copyToClipboard(
-            `${locationName}`,
-            'Facility location copied to clipboard',
-          )
-        }
-      >
-        <UserDataItem
-          value={`${locationName ? locationName : ''}`}
-          fieldName="Location"
-        />
-      </TouchableOpacity>
-      <UserDataItem
-        value={`${stop?.timeFrame ? fromTimeFrame(stop.timeFrame) : ''}`}
-        fieldName="Time frame"
-      />
-    </View>
+      <Spinner visible={isLoading} textContent={'Accepting load...'} />
+    </>
   );
 };
 
@@ -146,7 +226,10 @@ const styles = StyleSheet.create({
   stopNumContainer: {
     alignItems: 'center',
     flexDirection: 'row',
+    height: 40,
     justifyContent: 'space-between',
+    paddingLeft: 10,
+    paddingRight: 10,
     width: '100%',
   },
 });

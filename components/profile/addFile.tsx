@@ -17,10 +17,12 @@ import { FileOfType } from './fileList';
 const AddFile = ({
   objectId,
   objectType,
+  tags,
   setChangedAt,
 }: {
   objectId?: string;
   objectType?: FileOfType;
+  tags?: Record<string, string>;
   setChangedAt: (changedAt: number) => void;
 }) => {
   const [fileUri, setFileUri] = React.useState<string>('');
@@ -82,15 +84,21 @@ const AddFile = ({
       password: userData.appPassword,
       deviceId,
     }).forEach((hVal, hKey) => (headers[hKey] = hVal));
+    const parameters: Record<string, string> = {
+      linkedTo: objectId,
+      fileOf: objectType,
+      comment: fileName,
+    };
+    if (tags) {
+      Object.entries(tags).forEach(([key, value]) => {
+        parameters[`tags[${key}]`] = `${value}`;
+      });
+    }
     const uploadResult = await FileSystem.uploadAsync(
       new URL(`${FILE_PATH}`, BACKEND_ORIGIN).toString(),
       fileUri,
       {
-        parameters: {
-          linkedTo: objectId,
-          fileOf: objectType,
-          comment: fileName,
-        },
+        parameters,
         headers,
         httpMethod: 'POST',
         uploadType: FileSystem.FileSystemUploadType.MULTIPART,

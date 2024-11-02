@@ -113,7 +113,7 @@ const Loads = () => {
 
     const id = requestAnimationFrame(() =>
       loadNode.measureLayout(
-        scrollViewRef.current as HostComponent<unknown>,
+        scrollViewRef.current as unknown as HostComponent<unknown>,
         (x, y) => {
           console.log('Scrolling', y);
           scrollViewRef.current.scrollTo({ y, animated: true });

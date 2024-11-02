@@ -1,5 +1,12 @@
 import * as React from 'react';
-import { StyleSheet, Modal, Text, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet,
+  Modal,
+  Text,
+  TouchableOpacity,
+  View,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import dayjs from 'dayjs';
 import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 import { SingleChange } from 'react-native-ui-datepicker/src/types';
@@ -39,6 +46,9 @@ const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
         }}
       >
         <View style={styles.dialogContainer}>
+          <TouchableWithoutFeedback onPress={handleClose}>
+            <View style={styles.area} />
+          </TouchableWithoutFeedback>
           <View style={styles.dialogPaper}>
             <View style={styles.dialogContents}>
               <DateTimePicker
@@ -76,6 +86,14 @@ const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
 };
 
 const styles = StyleSheet.create({
+  area: {
+    backgroundColor: COLORS.modalBackground,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   button: {
     alignItems: 'flex-start',
     width: '100%',

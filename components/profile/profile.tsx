@@ -155,7 +155,7 @@ const Profile = ({
         <FileList
           objectId={truck?.driver?.id}
           objectType="Person"
-          caption="Person`s docs"
+          label="Person`s docs"
         />
       )}
       <UserDataItem
@@ -180,6 +180,8 @@ const Profile = ({
             />
             <DropDownPicker
               disableBorderRadius={false}
+              modalAnimationType="slide"
+              dropDownDirection="TOP"
               placeholder="Select state"
               style={styles.dropdown}
               containerStyle={styles.dropdownControlContainer}
@@ -207,7 +209,6 @@ const Profile = ({
                   size={24}
                 />
               )}
-              dropDownDirection="TOP"
               disabled={!truckStatuses.includes(statusValue)}
               open={statusOpen}
               value={statusValue}
@@ -241,11 +242,7 @@ const Profile = ({
         </>
       )}
       {!expanded ? null : (
-        <FileList
-          objectId={truck?.id}
-          objectType="Truck"
-          caption="Truck`s docs"
-        />
+        <FileList objectId={truck?.id} objectType="Load" label="Truck`s docs" />
       )}
       <Spinner visible={isLoading} textContent={'Updating truck...'} />
     </>

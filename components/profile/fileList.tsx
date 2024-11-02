@@ -21,11 +21,13 @@ export type FileOfType = (typeof FILE_OF_TYPES)[number];
 const FileList = ({
   objectId,
   objectType,
-  caption,
+  label,
+  tags,
 }: {
   objectId?: string;
   objectType?: FileOfType;
-  caption: string;
+  label: string;
+  tags?: Record<string, string>;
 }) => {
   const [changedAt, setChangedAt] = React.useState<number>(0);
   const [expanded, setExpanded] = React.useState<boolean>(false);
@@ -51,13 +53,17 @@ const FileList = ({
       return;
     }
     setIsLoading(true);
-    authFetch(
-      new URL(
-        `${FILE_PATH}?limit=${MAX_FILES_TO_LOAD}&offset=0&linkedTo=${objectId}&fileOf=${objectType}`,
-        BACKEND_ORIGIN,
-      ),
-      { method: 'GET' },
-    )
+    const url = new URL(`${FILE_PATH}`, BACKEND_ORIGIN);
+    url.searchParams.append('limit', `${MAX_FILES_TO_LOAD}`);
+    url.searchParams.append('offset', '0');
+    url.searchParams.append('linkedTo', `${objectId}`);
+    url.searchParams.append('fileOf', `${objectType}`);
+    if (tags) {
+      Object.entries(tags).forEach(([key, value]) => {
+        url.searchParams.append(`tags[${key}]`, `${value}`);
+      });
+    }
+    authFetch(url, { method: 'GET' })
       .then(async (response) => {
         if (response && response.status === 200) {
           try {
@@ -102,7 +108,7 @@ const FileList = ({
               setExpanded((prev) => !prev);
             }}
           >
-            <Text style={styles.valueText}>{`${caption}`}</Text>
+            <Text style={styles.valueText}>{`${label}`}</Text>
             <MaterialCommunityIcons
               name={expanded ? 'menu-up' : 'menu-down'}
               color={COLORS.black}
@@ -113,6 +119,7 @@ const FileList = ({
         <AddFile
           objectId={objectId}
           objectType={objectType}
+          tags={tags}
           setChangedAt={setChangedAt}
         />
       </View>
