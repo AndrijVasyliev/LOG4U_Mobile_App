@@ -29,7 +29,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your image library, so you can select and upload to 4U Logistics photos of yours and yours trucks documents, i.e. drivers licence, insurance policy, vehicle registration."
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your image library, so you can select and upload to 4U Logistics photos of yours and yours trucks documents, i.e. drivers licence, insurance policy, vehicle registration.",
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera, so you can select and upload to 4U Logistics photos of yours and yours trucks documents, i.e. drivers licence, insurance policy, vehicle registration."
         }
       ]
     ],

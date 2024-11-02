@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
@@ -13,6 +13,7 @@ import { logout } from '../../utils/logout';
 import { useUserData } from '../../hooks/userData';
 import FileErrorDialog from './fileErrorDialog';
 import { FileOfType } from './fileList';
+import { CameraType } from 'expo-image-picker/src/ImagePicker.types';
 
 const AddFile = ({
   objectId,
@@ -49,16 +50,21 @@ const AddFile = ({
   };
 
   const pickImage = async () => {
-    const mediaLibraryPermissions =
+    let mediaLibraryPermissions =
       await ImagePicker.getMediaLibraryPermissionsAsync();
     if (
       !mediaLibraryPermissions.granted &&
       mediaLibraryPermissions.canAskAgain
     ) {
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
+      mediaLibraryPermissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
     }
+    if (!mediaLibraryPermissions.granted) {
+      setFileUri('');
+      return;
+    }
+
     const pickImageResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -72,6 +78,38 @@ const AddFile = ({
     }
 
     setFileUri(pickImageResult.assets[0].uri);
+  };
+
+  const takePhoto = async () => {
+    let cameraPermissions =
+      await ImagePicker.getCameraPermissionsAsync();
+    if (
+      !cameraPermissions.granted &&
+      cameraPermissions.canAskAgain
+    ) {
+      cameraPermissions = await ImagePicker.requestCameraPermissionsAsync();
+    }
+    if (!cameraPermissions.granted) {
+      setFileUri('');
+      return;
+    }
+
+    const photoImageResult = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      exif: false,
+      allowsMultipleSelection: false,
+      cameraType: CameraType.back,
+    });
+
+    if (photoImageResult.canceled || !photoImageResult.assets[0].uri) {
+      setFileUri('');
+      return;
+    }
+
+    setFileUri(photoImageResult.assets[0].uri);
   };
 
   const uploadFile = async (fileUri: string, fileName: string) => {
@@ -121,13 +159,25 @@ const AddFile = ({
   };
 
   return (
-    <>
+    <View style={styles.buttonContainer}>
       <FileNameDialog
         opened={!!fileUri}
         OnClose={handleCloseDialog}
         OnSubmit={handleSubmit}
       />
       <FileErrorDialog errorCode={uploadError} OnClose={handleFileErrorClose} />
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => {
+          takePhoto();
+        }}
+      >
+        <MaterialCommunityIcons
+          name="camera-plus-outline"
+          color={COLORS.black}
+          size={24}
+        />
+      </TouchableOpacity>
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => {
@@ -141,11 +191,17 @@ const AddFile = ({
         />
       </TouchableOpacity>
       <Spinner visible={isLoading} textContent={'Uploading file...'} />
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: 70,
+  },
   addButton: {
     alignItems: 'center',
     flexDirection: 'row',
