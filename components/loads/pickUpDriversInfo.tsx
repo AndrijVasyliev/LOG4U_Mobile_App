@@ -17,6 +17,15 @@ import FileList from '../profile/fileList';
 import IconButton from '../common/IconButton';
 import { authFetch } from '../../utils/authFetch';
 
+const initialValues = {
+  pieces: 1,
+  unitOfWeight: '',
+  weight: '',
+  bol: '',
+  seal: '',
+  addressIsCorrect: '',
+};
+
 const PickUpDriversInfo = ({
   loadId,
   index,
@@ -46,14 +55,11 @@ const PickUpDriversInfo = ({
     }
     let hasEmptyValues = false;
     pickUpDriversItems.forEach((item) => {
-      if (
-        !item.pieces ||
-        !item.unitOfWeight ||
-        !item.weight ||
-        !item.bol ||
-        !item.seal ||
-        !item.addressIsCorrect
-      ) {
+      const isAllFieldsFilled = Object.keys(initialValues).reduce(
+        (acc, key) => acc && !!item[key],
+        true,
+      );
+      if (!isAllFieldsFilled) {
         hasEmptyValues = true;
       }
     });
@@ -61,10 +67,10 @@ const PickUpDriversInfo = ({
   }, [pickUpDriversItems]);
 
   React.useEffect(() => {
-    if (stops[index].driversInfo) {
+    if (stops[index].driversInfo?.length > 0) {
       setPickUpDriversItems(stops[index].driversInfo);
     } else {
-      setPickUpDriversItems(undefined);
+      setPickUpDriversItems([{ ...initialValues }]);
     }
   }, [stops[index]]);
 
@@ -110,14 +116,7 @@ const PickUpDriversInfo = ({
         (prevDriversInfo): Record<string, string | number>[] => {
           if (prevDriversInfo) {
             const newDriverInfo = [...prevDriversInfo];
-            newDriverInfo.push({
-              pieces: 1,
-              unitOfWeight: '',
-              weight: '',
-              bol: '',
-              seal: '',
-              addressIsCorrect: '',
-            });
+            newDriverInfo.push({ ...initialValues });
             return newDriverInfo;
           }
         },

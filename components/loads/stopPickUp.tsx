@@ -141,7 +141,8 @@ const StopPickUp = ({
               onClick={handleSelectDriversInfo}
             />
           )}
-          {stop.status !== 'On site PU' ? null : (
+          {stop.status !== 'On site PU' ||
+          !(stop?.driversInfo?.length === stop?.freightList?.length) ? null : (
             <IconButton
               iconName="truck-delivery-outline"
               onClick={handleSetWaitingGTG}

@@ -56,7 +56,8 @@ const AddFile = ({
       !mediaLibraryPermissions.granted &&
       mediaLibraryPermissions.canAskAgain
     ) {
-      mediaLibraryPermissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      mediaLibraryPermissions =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
     }
     if (!mediaLibraryPermissions.granted) {
       setFileUri('');
@@ -81,12 +82,8 @@ const AddFile = ({
   };
 
   const takePhoto = async () => {
-    let cameraPermissions =
-      await ImagePicker.getCameraPermissionsAsync();
-    if (
-      !cameraPermissions.granted &&
-      cameraPermissions.canAskAgain
-    ) {
+    let cameraPermissions = await ImagePicker.getCameraPermissionsAsync();
+    if (!cameraPermissions.granted && cameraPermissions.canAskAgain) {
       cameraPermissions = await ImagePicker.requestCameraPermissionsAsync();
     }
     if (!cameraPermissions.granted) {

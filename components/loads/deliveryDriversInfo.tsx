@@ -17,6 +17,8 @@ import FileList from '../profile/fileList';
 import IconButton from '../common/IconButton';
 import { authFetch } from '../../utils/authFetch';
 
+const initialValues = { bol: '', signedBy: '' };
+
 const DeliveryDriversInfo = ({
   loadId,
   index,
@@ -46,7 +48,11 @@ const DeliveryDriversInfo = ({
     }
     let hasEmptyValues = false;
     deliveryDriversItems.forEach((item) => {
-      if (!item.bol || !item.signedBy) {
+      const isAllFieldsFilled = Object.keys(initialValues).reduce(
+        (acc, key) => acc && !!item[key],
+        true,
+      );
+      if (!isAllFieldsFilled) {
         hasEmptyValues = true;
       }
     });
@@ -54,10 +60,10 @@ const DeliveryDriversInfo = ({
   }, [deliveryDriversItems]);
 
   React.useEffect(() => {
-    if (stops[index].driversInfo) {
+    if (stops[index].driversInfo?.length > 0) {
       setDeliveryDriversItems(stops[index].driversInfo);
     } else {
-      setDeliveryDriversItems(undefined);
+      setDeliveryDriversItems([{ ...initialValues }]);
     }
   }, [stops[index]]);
 
@@ -107,7 +113,7 @@ const DeliveryDriversInfo = ({
         (prevDriversInfo): Record<string, string | number>[] => {
           if (prevDriversInfo) {
             const newDriverInfo = [...prevDriversInfo];
-            newDriverInfo.push({ bol: '', signedBy: '' });
+            newDriverInfo.push({ ...initialValues });
             return newDriverInfo;
           }
         },
