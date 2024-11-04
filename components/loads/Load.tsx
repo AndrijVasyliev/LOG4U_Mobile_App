@@ -3,6 +3,7 @@ import { Text, View, StyleSheet } from 'react-native';
 import Stops from './Stops';
 import ConfirmationLoadAlert from './confirmationLoadAlert';
 import UserDataItem from '../profile/UserDataItem';
+import FileList from '../profile/fileList';
 
 const Load = ({
   load,
@@ -52,6 +53,14 @@ const Load = ({
       )}
       {!expanded ? null : (
         <Stops loadId={load.id} stops={load.stops} onChanged={onChanged} />
+      )}
+      {!expanded ? null : (
+        <FileList
+          objectId={load.id}
+          objectType="Load"
+          label="Bill Files"
+          tags={{ [`${load.id}`]: 'Bill' }}
+        />
       )}
     </>
   );
