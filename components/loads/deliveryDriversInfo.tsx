@@ -76,10 +76,15 @@ const DeliveryDriversInfo = ({
           .map((freight, freightIndex: number) => ({
             value: freight.freightId as string,
             label: `Freight #${freightIndex + 1} (Stop PickUp#${stopIndex + 1}): ${freight.pieces} pcs, ${freight.length} ${freight.unitOfLength} length, ${freight.weight} ${freight.unitOfWeight} weight`,
-          })),
+          }))
+          .filter(
+            (freightItem) =>
+              stops[index].bolList &&
+              stops[index].bolList.includes(freightItem.value),
+          ),
       );
     setBolItems(freightItems);
-  }, [stops]);
+  }, [stops, stops[index].bolList]);
 
   const getOnChangeHandler = (index: number, fieldName: string) => {
     return (newValue) => {
@@ -195,7 +200,9 @@ const DeliveryDriversInfo = ({
                         value={`${item.bol}`}
                         onChange={getOnChangeHandler(index, 'bol')}
                       />
-                      {!item.driversInfoId ? null : (
+                      {!item.driversInfoId ? (
+                        <View style={styles.spacer}></View>
+                      ) : (
                         <FileList
                           objectId={loadId}
                           objectType="Load"
@@ -207,18 +214,9 @@ const DeliveryDriversInfo = ({
                         />
                       )}
                     </View>
-                    <IconButton
-                      iconName="note-minus-outline"
-                      onClick={getRemoveItemHandler(index)}
-                    />
                   </View>
                 ))}
           </ScrollView>
-          <View style={styles.spacer}></View>
-          <IconButton
-            iconName="note-plus-outline"
-            onClick={getAddItemHandler()}
-          />
           <View style={styles.spacer}></View>
           <View style={styles.buttonContainer}>
             <ModalButton

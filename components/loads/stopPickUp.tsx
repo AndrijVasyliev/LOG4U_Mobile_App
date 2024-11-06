@@ -142,7 +142,7 @@ const StopPickUp = ({
             />
           )}
           {stop.status !== 'On site PU' ||
-          !(stop?.driversInfo?.length === stop?.freightList?.length) ? null : (
+          !(stop?.driversInfo?.length >= stop?.freightList?.length) ? null : (
             <IconButton
               iconName="truck-delivery-outline"
               onClick={handleSetWaitingGTG}

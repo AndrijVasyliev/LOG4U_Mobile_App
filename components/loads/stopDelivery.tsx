@@ -142,7 +142,7 @@ const StopDelivery = ({
             />
           )}
           {stop.status !== 'On site DEL' ||
-          !(stop?.driversInfo?.length > 0) ? null : (
+          !(stop?.driversInfo?.length >= stop?.bolList?.length) ? null : (
             <IconButton
               iconName="truck-delivery-outline"
               onClick={handleSetWaitingGTG}
