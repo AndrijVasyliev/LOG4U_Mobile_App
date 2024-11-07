@@ -111,8 +111,6 @@ const Login = () => {
       });
   }, [changedAt]);
 
-  const router = useRouter();
-
   const handleLoginChange = (text: string) => {
     setLoginError((prev) => (prev ? '' : prev));
     setLogin(text);
@@ -241,11 +239,6 @@ const Login = () => {
             if (mobileDataResp.status === 200) {
               setIsAutentificating(false);
               setUserData({ ...person, appPassword: pas } as UserData);
-              if (person.type === 'Owner' || person.type === 'Coordinator') {
-                router.navigate('/home/trucks');
-              } else {
-                router.navigate('/home/profile');
-              }
               return;
             } else if (mobileDataResp.status) {
               setLoginError(

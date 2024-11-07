@@ -33,7 +33,6 @@ const File = ({
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const [userData, setUserData] = useUserData();
-  const router = useRouter();
 
   const download = async () => {
     setIsLoading(true);
@@ -55,7 +54,6 @@ const File = ({
 
     if (downloadResult.status === 401) {
       await logout();
-      router.navigate('/');
       setUserData(null);
     }
 

@@ -20,11 +20,10 @@ const AppMenuModal = ({
   onRequestClose: VoidFunction;
 }) => {
   const [, setUserData] = useUserData();
-  const router = useRouter();
+
   const handleLogout = () => {
     logout().then(() => {
       onRequestClose();
-      router.navigate('/');
       setUserData(null);
     });
   };

@@ -14,6 +14,7 @@ import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 import { useRouter } from 'expo-router';
 import ErrorText from '../common/ErrorText';
+import { useUserData } from '../../hooks/userData';
 
 export const FILE_OF_TYPES = ['Truck', 'Person', 'Load'] as const;
 export type FileOfType = (typeof FILE_OF_TYPES)[number];
@@ -35,7 +36,7 @@ const FileList = ({
   const [files, setFiles] = React.useState<Record<string, any>[] | null>(null);
   const [filesError, setFilesError] = React.useState<string>('');
 
-  const router = useRouter();
+  const [, setUserData] = useUserData();
 
   React.useEffect(() => {
     if (expanded) {
@@ -84,7 +85,7 @@ const FileList = ({
       .catch((error) => {
         if (error instanceof NotAuthorizedError) {
           setFilesError('Not authorized');
-          router.navigate('/');
+          setUserData(null);
           setFiles(null);
         } else {
           setFilesError('Network problem: slow or unstable connection');

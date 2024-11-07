@@ -18,7 +18,6 @@ const Profile = () => {
   const [profileError, setProfileError] = React.useState<string>('');
 
   const [userData, setUserData] = useUserData();
-  const router = useRouter();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -68,7 +67,6 @@ const Profile = () => {
       .catch((error) => {
         if (error instanceof NotAuthorizedError) {
           setProfileError('Not authorized');
-          router.navigate('/');
           setUserData(null);
         } else {
           setProfileError('Network problem: slow or unstable connection');

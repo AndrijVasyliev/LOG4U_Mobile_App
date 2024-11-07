@@ -35,7 +35,6 @@ const Trucks = () => {
   );
 
   const [userData, setUserData] = useUserData();
-  const router = useRouter();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -100,7 +99,6 @@ const Trucks = () => {
       .catch((error) => {
         if (error instanceof NotAuthorizedError) {
           setTruckError('Not authorized');
-          router.navigate('/');
           setUserData(null);
         } else {
           setTruckError('Network problem: slow or unstable connection');

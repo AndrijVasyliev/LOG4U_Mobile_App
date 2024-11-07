@@ -32,7 +32,6 @@ const DeleteFile = ({
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const [, setUserData] = useUserData();
-  const router = useRouter();
 
   const handleOpenDialog = () => {
     setDialogVisible(true);
@@ -53,7 +52,6 @@ const DeleteFile = ({
       })
       .catch((error) => {
         if (error instanceof NotAuthorizedError) {
-          router.navigate('/');
           setUserData(null);
         }
         setIsLoading(false);

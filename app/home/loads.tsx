@@ -87,7 +87,6 @@ const Loads = () => {
       .catch((error) => {
         if (error instanceof NotAuthorizedError) {
           setLoadError('Not authorized');
-          router.navigate('/');
           setUserData(null);
         } else {
           setLoadError('Network problem: slow or unstable connection');
@@ -126,7 +125,10 @@ const Loads = () => {
 
     // Cleanup the animation frame on unmount
     return () => cancelAnimationFrame(id);
-  }, [loads?.find((load) => selectedLoadId && load.id === selectedLoadId)?.id /*isLoading selectedLoadId*/]);
+  }, [
+    loads?.find((load) => selectedLoadId && load.id === selectedLoadId)
+      ?.id /*isLoading selectedLoadId*/,
+  ]);
 
   return (
     <ImageBackground

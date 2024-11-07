@@ -36,7 +36,6 @@ const Map = () => {
   const mapRef = React.useRef();
 
   const [userData, setUserData] = useUserData();
-  const router = useRouter();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -121,7 +120,6 @@ const Map = () => {
       .catch((error) => {
         if (error instanceof NotAuthorizedError) {
           setMapError('Not authorized');
-          router.navigate('/');
           setUserData(null);
         } else {
           setMapError('Network problem: slow or unstable connection');
