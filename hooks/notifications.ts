@@ -21,7 +21,9 @@ export const useNotifications = () => {
   React.useEffect(() => {
     if (routeTo && userData) {
       setRouteTo('');
-      router.push(routeTo);
+      setTimeout(() => {
+        router.push(routeTo);
+      }, 1);
     }
   }, [routeTo, userData]);
 
@@ -115,7 +117,8 @@ export const useNotifications = () => {
     const responseListener =
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(JSON.stringify(response));
-        const routeToFormPush = response.notification.request.content?.data?.routeTo;
+        const routeToFormPush =
+          response.notification.request.content?.data?.routeTo;
         if (routeToFormPush) {
           setRouteTo(routeToFormPush);
         }
