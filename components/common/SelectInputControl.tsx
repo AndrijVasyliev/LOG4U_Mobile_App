@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   dropdownContainer: {
+    maxHeight: 95,
     backgroundColor: COLORS.lightWhite,
     borderColor: COLORS.gray,
   },

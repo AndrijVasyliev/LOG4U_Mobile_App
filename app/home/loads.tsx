@@ -126,7 +126,7 @@ const Loads = () => {
 
     // Cleanup the animation frame on unmount
     return () => cancelAnimationFrame(id);
-  }, [loads /*isLoading*/, selectedLoadId]);
+  }, [loads?.find((load) => selectedLoadId && load.id === selectedLoadId)?.id /*isLoading selectedLoadId*/]);
 
   return (
     <ImageBackground

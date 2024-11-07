@@ -195,6 +195,9 @@ const PickUpDriversInfo = ({
                       />
                       <SelectInputControl
                         placeholder="Select Unit Of Weight"
+                        zIndex={3000}
+                        zIndexInverse={1000}
+                        dropDownDirection="BOTTOM"
                         items={[
                           { label: 'LBS', value: 'LBS' },
                           { label: 'KG', value: 'KG' },
@@ -211,6 +214,9 @@ const PickUpDriversInfo = ({
                       />
                       <SelectInputControl
                         placeholder="Select BOL"
+                        zIndex={2000}
+                        zIndexInverse={2000}
+                        dropDownDirection="TOP"
                         items={bolItems || []}
                         value={`${item.bol}`}
                         onChange={getOnChangeHandler(index, 'bol')}
@@ -222,6 +228,9 @@ const PickUpDriversInfo = ({
                       />
                       <SelectInputControl
                         placeholder="Select is address correct"
+                        zIndex={1000}
+                        zIndexInverse={3000}
+                        dropDownDirection="TOP"
                         items={[
                           { label: 'Address is correct', value: 'true' },
                           { label: 'Address is NOT correct', value: 'false' },
