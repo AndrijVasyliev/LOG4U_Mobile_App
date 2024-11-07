@@ -10,9 +10,20 @@ import {
 import Constants from 'expo-constants';
 import { getDeviceId } from '../utils/deviceId';
 import { authFetch } from '../utils/authFetch';
+import { useUserData } from './userData';
 
 export const useNotifications = () => {
+  const [routeTo, setRouteTo] = React.useState<string>('');
+
   const router = useRouter();
+  const [userData] = useUserData();
+
+  React.useEffect(() => {
+    if (routeTo && userData) {
+      setRouteTo('');
+      router.push(routeTo);
+    }
+  }, [routeTo, userData]);
 
   React.useEffect(() => {
     Notifications.setNotificationHandler({
@@ -104,9 +115,9 @@ export const useNotifications = () => {
     const responseListener =
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(JSON.stringify(response));
-        const routeTo = response.notification.request.content?.data?.routeTo;
-        if (routeTo) {
-          router.push(routeTo);
+        const routeToFormPush = response.notification.request.content?.data?.routeTo;
+        if (routeToFormPush) {
+          setRouteTo(routeToFormPush);
         }
       });
 

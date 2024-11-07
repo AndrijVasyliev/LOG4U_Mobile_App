@@ -6,7 +6,6 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { ToastProvider } from 'react-native-toast-notifications';
-// import * as Linking from 'expo-linking';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import { Stack } from 'expo-router';
@@ -17,6 +16,7 @@ import { UserDataProvider } from '../providers/userData';
 import HeaderLogo from '../components/common/headerLogo';
 import HeaderButton from '../components/common/headerButton';
 import { useNotifications } from '../hooks/notifications';
+import { useLinking } from '../hooks/linking';
 
 // Instruct SplashScreen not to hide yet, we want to do this manually
 SplashScreen.preventAutoHideAsync().catch((reason) =>
@@ -53,17 +53,16 @@ const RootLayout = () => {
     return null;
   }
 
-  return <Layout />;
+  return (
+    <UserDataProvider>
+      <Layout />
+    </UserDataProvider>
+  );
 };
 
 const Layout = () => {
   useNotifications();
-
-  /*React.useEffect(() => {
-   Linking.addEventListener('url', (event) =>
-     console.log('LINK', JSON.stringify(event)),
-   );
- }, []);*/
+  useLinking();
 
   const insets = useSafeAreaInsets();
   return (
@@ -76,24 +75,22 @@ const Layout = () => {
             paddingBottom: -insets.bottom,
           }}
         >
-          <UserDataProvider>
-            <Stack initialRouteName="(login)">
-              <Stack.Screen
-                name="(login)/index"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="home"
-                options={{
-                  headerStyle: { backgroundColor: COLORS.primary },
-                  headerShadowVisible: false,
-                  headerLeft: () => <HeaderLogo />,
-                  headerRight: () => <HeaderButton />,
-                  headerTitle: '',
-                }}
-              />
-            </Stack>
-          </UserDataProvider>
+          <Stack initialRouteName="(login)">
+            <Stack.Screen
+              name="(login)/index"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="home"
+              options={{
+                headerStyle: { backgroundColor: COLORS.primary },
+                headerShadowVisible: false,
+                headerLeft: () => <HeaderLogo />,
+                headerRight: () => <HeaderButton />,
+                headerTitle: '',
+              }}
+            />
+          </Stack>
         </SafeAreaView>
       </ToastProvider>
     </SafeAreaProvider>
