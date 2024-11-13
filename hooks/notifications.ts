@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useRouter, useNavigationContainerRef } from 'expo-router';
 import * as React from 'react';
 import * as Notifications from 'expo-notifications';
 import {
@@ -12,7 +12,17 @@ import { getDeviceId } from '../utils/deviceId';
 import { authFetch } from '../utils/authFetch';
 
 export const useNotifications = () => {
+  const [routeTo, setRouteTo] = React.useState<string>('');
   const router = useRouter();
+  const { current: navigatorCurrent } = useNavigationContainerRef();
+
+  React.useEffect(() => {
+    if(routeTo && navigatorCurrent?.isReady()) {
+      console.log('Setting route search param "routeToFormPush"', routeTo);
+      router.setParams({ routeToFormPush: routeTo });
+      setRouteTo('');
+    }
+  }, [routeTo, navigatorCurrent?.isReady()]);
 
   React.useEffect(() => {
     Notifications.setNotificationHandler({
@@ -107,8 +117,8 @@ export const useNotifications = () => {
         const routeToFormPush =
           response.notification.request.content?.data?.routeTo;
         if (routeToFormPush) {
-          console.log('Setting route search param "routeToFormPush"', routeToFormPush);
-          router.setParams({ routeToFormPush });
+          console.log('Saving route search param "routeToFormPush"', routeToFormPush);
+          setRouteTo(routeToFormPush);
         }
       });
 
