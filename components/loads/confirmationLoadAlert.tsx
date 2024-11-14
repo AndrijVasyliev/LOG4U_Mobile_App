@@ -36,12 +36,14 @@ const ConfirmationLoadAlert = ({
       load.status === 'In Progress' &&
       load.stops[0].status === 'New'
     ) {
-      setAlertData({
-        alertText: `New Load#${load.loadNumber} has been assigned`,
-        stopType: 'PickUp',
-        stopId: load.stops[0].stopId,
-        nextStatus: 'On route to PU',
-      });
+      setTimeout(() => {
+        setAlertData({
+          alertText: `New Load#${load.loadNumber} has been assigned`,
+          stopType: 'PickUp',
+          stopId: load.stops[0].stopId,
+          nextStatus: 'On route to PU',
+        });
+      }, 200);
     } else if (
       expanded &&
       !alertData &&
@@ -52,12 +54,14 @@ const ConfirmationLoadAlert = ({
         (stop) => stop.status === 'GTG',
       );
       const stop = load.stops[gtgStopIndex];
-      setAlertData({
-        alertText: `You are good to go from Stop#${gtgStopIndex + 1} on Load#${load.loadNumber}`,
-        stopType: stop.type,
-        stopId: stop.stopId,
-        nextStatus: 'Completed',
-      });
+      setTimeout(() => {
+        setAlertData({
+          alertText: `You are good to go from Stop#${gtgStopIndex + 1} on Load#${load.loadNumber}`,
+          stopType: stop.type,
+          stopId: stop.stopId,
+          nextStatus: 'Completed',
+        });
+      }, 200);
     } else if (!expanded && alertData) {
       setAlertData(undefined);
     }

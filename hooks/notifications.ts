@@ -12,17 +12,17 @@ import { getDeviceId } from '../utils/deviceId';
 import { authFetch } from '../utils/authFetch';
 
 export const useNotifications = () => {
-  const [routeTo, setRouteTo] = React.useState<string>('');
   const router = useRouter();
-  const { current: navigatorCurrent } = useNavigationContainerRef();
-
+  const lastNotificationResponse = Notifications.useLastNotificationResponse();
   React.useEffect(() => {
-    if(routeTo && navigatorCurrent?.isReady()) {
-      console.log('Setting route search param "routeToFormPush"', routeTo);
-      router.setParams({ routeToFormPush: routeTo });
-      setRouteTo('');
+    if (
+      lastNotificationResponse &&
+      lastNotificationResponse.notification.request.content?.data?.routeTo &&
+      lastNotificationResponse.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER
+    ) {
+      router.setParams({ routeToFormPush: lastNotificationResponse.notification.request.content?.data?.routeTo });
     }
-  }, [routeTo, navigatorCurrent?.isReady()]);
+  }, [lastNotificationResponse]);
 
   React.useEffect(() => {
     Notifications.setNotificationHandler({
@@ -114,12 +114,6 @@ export const useNotifications = () => {
     const responseListener =
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(JSON.stringify(response));
-        const routeToFormPush =
-          response.notification.request.content?.data?.routeTo;
-        if (routeToFormPush) {
-          console.log('Saving route search param "routeToFormPush"', routeToFormPush);
-          setRouteTo(routeToFormPush);
-        }
       });
 
     return () => {
