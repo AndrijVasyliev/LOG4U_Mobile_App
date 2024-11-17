@@ -16,20 +16,10 @@ const Stops = ({
       {stops.map((stop, index) => {
         switch (stop.type) {
           case 'PickUp':
-            return (
-              <StopPickUp
-                key={stop.stopId}
-                index={index}
-                stops={stops}
-              />
-            );
+            return <StopPickUp key={stop.stopId} index={index} stops={stops} />;
           case 'Delivery':
             return (
-              <StopDelivery
-                key={stop.stopId}
-                index={index}
-                stops={stops}
-              />
+              <StopDelivery key={stop.stopId} index={index} stops={stops} />
             );
           default:
             return null;

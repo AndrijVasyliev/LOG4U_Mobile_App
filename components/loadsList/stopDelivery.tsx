@@ -1,9 +1,5 @@
 import * as React from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-} from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import UserDataItem from '../profile/UserDataItem';
 import { fromTimeFrame } from '../../utils/fromTimeFrame';
 import { getStatusText } from '../../utils/getStopStatus';

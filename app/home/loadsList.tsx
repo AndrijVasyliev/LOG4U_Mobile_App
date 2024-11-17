@@ -17,7 +17,12 @@ import {
 
 import Load from '../../components/loadsList/Load';
 import ErrorText from '../../components/common/ErrorText';
-import { images, BACKEND_ORIGIN, COLORS, LOAD_LIST_PATH } from '../../constants';
+import {
+  images,
+  BACKEND_ORIGIN,
+  COLORS,
+  LOAD_LIST_PATH,
+} from '../../constants';
 import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';

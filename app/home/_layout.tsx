@@ -43,7 +43,11 @@ const TabLayout = () => {
             title: 'Loads',
             href: isLoadsEnabled(userData) ? { pathname: '/home/loads' } : null,
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="format-list-bulleted-square" color={color} size={size} />
+              <MaterialCommunityIcons
+                name="format-list-bulleted-square"
+                color={color}
+                size={size}
+              />
             ),
           }}
         />
@@ -55,7 +59,11 @@ const TabLayout = () => {
               ? { pathname: '/home/loadsList' }
               : null,
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="format-list-text" color={color} size={size} />
+              <MaterialCommunityIcons
+                name="format-list-text"
+                color={color}
+                size={size}
+              />
             ),
           }}
         />
@@ -67,11 +75,7 @@ const TabLayout = () => {
               ? { pathname: '/home/trucks' }
               : null,
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons
-                name="truck"
-                color={color}
-                size={size}
-              />
+              <MaterialCommunityIcons name="truck" color={color} size={size} />
             ),
           }}
         />
