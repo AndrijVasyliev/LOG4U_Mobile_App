@@ -300,8 +300,7 @@ const Login = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={'dark-content'} />
+    <>
       <ForceLoginModal
         visible={forceLoginVisible}
         proceed={handleForceLoginProceed}
@@ -312,6 +311,7 @@ const Login = () => {
         grant={handlePDGrant}
         reject={handlePDReject}
       />
+      <StatusBar barStyle={'dark-content'} />
       <Stack.Screen
         options={{
           headerStyle: { backgroundColor: COLORS.white },
@@ -319,23 +319,25 @@ const Login = () => {
           headerTitle: '',
         }}
       />
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContainer}
-      >
-        <Logo />
-        <View style={styles.controlsWrapper}>
-          <Text style={styles.headerText}>Login</Text>
-          <Text>Enter your credentials to login</Text>
-          <LoginInput value={login} onChange={handleLoginChange} />
-          <PasswordInput value={password} onChange={handlePasswordChange} />
-          <LoginErrorText errorText={loginError} />
-          <LoginButton onClick={handleLogin} />
-        </View>
-        <WelcomeText />
-      </ScrollView>
-      <Spinner visible={isAutentificating} textContent={'Logging in...'} />
-    </View>
+      <View style={styles.container}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.scrollContainer}
+        >
+          <Logo />
+          <View style={styles.controlsWrapper}>
+            <Text style={styles.headerText}>Login</Text>
+            <Text>Enter your credentials to login</Text>
+            <LoginInput value={login} onChange={handleLoginChange} />
+            <PasswordInput value={password} onChange={handlePasswordChange} />
+            <LoginErrorText errorText={loginError} />
+            <LoginButton onClick={handleLogin} />
+          </View>
+          <WelcomeText />
+        </ScrollView>
+        <Spinner visible={isAutentificating} textContent={'Logging in...'} />
+      </View>
+    </>
   );
 };
 

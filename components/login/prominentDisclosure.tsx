@@ -20,14 +20,19 @@ const ProminentDisclosureModal = ({
   reject: VoidFunction;
   grant: VoidFunction;
 }) => {
+  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(visible);
+
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => setIsModalVisible(visible), 200);
+    return () => clearTimeout(timeoutId);
+  }, [visible]);
+
   return (
     <Modal
-      animated={false}
       hardwareAccelerated={true}
-      animationType="none"
-      presentationStyle="overFullScreen"
+      animationType="fade"
       transparent={true}
-      visible={visible}
+      visible={isModalVisible}
       onRequestClose={() => {
         console.log('Modal has been closed.');
       }}
@@ -98,7 +103,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 5,
     flexDirection: 'column',
-    height: '45%',
+    height: 'auto',
     padding: 35,
     shadowColor: COLORS.black,
     shadowOffset: {

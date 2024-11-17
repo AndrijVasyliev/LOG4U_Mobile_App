@@ -7,7 +7,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
 import { COLORS } from '../../constants';
 import { useUserData } from '../../hooks/userData';
 import { logout } from '../../utils/logout';
@@ -20,6 +19,12 @@ const AppMenuModal = ({
   onRequestClose: VoidFunction;
 }) => {
   const [, setUserData] = useUserData();
+  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(visible);
+
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => setIsModalVisible(visible), 200);
+    return () => clearTimeout(timeoutId);
+  }, [visible]);
 
   const handleLogout = () => {
     logout().then(() => {
@@ -30,12 +35,10 @@ const AppMenuModal = ({
 
   return (
     <Modal
-      animated={false}
       hardwareAccelerated={true}
-      animationType="none"
-      presentationStyle="overFullScreen"
+      animationType="fade"
       transparent={true}
-      visible={visible}
+      visible={isModalVisible}
       onRequestClose={() => {
         console.log('Modal has been closed.');
       }}
@@ -44,7 +47,11 @@ const AppMenuModal = ({
         <TouchableWithoutFeedback onPress={onRequestClose}>
           <View style={styles.area} />
         </TouchableWithoutFeedback>
-        <View style={styles.modal}>
+        <View style={styles.dialogPaper}>
+          {/*<View style={styles.dialogContents}>
+            <Text>{alertData ? alertData.alertText : ''}</Text>
+          </View>
+          <View style={styles.spacer}></View>*/}
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleLogout}>
               <Text style={{ color: COLORS.white }}>LOG OUT</Text>
@@ -74,10 +81,11 @@ const styles = StyleSheet.create({
     width: 100,
   },
   buttonContainer: {
-    alignItems: 'center',
+    flexDirection: 'row',
     height: 40,
     justifyContent: 'center',
-    marginTop: 5,
+    paddingLeft: '1%',
+    paddingRight: '1%',
     width: '100%',
   },
   container: {
@@ -86,11 +94,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  modal: {
+  dialogContents: {
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    paddingLeft: '1%',
+    paddingRight: '1%',
+    width: '10%',
+    zIndex: 1,
+  },
+  dialogPaper: {
     alignItems: 'center',
     backgroundColor: COLORS.white,
     borderRadius: 10,
     elevation: 5,
+    // flexDirection: 'column',
+    // height: 30,
     padding: 35,
     shadowColor: COLORS.black,
     shadowOffset: {
@@ -99,6 +118,10 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
+    width: '50%',
+  },
+  spacer: {
+    height: 10,
   },
 });
 

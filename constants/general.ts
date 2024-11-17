@@ -23,6 +23,7 @@ export const SET_APP_DATA_PATH = `${BACKEND_PREFIX}/setAppData`;
 export const DRIVER_PATH = `${BACKEND_PREFIX}/driver`;
 export const OWNER_PATH = `${BACKEND_PREFIX}/owner`;
 export const COORDINATOR_PATH = `${BACKEND_PREFIX}/coordinator`;
+export const LOAD_LIST_PATH = `${BACKEND_PREFIX}/loads`;
 export const LOAD_PATH = `${BACKEND_PREFIX}/load`;
 export const TRUCK_PATH = `${BACKEND_PREFIX}/truck`;
 export const SET_LOCATION_PATH = `${BACKEND_PREFIX}/setTruckLocation`;

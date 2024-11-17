@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import Stops from './Stops';
-import ConfirmationLoadAlert from './confirmationLoadAlert';
 import UserDataItem from '../profile/UserDataItem';
-import FileList from '../profile/fileList';
 
 const Load = ({
   load,
@@ -16,11 +14,6 @@ const Load = ({
 }) => {
   return (
     <>
-      <ConfirmationLoadAlert
-        load={load}
-        expanded={expanded}
-        onChanged={onChanged}
-      />
       <View style={styles.loadNumContainer}>
         <View>
           <Text
@@ -36,34 +29,22 @@ const Load = ({
         } Miles`}</Text>
       </View>
       <UserDataItem
-        iconName="weight"
-        value={`${load?.weight ? load?.weight : ''}`}
-        fieldName="Weight"
+        iconName="truck"
+        value={`${load?.truck?.truckNumber ? load?.truck?.truckNumber : ''}`}
+        fieldName="Truck #"
       />
-      {expanded ? null : (
-        <UserDataItem
-          iconName="source-commit-start"
-          value={`${load?.stops?.at(0)?.facility?.name ? load.stops.at(0).facility.name : ''}`}
-          fieldName="From"
-        />
-      )}
-      {expanded ? null : (
-        <UserDataItem
-          iconName="source-commit-end"
-          value={`${load?.stops?.at(-1)?.facility?.name ? load.stops.at(-1).facility.name : ''}`}
-          fieldName="To"
-        />
-      )}
+      <UserDataItem
+        iconName="account"
+        value={`${load?.truck?.driver?.fullName ? load?.truck?.driver?.fullName : ''}`}
+        fieldName="Driver"
+      />
+      <UserDataItem
+        iconName="currency-usd"
+        value={`${load?.rate ? load?.rate : ''}`}
+        fieldName="Drivers rate"
+      />
       {!expanded ? null : (
         <Stops loadId={load.id} stops={load.stops} onChanged={onChanged} />
-      )}
-      {!expanded ? null : (
-        <FileList
-          objectId={load.id}
-          objectType="Load"
-          label="Bill Files"
-          tags={{ [`${load.id}`]: 'Bill' }}
-        />
       )}
     </>
   );

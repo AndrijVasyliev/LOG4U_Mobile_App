@@ -64,7 +64,7 @@ const AddFile = ({
     }
 
     const pickImageResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: 'images',
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -91,7 +91,7 @@ const AddFile = ({
     }
 
     const photoImageResult = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: 'images',
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,

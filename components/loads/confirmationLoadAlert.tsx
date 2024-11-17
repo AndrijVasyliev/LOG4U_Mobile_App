@@ -28,6 +28,13 @@ const ConfirmationLoadAlert = ({
     nextStatus: string;
   } | void>(undefined);
   const [acceptLoading, setAcceptLoading] = React.useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] =
+    React.useState<boolean>(!!alertData);
+
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => setIsModalVisible(!!alertData), 200);
+    return () => clearTimeout(timeoutId);
+  }, [alertData]);
 
   React.useEffect(() => {
     if (
@@ -36,14 +43,12 @@ const ConfirmationLoadAlert = ({
       load.status === 'In Progress' &&
       load.stops[0].status === 'New'
     ) {
-      setTimeout(() => {
-        setAlertData({
-          alertText: `New Load#${load.loadNumber} has been assigned`,
-          stopType: 'PickUp',
-          stopId: load.stops[0].stopId,
-          nextStatus: 'On route to PU',
-        });
-      }, 200);
+      setAlertData({
+        alertText: `New Load#${load.loadNumber} has been assigned`,
+        stopType: 'PickUp',
+        stopId: load.stops[0].stopId,
+        nextStatus: 'On route to PU',
+      });
     } else if (
       expanded &&
       !alertData &&
@@ -54,14 +59,12 @@ const ConfirmationLoadAlert = ({
         (stop) => stop.status === 'GTG',
       );
       const stop = load.stops[gtgStopIndex];
-      setTimeout(() => {
-        setAlertData({
-          alertText: `You are good to go from Stop#${gtgStopIndex + 1} on Load#${load.loadNumber}`,
-          stopType: stop.type,
-          stopId: stop.stopId,
-          nextStatus: 'Completed',
-        });
-      }, 200);
+      setAlertData({
+        alertText: `You are good to go from Stop#${gtgStopIndex + 1} on Load#${load.loadNumber}`,
+        stopType: stop.type,
+        stopId: stop.stopId,
+        nextStatus: 'Completed',
+      });
     } else if (!expanded && alertData) {
       setAlertData(undefined);
     }
@@ -95,12 +98,10 @@ const ConfirmationLoadAlert = ({
 
   return (
     <Modal
-      animated={false}
       hardwareAccelerated={true}
-      animationType="none"
-      presentationStyle="overFullScreen"
+      animationType="fade"
       transparent={true}
-      visible={!!alertData}
+      visible={isModalVisible}
       onRequestClose={() => {
         console.log('Modal has been closed.');
       }}

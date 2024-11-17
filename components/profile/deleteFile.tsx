@@ -30,8 +30,15 @@ const DeleteFile = ({
 }) => {
   const [dialogVisible, setDialogVisible] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] =
+    React.useState<boolean>(dialogVisible);
 
   const [, setUserData] = useUserData();
+
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => setIsModalVisible(dialogVisible), 200);
+    return () => clearTimeout(timeoutId);
+  }, [dialogVisible]);
 
   const handleOpenDialog = () => {
     setDialogVisible(true);
@@ -67,12 +74,10 @@ const DeleteFile = ({
   return (
     <>
       <Modal
-        animated={false}
         hardwareAccelerated={true}
-        animationType="none"
-        presentationStyle="overFullScreen"
+        animationType="fade"
         transparent={true}
-        visible={dialogVisible}
+        visible={isModalVisible}
         onRequestClose={() => {
           console.log('Modal has been closed.');
         }}

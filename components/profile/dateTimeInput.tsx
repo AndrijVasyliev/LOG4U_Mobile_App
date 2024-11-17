@@ -17,6 +17,13 @@ import { toCorrected } from '../../utils/dateTimeConverters';
 const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
   const [pickerVisible, setPickerVisible] = React.useState<boolean>(false);
   const [date, setDate] = React.useState<DateType | undefined>(undefined);
+  const [isModalVisible, setIsModalVisible] =
+    React.useState<boolean>(pickerVisible);
+
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => setIsModalVisible(pickerVisible), 200);
+    return () => clearTimeout(timeoutId);
+  }, [pickerVisible]);
 
   const onClick = () => {
     setPickerVisible(true);
@@ -35,12 +42,10 @@ const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
   return (
     <>
       <Modal
-        animated={false}
         hardwareAccelerated={true}
-        animationType="none"
-        presentationStyle="overFullScreen"
+        animationType="fade"
         transparent={true}
-        visible={pickerVisible}
+        visible={isModalVisible}
         onRequestClose={() => {
           console.log('Modal has been closed.');
         }}

@@ -19,7 +19,7 @@ const HeaderButton = () => {
   return (
     <>
       <AppMenuModal visible={menuVisible} onRequestClose={handleRequestClose} />
-      <TouchableOpacity style={styles.container} onPress={handleOpenMenu}>
+      <TouchableOpacity style={styles.container} onPressIn={handleOpenMenu}>
         <Image
           source={icons.AccountCircle}
           resizeMode="contain"

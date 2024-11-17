@@ -16,18 +16,24 @@ const FileErrorDialog = ({
   errorCode: number;
   OnClose: () => void;
 }) => {
+  const [isModalVisible, setIsModalVisible] =
+    React.useState<boolean>(!!errorCode);
+
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => setIsModalVisible(!!errorCode), 200);
+    return () => clearTimeout(timeoutId);
+  }, [errorCode]);
+
   const handleCloseDialog = () => {
     OnClose();
   };
 
   return (
     <Modal
-      animated={false}
       hardwareAccelerated={true}
-      animationType="none"
-      presentationStyle="overFullScreen"
+      animationType="fade"
       transparent={true}
-      visible={!!errorCode}
+      visible={isModalVisible}
       onRequestClose={() => {
         console.log('Modal has been closed.');
       }}

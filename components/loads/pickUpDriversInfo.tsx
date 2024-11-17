@@ -47,6 +47,16 @@ const PickUpDriversInfo = ({
     { label: string; value: string }[] | void
   >(undefined);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] =
+    React.useState<boolean>(!!pickUpDriversItems);
+
+  React.useEffect(() => {
+    const timeoutId = setTimeout(
+      () => setIsModalVisible(!!pickUpDriversItems),
+      200,
+    );
+    return () => clearTimeout(timeoutId);
+  }, [pickUpDriversItems]);
 
   React.useEffect(() => {
     if (!pickUpDriversItems) {
@@ -149,12 +159,10 @@ const PickUpDriversInfo = ({
 
   return (
     <Modal
-      animated={false}
       hardwareAccelerated={true}
-      animationType="none"
-      presentationStyle="overFullScreen"
+      animationType="fade"
       transparent={true}
-      visible={!!pickUpDriversItems}
+      visible={isModalVisible}
       onRequestClose={() => {
         console.log('Modal has been closed.');
       }}
@@ -195,9 +203,6 @@ const PickUpDriversInfo = ({
                       />
                       <SelectInputControl
                         placeholder="Select Unit Of Weight"
-                        zIndex={3000}
-                        zIndexInverse={1000}
-                        dropDownDirection="BOTTOM"
                         items={[
                           { label: 'LBS', value: 'LBS' },
                           { label: 'KG', value: 'KG' },
@@ -214,9 +219,6 @@ const PickUpDriversInfo = ({
                       />
                       <SelectInputControl
                         placeholder="Select BOL"
-                        zIndex={2000}
-                        zIndexInverse={2000}
-                        dropDownDirection="TOP"
                         items={bolItems || []}
                         value={`${item.bol}`}
                         onChange={getOnChangeHandler(index, 'bol')}
@@ -228,9 +230,6 @@ const PickUpDriversInfo = ({
                       />
                       <SelectInputControl
                         placeholder="Select is address correct"
-                        zIndex={1000}
-                        zIndexInverse={3000}
-                        dropDownDirection="TOP"
                         items={[
                           { label: 'Address is correct', value: 'true' },
                           { label: 'Address is NOT correct', value: 'false' },

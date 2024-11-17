@@ -40,6 +40,16 @@ const DeliveryDriversInfo = ({
     { label: string; value: string }[] | void
   >(undefined);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] =
+    React.useState<boolean>(!!deliveryDriversItems);
+
+  React.useEffect(() => {
+    const timeoutId = setTimeout(
+      () => setIsModalVisible(!!deliveryDriversItems),
+      200,
+    );
+    return () => clearTimeout(timeoutId);
+  }, [deliveryDriversItems]);
 
   React.useEffect(() => {
     if (!deliveryDriversItems) {
@@ -151,12 +161,10 @@ const DeliveryDriversInfo = ({
 
   return (
     <Modal
-      animated={false}
       hardwareAccelerated={true}
-      animationType="none"
-      presentationStyle="overFullScreen"
+      animationType="fade"
       transparent={true}
-      visible={!!deliveryDriversItems}
+      visible={isModalVisible}
       onRequestClose={() => {
         console.log('Modal has been closed.');
       }}

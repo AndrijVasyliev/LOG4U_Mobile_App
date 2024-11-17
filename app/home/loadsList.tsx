@@ -15,9 +15,9 @@ import {
   useLocalSearchParams,
 } from 'expo-router';
 
-import Load from '../../components/loads/Load';
+import Load from '../../components/loadsList/Load';
 import ErrorText from '../../components/common/ErrorText';
-import { images, BACKEND_ORIGIN, LOAD_PATH, COLORS } from '../../constants';
+import { images, BACKEND_ORIGIN, COLORS, LOAD_LIST_PATH } from '../../constants';
 import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
@@ -66,7 +66,7 @@ const Loads = () => {
       return;
     }
     setIsLoading(true);
-    authFetch(new URL(LOAD_PATH, BACKEND_ORIGIN), { method: 'GET' })
+    authFetch(new URL(LOAD_LIST_PATH, BACKEND_ORIGIN), { method: 'GET' })
       .then(async (response) => {
         if (response && response.status === 200) {
           try {

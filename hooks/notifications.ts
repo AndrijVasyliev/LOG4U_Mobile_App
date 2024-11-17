@@ -18,9 +18,13 @@ export const useNotifications = () => {
     if (
       lastNotificationResponse &&
       lastNotificationResponse.notification.request.content?.data?.routeTo &&
-      lastNotificationResponse.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER
+      lastNotificationResponse.actionIdentifier ===
+        Notifications.DEFAULT_ACTION_IDENTIFIER
     ) {
-      router.setParams({ routeToFormPush: lastNotificationResponse.notification.request.content?.data?.routeTo });
+      router.setParams({
+        routeToFormPush:
+          lastNotificationResponse.notification.request.content?.data?.routeTo,
+      });
     }
   }, [lastNotificationResponse]);
 

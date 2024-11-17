@@ -9,7 +9,9 @@ export const UserDataProvider = function UserDataProvider({
 }) {
   const [userData, setUserData] = React.useState<UserData | null>(null);
 
-  const { routeToFormPush } = useGlobalSearchParams<{ routeToFormPush?: string }>();
+  const { routeToFormPush } = useGlobalSearchParams<{
+    routeToFormPush?: string;
+  }>();
   const router = useRouter();
 
   React.useEffect(() => {

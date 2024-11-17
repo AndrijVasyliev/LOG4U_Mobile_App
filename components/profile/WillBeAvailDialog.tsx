@@ -34,6 +34,12 @@ const WillBeAvailableDialog = ({
   const [location, setLocation] = React.useState<[number, number] | null>(null);
   const [locationLoading, setLocationLoading] = React.useState<boolean>(false);
   const [date, setDate] = React.useState<Date | null>(null);
+  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(visible);
+
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => setIsModalVisible(visible), 200);
+    return () => clearTimeout(timeoutId);
+  }, [visible]);
 
   React.useEffect(() => {
     if (!visible) {
@@ -98,12 +104,10 @@ const WillBeAvailableDialog = ({
   };
   return (
     <Modal
-      animated={false}
       hardwareAccelerated={true}
-      animationType="none"
-      presentationStyle="overFullScreen"
+      animationType="fade"
       transparent={true}
-      visible={visible}
+      visible={isModalVisible}
       onRequestClose={() => {
         console.log('Modal has been closed.');
       }}

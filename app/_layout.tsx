@@ -75,7 +75,7 @@ const Layout = () => {
             paddingBottom: -insets.bottom,
           }}
         >
-          <Stack initialRouteName="(login)">
+          <Stack initialRouteName="(login)/index">
             <Stack.Screen
               name="(login)/index"
               options={{ headerShown: false }}

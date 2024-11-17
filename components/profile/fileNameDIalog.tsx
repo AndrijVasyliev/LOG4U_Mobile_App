@@ -24,6 +24,12 @@ const FileNameDialog = ({
   OnClose: () => void;
 }) => {
   const [fileName, setFileName] = React.useState<string>('');
+  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(opened);
+
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => setIsModalVisible(opened), 200);
+    return () => clearTimeout(timeoutId);
+  }, [opened]);
 
   React.useEffect(() => {
     setFileName('');
@@ -38,12 +44,10 @@ const FileNameDialog = ({
 
   return (
     <Modal
-      animated={false}
       hardwareAccelerated={true}
-      animationType="none"
-      presentationStyle="overFullScreen"
+      animationType="fade"
       transparent={true}
-      visible={opened}
+      visible={isModalVisible}
       onRequestClose={() => {
         console.log('Modal has been closed.');
       }}

@@ -5,6 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useUserData } from '../../hooks/userData';
 import {
   isLoadsEnabled,
+  isLoadsListEnabled,
   isMapEnabled,
   isProfileEnabled,
   isTrucksEnabled,
@@ -42,7 +43,19 @@ const TabLayout = () => {
             title: 'Loads',
             href: isLoadsEnabled(userData) ? { pathname: '/home/loads' } : null,
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="truck" color={color} size={size} />
+              <MaterialCommunityIcons name="format-list-bulleted-square" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="loadsList"
+          options={{
+            title: 'Loads List',
+            href: isLoadsListEnabled(userData)
+              ? { pathname: '/home/loadsList' }
+              : null,
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="format-list-text" color={color} size={size} />
             ),
           }}
         />
@@ -55,7 +68,7 @@ const TabLayout = () => {
               : null,
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons
-                name="format-list-text"
+                name="truck"
                 color={color}
                 size={size}
               />
