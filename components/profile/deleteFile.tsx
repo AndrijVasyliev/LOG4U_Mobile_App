@@ -15,6 +15,7 @@ import {
   COLORS,
   FILE_PATH,
   MAX_FILE_NAME_LENGTH,
+  MODAL_VIEW_DELAY,
 } from '../../constants';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
@@ -36,8 +37,15 @@ const DeleteFile = ({
   const [, setUserData] = useUserData();
 
   React.useEffect(() => {
-    const timeoutId = setTimeout(() => setIsModalVisible(dialogVisible), 200);
-    return () => clearTimeout(timeoutId);
+    if (!!dialogVisible) {
+      const timeoutId = setTimeout(
+        () => setIsModalVisible(!!dialogVisible),
+        MODAL_VIEW_DELAY,
+      );
+      return () => clearTimeout(timeoutId);
+    } else {
+      setIsModalVisible(!!dialogVisible);
+    }
   }, [dialogVisible]);
 
   const handleOpenDialog = () => {

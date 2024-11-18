@@ -9,7 +9,12 @@ import {
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-import { BACKEND_ORIGIN, COLORS, LOAD_PATH } from '../../constants';
+import {
+  BACKEND_ORIGIN,
+  COLORS,
+  LOAD_PATH,
+  MODAL_VIEW_DELAY,
+} from '../../constants';
 import ModalButton from '../common/modalButton';
 import TextInputControl from '../common/TextInputControl';
 import SelectInputControl from '../common/SelectInputControl';
@@ -51,11 +56,15 @@ const PickUpDriversInfo = ({
     React.useState<boolean>(!!pickUpDriversItems);
 
   React.useEffect(() => {
-    const timeoutId = setTimeout(
-      () => setIsModalVisible(!!pickUpDriversItems),
-      200,
-    );
-    return () => clearTimeout(timeoutId);
+    if (!!pickUpDriversItems) {
+      const timeoutId = setTimeout(
+        () => setIsModalVisible(!!pickUpDriversItems),
+        MODAL_VIEW_DELAY,
+      );
+      return () => clearTimeout(timeoutId);
+    } else {
+      setIsModalVisible(!!pickUpDriversItems);
+    }
   }, [pickUpDriversItems]);
 
   React.useEffect(() => {

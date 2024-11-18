@@ -8,7 +8,12 @@ import {
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-import { BACKEND_ORIGIN, COLORS, LOAD_PATH } from '../../constants';
+import {
+  BACKEND_ORIGIN,
+  COLORS,
+  LOAD_PATH,
+  MODAL_VIEW_DELAY,
+} from '../../constants';
 import ModalButton from '../common/modalButton';
 import { authFetch } from '../../utils/authFetch';
 
@@ -32,8 +37,15 @@ const ConfirmationLoadAlert = ({
     React.useState<boolean>(!!alertData);
 
   React.useEffect(() => {
-    const timeoutId = setTimeout(() => setIsModalVisible(!!alertData), 200);
-    return () => clearTimeout(timeoutId);
+    if (!!alertData) {
+      const timeoutId = setTimeout(
+        () => setIsModalVisible(!!alertData),
+        MODAL_VIEW_DELAY,
+      );
+      return () => clearTimeout(timeoutId);
+    } else {
+      setIsModalVisible(!!alertData);
+    }
   }, [alertData]);
 
   React.useEffect(() => {

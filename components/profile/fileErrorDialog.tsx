@@ -6,7 +6,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { COLORS } from '../../constants';
+import { COLORS, MODAL_VIEW_DELAY } from '../../constants';
 import ModalButton from '../common/modalButton';
 
 const FileErrorDialog = ({
@@ -20,8 +20,15 @@ const FileErrorDialog = ({
     React.useState<boolean>(!!errorCode);
 
   React.useEffect(() => {
-    const timeoutId = setTimeout(() => setIsModalVisible(!!errorCode), 200);
-    return () => clearTimeout(timeoutId);
+    if (!!errorCode) {
+      const timeoutId = setTimeout(
+        () => setIsModalVisible(!!errorCode),
+        MODAL_VIEW_DELAY,
+      );
+      return () => clearTimeout(timeoutId);
+    } else {
+      setIsModalVisible(!!errorCode);
+    }
   }, [errorCode]);
 
   const handleCloseDialog = () => {

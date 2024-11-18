@@ -12,6 +12,7 @@ import {
   FETCH_TIMEOUT,
   GOOGLE_GEOCODE_API,
   GOOGLE_RESPONSE_TYPE,
+  MODAL_VIEW_DELAY,
 } from '../../constants';
 import ModalButton from '../common/modalButton';
 import LocationInput from './locationInput';
@@ -37,8 +38,15 @@ const WillBeAvailableDialog = ({
   const [isModalVisible, setIsModalVisible] = React.useState<boolean>(visible);
 
   React.useEffect(() => {
-    const timeoutId = setTimeout(() => setIsModalVisible(visible), 200);
-    return () => clearTimeout(timeoutId);
+    if (visible) {
+      const timeoutId = setTimeout(
+        () => setIsModalVisible(visible),
+        MODAL_VIEW_DELAY,
+      );
+      return () => clearTimeout(timeoutId);
+    } else {
+      setIsModalVisible(visible);
+    }
   }, [visible]);
 
   React.useEffect(() => {

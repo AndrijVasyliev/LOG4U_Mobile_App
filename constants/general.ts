@@ -6,6 +6,9 @@ export const BUILD_VERSION =
 
 export const FETCH_TIMEOUT = 15000;
 
+export const ROUTE_SET_DELAY = 10;
+export const MODAL_VIEW_DELAY = 20;
+
 export const BACKEND_ORIGIN = 'https://mobile.4u-logistics.com';
 // export const BACKEND_ORIGIN = 'https://admin-test-lt5d.onrender.com';
 // export const BACKEND_ORIGIN = 'http://192.168.0.148:8181';
@@ -30,8 +33,8 @@ export const SET_LOCATION_PATH = `${BACKEND_PREFIX}/setTruckLocation`;
 export const FILE_PATH = `${BACKEND_PREFIX}/file`;
 export const LOCATION_TRACKING = 'location-tracking';
 export const BACKGROUND_NOTIFICATION_TASK = 'background-notification';
-export const BACKGROUND_FETCH_TASK = 'background-fetch';
-export const BACKGROUND_GEOFENCE_TASK = 'background-geofence';
+// export const BACKGROUND_FETCH_TASK = 'background-fetch';
+// export const BACKGROUND_GEOFENCE_TASK = 'background-geofence';
 export const LOCATION_NOTIFICATION_BODY = '4U TRACK is tracking your location';
 export const LOCATION_NOTIFICATION_TITLE = '4U TRACK Location Service';
 export const LOCATION_UPDATE_INTERVAL = 1000 * 60 * 30;

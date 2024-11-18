@@ -11,6 +11,7 @@ import {
   COLORS,
   MAX_FILE_NAME_LENGTH,
   MIN_FILE_NAME_LENGTH,
+  MODAL_VIEW_DELAY,
 } from '../../constants';
 import ModalButton from '../common/modalButton';
 
@@ -27,8 +28,15 @@ const FileNameDialog = ({
   const [isModalVisible, setIsModalVisible] = React.useState<boolean>(opened);
 
   React.useEffect(() => {
-    const timeoutId = setTimeout(() => setIsModalVisible(opened), 200);
-    return () => clearTimeout(timeoutId);
+    if (!!opened) {
+      const timeoutId = setTimeout(
+        () => setIsModalVisible(!!opened),
+        MODAL_VIEW_DELAY,
+      );
+      return () => clearTimeout(timeoutId);
+    } else {
+      setIsModalVisible(!!opened);
+    }
   }, [opened]);
 
   React.useEffect(() => {

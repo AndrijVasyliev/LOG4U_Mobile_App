@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import * as Linking from 'expo-linking';
-import { COLORS } from '../../constants';
+import { COLORS, MODAL_VIEW_DELAY } from '../../constants';
 import ModalButton from '../common/modalButton';
 
 const ProminentDisclosureModal = ({
@@ -23,8 +23,15 @@ const ProminentDisclosureModal = ({
   const [isModalVisible, setIsModalVisible] = React.useState<boolean>(visible);
 
   React.useEffect(() => {
-    const timeoutId = setTimeout(() => setIsModalVisible(visible), 200);
-    return () => clearTimeout(timeoutId);
+    if (visible) {
+      const timeoutId = setTimeout(
+        () => setIsModalVisible(visible),
+        MODAL_VIEW_DELAY,
+      );
+      return () => clearTimeout(timeoutId);
+    } else {
+      setIsModalVisible(visible);
+    }
   }, [visible]);
 
   return (

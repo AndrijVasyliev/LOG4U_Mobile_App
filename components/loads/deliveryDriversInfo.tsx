@@ -9,7 +9,12 @@ import {
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-import { BACKEND_ORIGIN, COLORS, LOAD_PATH } from '../../constants';
+import {
+  BACKEND_ORIGIN,
+  COLORS,
+  LOAD_PATH,
+  MODAL_VIEW_DELAY,
+} from '../../constants';
 import ModalButton from '../common/modalButton';
 import TextInputControl from '../common/TextInputControl';
 import SelectInputControl from '../common/SelectInputControl';
@@ -44,11 +49,15 @@ const DeliveryDriversInfo = ({
     React.useState<boolean>(!!deliveryDriversItems);
 
   React.useEffect(() => {
-    const timeoutId = setTimeout(
-      () => setIsModalVisible(!!deliveryDriversItems),
-      200,
-    );
-    return () => clearTimeout(timeoutId);
+    if (!!deliveryDriversItems) {
+      const timeoutId = setTimeout(
+        () => setIsModalVisible(!!deliveryDriversItems),
+        MODAL_VIEW_DELAY,
+      );
+      return () => clearTimeout(timeoutId);
+    } else {
+      setIsModalVisible(!!deliveryDriversItems);
+    }
   }, [deliveryDriversItems]);
 
   React.useEffect(() => {

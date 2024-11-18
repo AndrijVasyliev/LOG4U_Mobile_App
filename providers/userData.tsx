@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { UserData, UserDataContext } from '../hooks/userData';
 import { useRouter, useGlobalSearchParams } from 'expo-router';
+import { ROUTE_SET_DELAY } from '../constants';
 
 export const UserDataProvider = function UserDataProvider({
   children,
@@ -8,6 +9,9 @@ export const UserDataProvider = function UserDataProvider({
   children: React.ReactNode;
 }) {
   const [userData, setUserData] = React.useState<UserData | null>(null);
+  const [timerId, setTimerId] = React.useState<NodeJS.Timeout | undefined>(
+    undefined,
+  );
 
   const { routeToFormPush } = useGlobalSearchParams<{
     routeToFormPush?: string;
@@ -15,23 +19,42 @@ export const UserDataProvider = function UserDataProvider({
   const router = useRouter();
 
   React.useEffect(() => {
+    let navigateTo = '/';
     if (!userData) {
-      router.navigate('/');
+      navigateTo = '/';
     } else if (routeToFormPush) {
-      router.navigate(routeToFormPush);
+      navigateTo = routeToFormPush;
     } else {
       if (userData.type === 'Owner' || userData.type === 'Coordinator') {
-        router.navigate('/home/trucks');
+        navigateTo = '/home/trucks';
       } else {
-        router.navigate('/home/profile');
+        navigateTo = '/home/profile';
       }
     }
+    setTimerId(setTimeout(() => router.navigate(navigateTo), ROUTE_SET_DELAY));
+
+    return () => {
+      if (timerId) {
+        clearTimeout(timerId);
+        setTimeout(undefined);
+      }
+    };
   }, [userData]);
 
   React.useEffect(() => {
     if (userData && routeToFormPush) {
+      setTimerId(
+        setTimeout(() => router.navigate(routeToFormPush), ROUTE_SET_DELAY),
+      );
       router.navigate(routeToFormPush);
     }
+
+    return () => {
+      if (timerId) {
+        clearTimeout(timerId);
+        setTimeout(undefined);
+      }
+    };
   }, [routeToFormPush]);
 
   return (

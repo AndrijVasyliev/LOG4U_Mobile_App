@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 import { SingleChange } from 'react-native-ui-datepicker/src/types';
 import ModalButton from '../common/modalButton';
-import { COLORS } from '../../constants';
+import { COLORS, MODAL_VIEW_DELAY } from '../../constants';
 import { toCorrected } from '../../utils/dateTimeConverters';
 
 const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
@@ -21,8 +21,15 @@ const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
     React.useState<boolean>(pickerVisible);
 
   React.useEffect(() => {
-    const timeoutId = setTimeout(() => setIsModalVisible(pickerVisible), 200);
-    return () => clearTimeout(timeoutId);
+    if (!!pickerVisible) {
+      const timeoutId = setTimeout(
+        () => setIsModalVisible(!!pickerVisible),
+        MODAL_VIEW_DELAY,
+      );
+      return () => clearTimeout(timeoutId);
+    } else {
+      setIsModalVisible(!!pickerVisible);
+    }
   }, [pickerVisible]);
 
   const onClick = () => {
