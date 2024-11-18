@@ -21,12 +21,13 @@ import {
   images,
   BACKEND_ORIGIN,
   COLORS,
-  LOAD_LIST_PATH,
+  LOAD_OWNER_LIST_PATH,
+  LOAD_COORDINATOR_LIST_PATH,
 } from '../../constants';
 import { useUserData } from '../../hooks/userData';
 import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
-import { isLoadsEnabled } from '../../utils/isEnabled';
+import { isLoadsListEnabled } from '../../utils/isEnabled';
 
 const Loads = () => {
   const [changedAt, setChangedAt] = React.useState<number>(0);
@@ -47,19 +48,19 @@ const Loads = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log('Loads screen is focused');
-      if (isLoadsEnabled(userData)) {
-        console.log('Loads updating');
+      console.log('Loads List screen is focused');
+      if (isLoadsListEnabled(userData)) {
+        console.log('Loads List updating');
         setChangedAt(Date.now());
       }
       return () => {
-        console.log('Loads screen is unfocused');
+        console.log('Loads List screen is unfocused');
       };
     }, []),
   );
 
   React.useEffect(() => {
-    if (renew === 'data' && !isLoading && isLoadsEnabled(userData)) {
+    if (renew === 'data' && !isLoading && isLoadsListEnabled(userData)) {
       console.log('Loads renewing');
       router.setParams({ renew: 'none' });
       setChangedAt(Date.now());
@@ -71,7 +72,18 @@ const Loads = () => {
       return;
     }
     setIsLoading(true);
-    authFetch(new URL(LOAD_LIST_PATH, BACKEND_ORIGIN), { method: 'GET' })
+    let path = '';
+    switch (userData?.type) {
+      case 'Coordinator':
+      case 'CoordinatorDriver':
+        path = LOAD_COORDINATOR_LIST_PATH;
+        break;
+      case 'Owner':
+      case 'OwnerDriver':
+        path = LOAD_OWNER_LIST_PATH;
+        break;
+    }
+    authFetch(new URL(path, BACKEND_ORIGIN), { method: 'GET' })
       .then(async (response) => {
         if (response && response.status === 200) {
           try {

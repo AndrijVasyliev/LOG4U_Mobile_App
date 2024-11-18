@@ -15,7 +15,7 @@ const TabLayout = () => {
   const [userData] = useUserData();
   return (
     <>
-      <StatusBar barStyle={'light-content'} />
+      <StatusBar barStyle="light-content" />
       <Tabs
         screenOptions={{
           headerShown: false,

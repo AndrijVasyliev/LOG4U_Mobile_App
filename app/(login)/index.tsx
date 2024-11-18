@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { Stack, useRouter, useFocusEffect } from 'expo-router';
+import { Stack, useFocusEffect } from 'expo-router';
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -301,7 +301,7 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={'dark-content'} />
+      <StatusBar barStyle="dark-content" />
       <ForceLoginModal
         visible={forceLoginVisible}
         proceed={handleForceLoginProceed}
