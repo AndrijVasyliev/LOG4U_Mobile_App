@@ -19,7 +19,7 @@ export const UserDataProvider = function UserDataProvider({
   const router = useRouter();
 
   React.useEffect(() => {
-    let navigateTo = '/';
+    let navigateTo = '';
     if (!userData) {
       navigateTo = '/';
     } else if (routeToFormPush) {
@@ -31,7 +31,9 @@ export const UserDataProvider = function UserDataProvider({
         navigateTo = '/home/profile';
       }
     }
-    setTimerId(setTimeout(() => router.navigate(navigateTo), ROUTE_SET_DELAY));
+    if (navigateTo) {
+      setTimerId(setTimeout(() => router.navigate(navigateTo), ROUTE_SET_DELAY));
+    }
 
     return () => {
       if (timerId) {
@@ -46,7 +48,6 @@ export const UserDataProvider = function UserDataProvider({
       setTimerId(
         setTimeout(() => router.navigate(routeToFormPush), ROUTE_SET_DELAY),
       );
-      router.navigate(routeToFormPush);
     }
 
     return () => {
