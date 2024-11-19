@@ -22,9 +22,10 @@ export const UserDataProvider = function UserDataProvider({
     if (!userData) {
       setTimerId(
         setTimeout(() => {
-          router.navigate('/');
           if (routeToFromPush) {
-            router.setParams({ routeToFromPush });
+            router.navigate({ pathname: '/', params: { routeToFromPush } });
+          } else {
+            router.navigate('/');
           }
         }, ROUTE_SET_DELAY),
       );

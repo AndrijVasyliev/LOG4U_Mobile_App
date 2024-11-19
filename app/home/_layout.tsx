@@ -10,12 +10,13 @@ import {
   isProfileEnabled,
   isTrucksEnabled,
 } from '../../utils/isEnabled';
+import { COLORS } from '../../constants';
 
 const TabLayout = () => {
   const [userData] = useUserData();
   return (
     <>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
       <Tabs
         screenOptions={{
           headerShown: false,

@@ -301,7 +301,7 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
       <ForceLoginModal
         visible={forceLoginVisible}
         proceed={handleForceLoginProceed}
