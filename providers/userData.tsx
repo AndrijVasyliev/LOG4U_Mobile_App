@@ -13,26 +13,35 @@ export const UserDataProvider = function UserDataProvider({
     undefined,
   );
 
-  const { routeToFormPush } = useGlobalSearchParams<{
-    routeToFormPush?: string;
+  const { routeToFromPush } = useGlobalSearchParams<{
+    routeToFromPush?: string;
   }>();
   const router = useRouter();
 
   React.useEffect(() => {
-    let navigateTo = '';
     if (!userData) {
-      navigateTo = '/';
-    } else if (routeToFormPush) {
-      navigateTo = routeToFormPush;
+      setTimerId(
+        setTimeout(() => {
+          router.navigate('/');
+          if (routeToFromPush) {
+            router.setParams({ routeToFromPush });
+          }
+        }, ROUTE_SET_DELAY),
+      );
+    } else if (routeToFromPush) {
+      setTimerId(
+        setTimeout(() => router.navigate(routeToFromPush), ROUTE_SET_DELAY),
+      );
     } else {
+      let navigateTo = '';
       if (userData.type === 'Owner' || userData.type === 'Coordinator') {
         navigateTo = '/home/trucks';
       } else {
         navigateTo = '/home/profile';
       }
-    }
-    if (navigateTo) {
-      setTimerId(setTimeout(() => router.navigate(navigateTo), ROUTE_SET_DELAY));
+      setTimerId(
+        setTimeout(() => router.navigate(navigateTo), ROUTE_SET_DELAY),
+      );
     }
 
     return () => {
@@ -44,9 +53,9 @@ export const UserDataProvider = function UserDataProvider({
   }, [userData]);
 
   React.useEffect(() => {
-    if (userData && routeToFormPush) {
+    if (userData && routeToFromPush) {
       setTimerId(
-        setTimeout(() => router.navigate(routeToFormPush), ROUTE_SET_DELAY),
+        setTimeout(() => router.navigate(routeToFromPush), ROUTE_SET_DELAY),
       );
     }
 
@@ -56,7 +65,7 @@ export const UserDataProvider = function UserDataProvider({
         setTimeout(undefined);
       }
     };
-  }, [routeToFormPush]);
+  }, [routeToFromPush]);
 
   return (
     <UserDataContext.Provider value={[userData, setUserData]}>

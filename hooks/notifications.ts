@@ -22,7 +22,7 @@ export const useNotifications = () => {
         Notifications.DEFAULT_ACTION_IDENTIFIER
     ) {
       router.setParams({
-        routeToFormPush:
+        routeToFromPush:
           lastNotificationResponse.notification.request.content?.data?.routeTo,
       });
     }
