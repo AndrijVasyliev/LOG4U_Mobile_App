@@ -19,6 +19,11 @@ export const UserDataProvider = function UserDataProvider({
   const router = useRouter();
 
   React.useEffect(() => {
+    if (timerId) {
+      clearTimeout(timerId);
+      setTimerId(undefined);
+    }
+
     if (!userData) {
       setTimerId(
         setTimeout(() => {
@@ -27,11 +32,15 @@ export const UserDataProvider = function UserDataProvider({
           } else {
             router.navigate('/');
           }
+          setTimerId(undefined);
         }, ROUTE_SET_DELAY),
       );
     } else if (routeToFromPush) {
       setTimerId(
-        setTimeout(() => router.navigate(routeToFromPush), ROUTE_SET_DELAY),
+        setTimeout(() => {
+          router.navigate(routeToFromPush);
+          setTimerId(undefined);
+        }, ROUTE_SET_DELAY),
       );
     } else {
       let navigateTo = '';
@@ -41,32 +50,49 @@ export const UserDataProvider = function UserDataProvider({
         navigateTo = '/home/profile';
       }
       setTimerId(
-        setTimeout(() => router.navigate(navigateTo), ROUTE_SET_DELAY),
+        setTimeout(() => {
+          router.navigate(navigateTo);
+          setTimerId(undefined);
+        }, ROUTE_SET_DELAY),
       );
     }
+  }, [userData]);
 
-    return () => {
-      if (timerId) {
-        clearTimeout(timerId);
-        setTimeout(undefined);
+  React.useEffect(() => {
+    if (timerId) {
+      clearTimeout(timerId);
+      setTimerId(undefined);
+    }
+
+    if (userData && routeToFromPush) {
+      setTimerId(
+        setTimeout(() => {
+          router.navigate(routeToFromPush);
+          setTimerId(undefined);
+        }, ROUTE_SET_DELAY),
+      );
+    }
+  }, [routeToFromPush]);
+
+  /*React.useEffect(() => {
+    if (!userData) {
+      router.navigate('/');
+    } else if (routeToFromPush) {
+      router.navigate(routeToFromPush);
+    } else {
+      if (userData.type === 'Owner' || userData.type === 'Coordinator') {
+        router.navigate('/home/trucks');
+      } else {
+        router.navigate('/home/profile');
       }
-    };
+    }
   }, [userData]);
 
   React.useEffect(() => {
     if (userData && routeToFromPush) {
-      setTimerId(
-        setTimeout(() => router.navigate(routeToFromPush), ROUTE_SET_DELAY),
-      );
+      router.navigate(routeToFromPush);
     }
-
-    return () => {
-      if (timerId) {
-        clearTimeout(timerId);
-        setTimeout(undefined);
-      }
-    };
-  }, [routeToFromPush]);
+  }, [routeToFromPush]);*/
 
   return (
     <UserDataContext.Provider value={[userData, setUserData]}>
