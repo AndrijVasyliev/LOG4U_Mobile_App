@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { Stack, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -311,13 +311,6 @@ const Login = () => {
         visible={prominentDisclosureVisible}
         grant={handlePDGrant}
         reject={handlePDReject}
-      />
-      <Stack.Screen
-        options={{
-          headerStyle: { backgroundColor: COLORS.white },
-          headerShadowVisible: false,
-          headerTitle: '',
-        }}
       />
       <ScrollView
         style={styles.scroll}
