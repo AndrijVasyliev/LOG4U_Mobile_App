@@ -86,6 +86,7 @@ const ConfirmationLoadAlert = ({
     if (!alertData) {
       return;
     }
+    setAlertData(undefined);
     setAcceptLoading(true);
     const data: {
       status: string;
@@ -103,7 +104,6 @@ const ConfirmationLoadAlert = ({
       },
     ).finally(() => {
       setAcceptLoading(false);
-      setAlertData(undefined);
       setTimeout(() => onChanged(Date.now()), 1);
     });
   };
