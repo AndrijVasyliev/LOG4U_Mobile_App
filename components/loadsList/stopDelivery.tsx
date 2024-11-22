@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
+import { useToast } from 'react-native-toast-notifications';
 import UserDataItem from '../profile/UserDataItem';
 import { fromTimeFrame } from '../../utils/fromTimeFrame';
 import { getStatusText } from '../../utils/getStopStatus';
@@ -19,6 +21,18 @@ const StopDelivery = ({
     .filter((stop) => stop.type === 'Delivery').length;
 
   const status = getStatusText(stop?.status);
+
+  const addressRef = React.useRef(null);
+
+  const toast = useToast();
+
+  const copyToClipboard = async (text: string, toastMsg: string) => {
+    if (Platform.OS === 'ios') {
+      toast.hideAll();
+      toast.show(toastMsg, { duration: 1500 });
+    }
+    await Clipboard.setStringAsync(text);
+  };
 
   return (
     <>
@@ -41,6 +55,25 @@ const StopDelivery = ({
           value={`${stop?.timeFrame ? fromTimeFrame(stop.timeFrame) : ''}`}
           fieldName="Time frame"
         />
+        <TouchableOpacity
+          ref={addressRef}
+          onPress={() =>
+            stop?.facility?.address &&
+            copyToClipboard(
+              `${stop.facility.address + (stop?.facility?.address2 ? ', ' + stop.facility.address2 : '')}`,
+              'Facility address copied to clipboard',
+            )
+          }
+        >
+          <UserDataItem
+            value={`${stop?.facility?.address ? stop.facility.address : ''}`}
+            fieldName="Address Line 1"
+          />
+          <UserDataItem
+            value={`${stop?.facility?.address2 ? stop.facility.address2 : ''}`}
+            fieldName="Address Line 2"
+          />
+        </TouchableOpacity>
       </View>
     </>
   );

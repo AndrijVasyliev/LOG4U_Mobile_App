@@ -6,7 +6,7 @@ export const BUILD_VERSION =
 
 export const FETCH_TIMEOUT = 15000;
 
-export const ROUTE_SET_DELAY = 10;
+export const ROUTE_SET_DELAY = 5;
 export const MODAL_VIEW_DELAY = 20;
 
 export const BACKEND_ORIGIN = 'https://mobile.4u-logistics.com';
