@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+} from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { useToast } from 'react-native-toast-notifications';
 import UserDataItem from '../profile/UserDataItem';
