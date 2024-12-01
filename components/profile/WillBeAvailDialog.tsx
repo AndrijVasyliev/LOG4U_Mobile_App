@@ -2,8 +2,10 @@ import * as React from 'react';
 import {
   Modal,
   StyleSheet,
+  Text,
   TouchableWithoutFeedback,
   View,
+  ScrollView,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
@@ -18,6 +20,7 @@ import ModalButton from '../common/modalButton';
 import LocationInput from './locationInput';
 import DateTimeInput from './dateTimeInput';
 import { getGoogleApiKey } from '../../utils/getGoogleApiKey';
+import IconButton from '../common/IconButton';
 
 const WillBeAvailableDialog = ({
   visible,
@@ -125,10 +128,15 @@ const WillBeAvailableDialog = ({
           <View style={styles.area} />
         </TouchableWithoutFeedback>
         <View style={styles.dialogPaper}>
-          <View style={styles.dialogContents}>
+          <View style={styles.dialogHeader}>
+            <Text>{'Set Will Be Available'}</Text>
+          </View>
+          <View style={styles.dialogContentsHolder}>
+            <View style={styles.spacer}></View>
             <LocationInput onSet={handleSetLocation} />
             <View style={styles.spacer}></View>
             <DateTimeInput onSet={setDate} />
+            <View style={styles.spacer}></View>
           </View>
           <View style={styles.spacer}></View>
           <View style={styles.buttonContainer}>
@@ -157,8 +165,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    height: 40,
-    justifyContent: 'space-between',
+    height: 60,
+    justifyContent: 'center',
     paddingLeft: '1%',
     paddingRight: '1%',
     width: '100%',
@@ -169,14 +177,31 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  dialogHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: 40,
+    justifyContent: 'space-between',
+    paddingLeft: 10,
+    paddingRight: 10,
+    width: '100%',
+  },
+  dialogContentsHolder: {
+    borderTopColor: COLORS.gray,
+    borderBottomColor: COLORS.gray,
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    flexDirection: 'column',
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: 'auto',
+    width: '100%',
+  },
   dialogContents: {
     alignItems: 'center',
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    paddingLeft: '1%',
-    paddingRight: '1%',
     width: '100%',
-    zIndex: 1,
   },
   dialogPaper: {
     alignItems: 'center',
@@ -184,8 +209,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 5,
     flexDirection: 'column',
-    height: 230,
-    padding: 35,
+    height: 'auto',
     shadowColor: COLORS.black,
     shadowOffset: {
       width: 0,

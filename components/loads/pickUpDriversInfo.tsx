@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    height: 40,
+    height: 60,
     justifyContent: 'center',
     paddingLeft: '1%',
     paddingRight: '1%',
@@ -353,7 +353,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '100%',
-    zIndex: 1,
   },
   dialogPaper: {
     alignItems: 'center',
@@ -362,7 +361,6 @@ const styles = StyleSheet.create({
     elevation: 5,
     flexDirection: 'column',
     height: '90%',
-    paddingBottom: 35,
     shadowColor: COLORS.black,
     shadowOffset: {
       width: 0,

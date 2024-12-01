@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 // import * as Location from 'expo-location';
 import DropDownPicker, { ItemType } from 'react-native-dropdown-picker';
@@ -206,7 +206,7 @@ const LocationInput = ({ onSet }: { onSet: (newValue: string) => void }) => {
       <DropDownPicker<string>
         disableBorderRadius={false}
         modalAnimationType="slide"
-        dropDownDirection="TOP"
+        dropDownDirection={Platform.OS === 'ios' ? 'TOP' : 'BOTTOM'}
         placeholder="Select Location"
         translation={{
           SEARCH_PLACEHOLDER: 'Start to enter location',
@@ -226,6 +226,9 @@ const LocationInput = ({ onSet }: { onSet: (newValue: string) => void }) => {
         listMode="SCROLLVIEW"
         labelProps={{
           numberOfLines: 2,
+        }}
+        scrollViewProps={{
+          persistentScrollbar: true,
         }}
         ArrowUpIconComponent={() => (
           <MaterialCommunityIcons
@@ -270,7 +273,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginTop: 5,
     width: '100%',
-    zIndex: 1,
   },
   dropdown: {
     backgroundColor: COLORS.unset,
@@ -279,6 +281,7 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     backgroundColor: COLORS.lightWhite,
     borderColor: COLORS.gray,
+    height: 125,
   },
   dropdownControlContainer: {
     width: '100%',

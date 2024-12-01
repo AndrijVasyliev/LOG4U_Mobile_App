@@ -24,6 +24,8 @@ const TextInputControl = ({
     <View style={styles.container}>
       <TextInput
         style={styles.input}
+        inputMode={number ? 'numeric' : 'text'}
+        keyboardType={number ? 'numeric' : 'default'}
         value={value}
         onChangeText={handleOnChange}
         placeholder={placeholder}

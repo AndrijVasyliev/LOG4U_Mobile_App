@@ -43,7 +43,8 @@ const SelectInputControl = ({
         zIndexInverse={10}*/
         disableBorderRadius={false}
         modalAnimationType="slide"
-        dropDownDirection="TOP"
+        // dropDownDirection="TOP"
+        dropDownDirection="BOTTOM"
         placeholder={placeholder}
         translation={{
           SEARCH_PLACEHOLDER: 'Start to enter',
@@ -107,7 +108,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginTop: 5,
     width: '100%',
-    zIndex: 1,
   },
   dropdown: {
     backgroundColor: COLORS.unset,
