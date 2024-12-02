@@ -160,89 +160,83 @@ const PickUpDriversInfo = ({
           </>
         }
         contents={
-          <>
-            <ScrollView
-              style={[
-                styles.dialogContentsScroll,
-                { maxHeight: calculatedHeight },
-              ]}
-              contentContainerStyle={styles.dialogContents}
-            >
-              {!pickUpDriversItems
-                ? null
-                : pickUpDriversItems.map((item, index) => (
-                    <View key={index} style={styles.driversInfoItemWrapper}>
-                      <View style={styles.driversInfoItemHeader}>
-                        <Text>{`Doc# ${index + 1}`}</Text>
-                        <IconButton
-                          iconName="note-minus-outline"
-                          onClick={getRemoveItemHandler(index)}
-                        />
-                      </View>
-                      <View style={styles.driversInfoItem}>
-                        <TextInputControl
-                          placeholder="Enter number of pieces"
-                          value={`${item.pieces}`}
-                          number
-                          onChange={getOnChangeHandler(index, 'pieces')}
-                        />
-                        <SelectInputControl
-                          placeholder="Select Unit Of Weight"
-                          items={[
-                            { label: 'LBS', value: 'LBS' },
-                            { label: 'KG', value: 'KG' },
-                            { label: 'TON', value: 'TON' },
-                          ]}
-                          value={`${item.unitOfWeight}`}
-                          onChange={getOnChangeHandler(index, 'unitOfWeight')}
-                        />
-                        <TextInputControl
-                          placeholder="Enter load`s weight"
-                          value={`${item.weight}`}
-                          number
-                          onChange={getOnChangeHandler(index, 'weight')}
-                        />
-                        <SelectInputControl
-                          placeholder="Select BOL"
-                          items={bolItems || []}
-                          value={`${item.bol}`}
-                          onChange={getOnChangeHandler(index, 'bol')}
-                        />
-                        <TextInputControl
-                          placeholder="Enter load`s seal#"
-                          value={`${item.seal}`}
-                          onChange={getOnChangeHandler(index, 'seal')}
-                        />
-                        <SelectInputControl
-                          placeholder="Select is address correct"
-                          items={[
-                            { label: 'Address is correct', value: 'true' },
-                            { label: 'Address is NOT correct', value: 'false' },
-                          ]}
-                          value={`${item.addressIsCorrect}`}
-                          onChange={getOnChangeHandler(
-                            index,
-                            'addressIsCorrect',
-                          )}
-                        />
-                        {!item.driversInfoId ? (
-                          <Spacer />
-                        ) : (
-                          <FileList
-                            objectId={loadId}
-                            objectType="Load"
-                            label="Load`s docs"
-                            tags={{
-                              [`${item.driversInfoId}`]:
-                                'StopPickUpDriversInfo',
-                            }}
-                          />
-                        )}
-                      </View>
+          <ScrollView
+            style={[
+              styles.dialogContentsScroll,
+              { maxHeight: calculatedHeight },
+            ]}
+            contentContainerStyle={styles.dialogContents}
+          >
+            {!pickUpDriversItems
+              ? null
+              : pickUpDriversItems.map((item, index) => (
+                  <View key={index} style={styles.driversInfoItemWrapper}>
+                    <View style={styles.driversInfoItemHeader}>
+                      <Text>{`Doc# ${index + 1}`}</Text>
+                      <IconButton
+                        iconName="note-minus-outline"
+                        onClick={getRemoveItemHandler(index)}
+                      />
                     </View>
-                  ))}
-            </ScrollView>
-          </>
+                    <View style={styles.driversInfoItem}>
+                      <TextInputControl
+                        placeholder="Enter number of pieces"
+                        value={`${item.pieces}`}
+                        number
+                        onChange={getOnChangeHandler(index, 'pieces')}
+                      />
+                      <SelectInputControl
+                        placeholder="Select Unit Of Weight"
+                        items={[
+                          { label: 'LBS', value: 'LBS' },
+                          { label: 'KG', value: 'KG' },
+                          { label: 'TON', value: 'TON' },
+                        ]}
+                        value={`${item.unitOfWeight}`}
+                        onChange={getOnChangeHandler(index, 'unitOfWeight')}
+                      />
+                      <TextInputControl
+                        placeholder="Enter load`s weight"
+                        value={`${item.weight}`}
+                        number
+                        onChange={getOnChangeHandler(index, 'weight')}
+                      />
+                      <SelectInputControl
+                        placeholder="Select BOL"
+                        items={bolItems || []}
+                        value={`${item.bol}`}
+                        onChange={getOnChangeHandler(index, 'bol')}
+                      />
+                      <TextInputControl
+                        placeholder="Enter load`s seal#"
+                        value={`${item.seal}`}
+                        onChange={getOnChangeHandler(index, 'seal')}
+                      />
+                      <SelectInputControl
+                        placeholder="Select is address correct"
+                        items={[
+                          { label: 'Address is correct', value: 'true' },
+                          { label: 'Address is NOT correct', value: 'false' },
+                        ]}
+                        value={`${item.addressIsCorrect}`}
+                        onChange={getOnChangeHandler(index, 'addressIsCorrect')}
+                      />
+                      {!item.driversInfoId ? (
+                        <Spacer />
+                      ) : (
+                        <FileList
+                          objectId={loadId}
+                          objectType="Load"
+                          label="Load`s docs"
+                          tags={{
+                            [`${item.driversInfoId}`]: 'StopPickUpDriversInfo',
+                          }}
+                        />
+                      )}
+                    </View>
+                  </View>
+                ))}
+          </ScrollView>
         }
         buttons={
           <>

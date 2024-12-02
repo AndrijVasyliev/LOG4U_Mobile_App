@@ -26,11 +26,7 @@ const AppMenuModal = ({
       visible={visible}
       header={<Text>{'Application Menu'}</Text>}
       contents={<></>}
-      buttons={
-        <>
-          <ModalButton text={'LOG OUT'} onPress={handleLogout} />
-        </>
-      }
+      buttons={<ModalButton text={'LOG OUT'} onPress={handleLogout} />}
       close={onRequestClose}
     />
   );

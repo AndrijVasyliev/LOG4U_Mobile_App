@@ -162,55 +162,53 @@ const DeliveryDriversInfo = ({
           </>
         }
         contents={
-          <>
-            <ScrollView
-              style={[
-                styles.dialogContentsScroll,
-                { maxHeight: calculatedHeight },
-              ]}
-              contentContainerStyle={styles.dialogContents}
-            >
-              {!deliveryDriversItems
-                ? null
-                : deliveryDriversItems.map((item, index) => (
-                    <View key={index} style={styles.driversInfoItemWrapper}>
-                      <View style={styles.driversInfoItemHeader}>
-                        <Text>{`PoD# ${index + 1}`}</Text>
-                        <IconButton
-                          iconName="note-minus-outline"
-                          onClick={getRemoveItemHandler(index)}
-                        />
-                      </View>
-                      <View style={styles.driversInfoItem}>
-                        <TextInputControl
-                          placeholder="Enter Signed By"
-                          value={`${item.signedBy}`}
-                          onChange={getOnChangeHandler(index, 'signedBy')}
-                        />
-                        <SelectInputControl
-                          placeholder="Select BOL"
-                          items={bolItems || []}
-                          value={`${item.bol}`}
-                          onChange={getOnChangeHandler(index, 'bol')}
-                        />
-                        {!item.driversInfoId ? (
-                          <Spacer />
-                        ) : (
-                          <FileList
-                            objectId={loadId}
-                            objectType="Load"
-                            label="Load`s docs"
-                            tags={{
-                              [`${item.driversInfoId}`]:
-                                'StopDeliveryDriversInfo',
-                            }}
-                          />
-                        )}
-                      </View>
+          <ScrollView
+            style={[
+              styles.dialogContentsScroll,
+              { maxHeight: calculatedHeight },
+            ]}
+            contentContainerStyle={styles.dialogContents}
+          >
+            {!deliveryDriversItems
+              ? null
+              : deliveryDriversItems.map((item, index) => (
+                  <View key={index} style={styles.driversInfoItemWrapper}>
+                    <View style={styles.driversInfoItemHeader}>
+                      <Text>{`PoD# ${index + 1}`}</Text>
+                      <IconButton
+                        iconName="note-minus-outline"
+                        onClick={getRemoveItemHandler(index)}
+                      />
                     </View>
-                  ))}
-            </ScrollView>
-          </>
+                    <View style={styles.driversInfoItem}>
+                      <TextInputControl
+                        placeholder="Enter Signed By"
+                        value={`${item.signedBy}`}
+                        onChange={getOnChangeHandler(index, 'signedBy')}
+                      />
+                      <SelectInputControl
+                        placeholder="Select BOL"
+                        items={bolItems || []}
+                        value={`${item.bol}`}
+                        onChange={getOnChangeHandler(index, 'bol')}
+                      />
+                      {!item.driversInfoId ? (
+                        <Spacer />
+                      ) : (
+                        <FileList
+                          objectId={loadId}
+                          objectType="Load"
+                          label="Load`s docs"
+                          tags={{
+                            [`${item.driversInfoId}`]:
+                              'StopDeliveryDriversInfo',
+                          }}
+                        />
+                      )}
+                    </View>
+                  </View>
+                ))}
+          </ScrollView>
         }
         buttons={
           <>
