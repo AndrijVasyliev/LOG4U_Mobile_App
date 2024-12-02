@@ -1,20 +1,11 @@
 import * as React from 'react';
-import {
-  Modal,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-  Text,
-} from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-import {
-  BACKEND_ORIGIN,
-  COLORS,
-  LOAD_PATH,
-  MODAL_VIEW_DELAY,
-} from '../../constants';
+import { BACKEND_ORIGIN, LOAD_PATH } from '../../constants';
+import Modal from '../common/Modal';
 import ModalButton from '../common/modalButton';
+import Spacer from '../common/Spacer';
 import { authFetch } from '../../utils/authFetch';
 
 const ConfirmationLoadAlert = ({
@@ -33,20 +24,6 @@ const ConfirmationLoadAlert = ({
     nextStatus: string;
   } | void>(undefined);
   const [acceptLoading, setAcceptLoading] = React.useState<boolean>(false);
-  const [isModalVisible, setIsModalVisible] =
-    React.useState<boolean>(!!alertData);
-
-  React.useEffect(() => {
-    if (!!alertData) {
-      const timeoutId = setTimeout(
-        () => setIsModalVisible(!!alertData),
-        MODAL_VIEW_DELAY,
-      );
-      return () => clearTimeout(timeoutId);
-    } else {
-      setIsModalVisible(!!alertData);
-    }
-  }, [alertData]);
 
   React.useEffect(() => {
     if (
@@ -109,89 +86,46 @@ const ConfirmationLoadAlert = ({
   };
 
   return (
-    <Modal
-      hardwareAccelerated={true}
-      animationType="fade"
-      transparent={true}
-      visible={isModalVisible}
-      onRequestClose={() => {
-        console.log('Modal has been closed.');
-      }}
-    >
-      <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={() => {}}>
-          <View style={styles.area} />
-        </TouchableWithoutFeedback>
-        <View style={styles.dialogPaper}>
-          <View style={styles.dialogContents}>
-            <Text>{alertData ? alertData.alertText : ''}</Text>
+    <>
+      <Modal
+        visible={!!alertData}
+        header={<Text>{'Please confim'}</Text>}
+        contents={
+          <View style={styles.dialogContentsHolder}>
+            <Spacer />
+            <Text style={styles.text}>
+              {alertData ? alertData.alertText : ''}
+            </Text>
+            <Spacer />
           </View>
-          <View style={styles.spacer}></View>
-          <View style={styles.buttonContainer}>
-            <ModalButton
-              text={'Confirm'}
-              disabled={false}
-              onPress={handleAcceptLoad}
-            />
-          </View>
-        </View>
-      </View>
+        }
+        buttons={
+          <ModalButton
+            text={'Confirm'}
+            disabled={false}
+            onPress={handleAcceptLoad}
+          />
+        }
+        close={() => {}}
+      />
       <Spinner visible={acceptLoading} textContent={'Accepting load...'} />
-    </Modal>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  area: {
-    backgroundColor: COLORS.modalBackground,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    height: 40,
-    justifyContent: 'center',
-    paddingLeft: '1%',
-    paddingRight: '1%',
+  dialogContentsHolder: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: 'auto',
     width: '100%',
   },
-  container: {
-    alignItems: 'center',
-    backgroundColor: COLORS.modalBackground,
-    flex: 1,
-    justifyContent: 'center',
-  },
-  dialogContents: {
-    alignItems: 'center',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    paddingLeft: '1%',
-    paddingRight: '1%',
-    width: '100%',
-    zIndex: 1,
-  },
-  dialogPaper: {
-    alignItems: 'center',
-    backgroundColor: COLORS.white,
-    borderRadius: 10,
-    elevation: 5,
-    flexDirection: 'column',
-    height: 130,
-    padding: 35,
-    shadowColor: COLORS.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    width: '90%',
-  },
-  spacer: {
-    height: 10,
+  text: {
+    fontSize: 15,
+    textAlign: 'center',
+    minWidth: '70%',
   },
 });
 

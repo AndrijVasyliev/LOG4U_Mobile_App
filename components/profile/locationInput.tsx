@@ -229,6 +229,7 @@ const LocationInput = ({ onSet }: { onSet: (newValue: string) => void }) => {
         }}
         scrollViewProps={{
           persistentScrollbar: true,
+          showsVerticalScrollIndicator: true,
         }}
         ArrowUpIconComponent={() => (
           <MaterialCommunityIcons

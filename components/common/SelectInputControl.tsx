@@ -65,6 +65,10 @@ const SelectInputControl = ({
         labelProps={{
           numberOfLines: 2,
         }}
+        scrollViewProps={{
+          persistentScrollbar: true,
+          showsVerticalScrollIndicator: true,
+        }}
         ArrowUpIconComponent={() => (
           <MaterialCommunityIcons
             name="menu-up"

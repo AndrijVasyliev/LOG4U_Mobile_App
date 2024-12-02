@@ -1,30 +1,20 @@
 import * as React from 'react';
-import {
-  Modal,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-  ScrollView,
-  Text,
-} from 'react-native';
+import { StyleSheet, View, ScrollView, Text, Dimensions } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-import {
-  BACKEND_ORIGIN,
-  COLORS,
-  LOAD_PATH,
-  MODAL_VIEW_DELAY,
-} from '../../constants';
+import { BACKEND_ORIGIN, COLORS, LOAD_PATH } from '../../constants';
+import Modal from '../common/Modal';
 import ModalButton from '../common/modalButton';
 import TextInputControl from '../common/TextInputControl';
 import SelectInputControl from '../common/SelectInputControl';
-import FileList from '../profile/fileList';
 import IconButton from '../common/IconButton';
+import Spacer from '../common/Spacer';
+import FileList from '../profile/fileList';
 import { authFetch } from '../../utils/authFetch';
 
 const initialValues = {
   pieces: 1,
-  unitOfWeight: '',
+  unitOfWeight: 'LBS',
   weight: '',
   bol: '',
   seal: '',
@@ -52,20 +42,10 @@ const PickUpDriversInfo = ({
     { label: string; value: string }[] | void
   >(undefined);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [isModalVisible, setIsModalVisible] =
-    React.useState<boolean>(!!pickUpDriversItems);
 
-  React.useEffect(() => {
-    if (!!pickUpDriversItems) {
-      const timeoutId = setTimeout(
-        () => setIsModalVisible(!!pickUpDriversItems),
-        MODAL_VIEW_DELAY,
-      );
-      return () => clearTimeout(timeoutId);
-    } else {
-      setIsModalVisible(!!pickUpDriversItems);
-    }
-  }, [pickUpDriversItems]);
+  const screenHeight = Dimensions.get('window').height;
+  let calculatedHeight = (screenHeight * 90) / 100 - 40 - 10 - 2 - 60;
+  calculatedHeight = calculatedHeight > 0 ? calculatedHeight : 0;
 
   React.useEffect(() => {
     if (!pickUpDriversItems) {
@@ -167,103 +147,105 @@ const PickUpDriversInfo = ({
   };
 
   return (
-    <Modal
-      hardwareAccelerated={true}
-      animationType="fade"
-      transparent={true}
-      visible={isModalVisible}
-      onRequestClose={() => {
-        console.log('Modal has been closed.');
-      }}
-    >
-      <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={handleClose}>
-          <View style={styles.area} />
-        </TouchableWithoutFeedback>
-        <View style={styles.dialogPaper}>
-          <View style={styles.driversInfoHeader}>
+    <>
+      <Modal
+        visible={!!pickUpDriversItems}
+        header={
+          <>
             <Text>{'Add Load Info'}</Text>
             <IconButton
               iconName="note-plus-outline"
               onClick={getAddItemHandler()}
             />
-          </View>
-          <ScrollView
-            style={styles.dialogContentsScroll}
-            contentContainerStyle={styles.dialogContents}
-          >
-            {!pickUpDriversItems
-              ? null
-              : pickUpDriversItems.map((item, index) => (
-                  <View key={index} style={styles.driversInfoItemWrapper}>
-                    <View style={styles.driversInfoItemHeader}>
-                      <Text>{`Doc# ${index + 1}`}</Text>
-                      <IconButton
-                        iconName="note-minus-outline"
-                        onClick={getRemoveItemHandler(index)}
-                      />
-                    </View>
-                    <View style={styles.driversInfoItem}>
-                      <TextInputControl
-                        placeholder="Enter number of pieces"
-                        value={`${item.pieces}`}
-                        number
-                        onChange={getOnChangeHandler(index, 'pieces')}
-                      />
-                      <SelectInputControl
-                        placeholder="Select Unit Of Weight"
-                        items={[
-                          { label: 'LBS', value: 'LBS' },
-                          { label: 'KG', value: 'KG' },
-                          { label: 'TON', value: 'TON' },
-                        ]}
-                        value={`${item.unitOfWeight}`}
-                        onChange={getOnChangeHandler(index, 'unitOfWeight')}
-                      />
-                      <TextInputControl
-                        placeholder="Enter load`s weight"
-                        value={`${item.weight}`}
-                        number
-                        onChange={getOnChangeHandler(index, 'weight')}
-                      />
-                      <SelectInputControl
-                        placeholder="Select BOL"
-                        items={bolItems || []}
-                        value={`${item.bol}`}
-                        onChange={getOnChangeHandler(index, 'bol')}
-                      />
-                      <TextInputControl
-                        placeholder="Enter load`s seal#"
-                        value={`${item.seal}`}
-                        onChange={getOnChangeHandler(index, 'seal')}
-                      />
-                      <SelectInputControl
-                        placeholder="Select is address correct"
-                        items={[
-                          { label: 'Address is correct', value: 'true' },
-                          { label: 'Address is NOT correct', value: 'false' },
-                        ]}
-                        value={`${item.addressIsCorrect}`}
-                        onChange={getOnChangeHandler(index, 'addressIsCorrect')}
-                      />
-                      {!item.driversInfoId ? (
-                        <View style={styles.spacer}></View>
-                      ) : (
-                        <FileList
-                          objectId={loadId}
-                          objectType="Load"
-                          label="Load`s docs"
-                          tags={{
-                            [`${item.driversInfoId}`]: 'StopPickUpDriversInfo',
-                          }}
+          </>
+        }
+        contents={
+          <>
+            <ScrollView
+              style={[
+                styles.dialogContentsScroll,
+                { maxHeight: calculatedHeight },
+              ]}
+              contentContainerStyle={styles.dialogContents}
+            >
+              {!pickUpDriversItems
+                ? null
+                : pickUpDriversItems.map((item, index) => (
+                    <View key={index} style={styles.driversInfoItemWrapper}>
+                      <View style={styles.driversInfoItemHeader}>
+                        <Text>{`Doc# ${index + 1}`}</Text>
+                        <IconButton
+                          iconName="note-minus-outline"
+                          onClick={getRemoveItemHandler(index)}
                         />
-                      )}
+                      </View>
+                      <View style={styles.driversInfoItem}>
+                        <TextInputControl
+                          placeholder="Enter number of pieces"
+                          value={`${item.pieces}`}
+                          number
+                          onChange={getOnChangeHandler(index, 'pieces')}
+                        />
+                        <SelectInputControl
+                          placeholder="Select Unit Of Weight"
+                          items={[
+                            { label: 'LBS', value: 'LBS' },
+                            { label: 'KG', value: 'KG' },
+                            { label: 'TON', value: 'TON' },
+                          ]}
+                          value={`${item.unitOfWeight}`}
+                          onChange={getOnChangeHandler(index, 'unitOfWeight')}
+                        />
+                        <TextInputControl
+                          placeholder="Enter load`s weight"
+                          value={`${item.weight}`}
+                          number
+                          onChange={getOnChangeHandler(index, 'weight')}
+                        />
+                        <SelectInputControl
+                          placeholder="Select BOL"
+                          items={bolItems || []}
+                          value={`${item.bol}`}
+                          onChange={getOnChangeHandler(index, 'bol')}
+                        />
+                        <TextInputControl
+                          placeholder="Enter load`s seal#"
+                          value={`${item.seal}`}
+                          onChange={getOnChangeHandler(index, 'seal')}
+                        />
+                        <SelectInputControl
+                          placeholder="Select is address correct"
+                          items={[
+                            { label: 'Address is correct', value: 'true' },
+                            { label: 'Address is NOT correct', value: 'false' },
+                          ]}
+                          value={`${item.addressIsCorrect}`}
+                          onChange={getOnChangeHandler(
+                            index,
+                            'addressIsCorrect',
+                          )}
+                        />
+                        {!item.driversInfoId ? (
+                          <Spacer />
+                        ) : (
+                          <FileList
+                            objectId={loadId}
+                            objectType="Load"
+                            label="Load`s docs"
+                            tags={{
+                              [`${item.driversInfoId}`]:
+                                'StopPickUpDriversInfo',
+                            }}
+                          />
+                        )}
+                      </View>
                     </View>
-                  </View>
-                ))}
-          </ScrollView>
-          <View style={styles.spacer}></View>
-          <View style={styles.buttonContainer}>
+                  ))}
+            </ScrollView>
+          </>
+        }
+        buttons={
+          <>
             <ModalButton
               text={'Close'}
               disabled={false}
@@ -274,47 +256,24 @@ const PickUpDriversInfo = ({
               disabled={!canSave}
               onPress={handleSave}
             />
-          </View>
-        </View>
-      </View>
+          </>
+        }
+        close={handleClose}
+      />
       <Spinner visible={isLoading} textContent={'Saving data...'} />
-    </Modal>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  area: {
-    backgroundColor: COLORS.modalBackground,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    height: 60,
-    justifyContent: 'center',
-    paddingLeft: '1%',
-    paddingRight: '1%',
-    width: '100%',
-  },
   driversInfoItemWrapper: {
     borderColor: COLORS.gray,
     borderRadius: 10,
     borderStyle: 'solid',
     borderWidth: 1,
     height: 'auto',
-    marginTop: 5,
-    width: '100%',
-  },
-  driversInfoHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    height: 40,
-    justifyContent: 'space-between',
-    paddingLeft: 10,
-    paddingRight: 10,
+    marginTop: 2,
+    marginBottom: 2,
     width: '100%',
   },
   driversInfoItemHeader: {
@@ -333,17 +292,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     width: '100%',
   },
-  container: {
-    alignItems: 'center',
-    backgroundColor: COLORS.modalBackground,
-    flex: 1,
-    justifyContent: 'center',
-  },
   dialogContentsScroll: {
-    borderTopColor: COLORS.gray,
-    borderBottomColor: COLORS.gray,
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
     flexDirection: 'column',
     height: '100%',
     width: '100%',
@@ -353,25 +302,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '100%',
-  },
-  dialogPaper: {
-    alignItems: 'center',
-    backgroundColor: COLORS.white,
-    borderRadius: 10,
-    elevation: 5,
-    flexDirection: 'column',
-    height: '90%',
-    shadowColor: COLORS.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    width: '90%',
-  },
-  spacer: {
-    height: 10,
   },
 });
 

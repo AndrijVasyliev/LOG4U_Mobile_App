@@ -1,36 +1,16 @@
 import * as React from 'react';
-import {
-  StyleSheet,
-  Modal,
-  Text,
-  TouchableOpacity,
-  View,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import dayjs from 'dayjs';
 import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 import { SingleChange } from 'react-native-ui-datepicker/src/types';
+import Modal from '../common/Modal';
 import ModalButton from '../common/modalButton';
-import { COLORS, MODAL_VIEW_DELAY } from '../../constants';
+import { COLORS } from '../../constants';
 import { toCorrected } from '../../utils/dateTimeConverters';
 
 const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
   const [pickerVisible, setPickerVisible] = React.useState<boolean>(false);
   const [date, setDate] = React.useState<DateType | undefined>(undefined);
-  const [isModalVisible, setIsModalVisible] =
-    React.useState<boolean>(pickerVisible);
-
-  React.useEffect(() => {
-    if (!!pickerVisible) {
-      const timeoutId = setTimeout(
-        () => setIsModalVisible(!!pickerVisible),
-        MODAL_VIEW_DELAY,
-      );
-      return () => clearTimeout(timeoutId);
-    } else {
-      setIsModalVisible(!!pickerVisible);
-    }
-  }, [pickerVisible]);
 
   const onClick = () => {
     setPickerVisible(true);
@@ -49,39 +29,30 @@ const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
   return (
     <>
       <Modal
-        hardwareAccelerated={true}
-        animationType="fade"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => {
-          console.log('Modal has been closed.');
-        }}
-      >
-        <View style={styles.dialogContainer}>
-          <TouchableWithoutFeedback onPress={handleClose}>
-            <View style={styles.area} />
-          </TouchableWithoutFeedback>
-          <View style={styles.dialogPaper}>
-            <View style={styles.dialogContents}>
-              <DateTimePicker
-                mode="single"
-                headerButtonColor={COLORS.primary}
-                selectedItemColor={COLORS.primary}
-                displayFullDays={true}
-                timePicker={true}
-                minDate={new Date(Date.now() - 24 * 60 * 60 * 1000)}
-                date={date}
-                onChange={handleDateChange}
-              />
-            </View>
-            <View style={styles.spacer}></View>
-            <View style={styles.buttonContainer}>
-              <ModalButton text={'Cancel'} onPress={handleClose} />
-              <ModalButton text={'Set'} onPress={handleSet} />
-            </View>
+        visible={pickerVisible}
+        header={<Text>{'Select Will Be Available At'}</Text>}
+        contents={
+          <View style={styles.dialogContentsHolder}>
+            <DateTimePicker
+              mode="single"
+              headerButtonColor={COLORS.primary}
+              selectedItemColor={COLORS.primary}
+              displayFullDays={true}
+              timePicker={true}
+              minDate={new Date(Date.now() - 24 * 60 * 60 * 1000)}
+              date={date}
+              onChange={handleDateChange}
+            />
           </View>
-        </View>
-      </Modal>
+        }
+        buttons={
+          <>
+            <ModalButton text={'Cancel'} onPress={handleClose} />
+            <ModalButton text={'Set'} onPress={handleSet} />
+          </>
+        }
+        close={handleClose}
+      />
       <View style={styles.controlContainer}>
         <TouchableOpacity style={styles.button} onPress={onClick}>
           {date ? (
@@ -98,24 +69,15 @@ const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
 };
 
 const styles = StyleSheet.create({
-  area: {
-    backgroundColor: COLORS.modalBackground,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
+  dialogContentsHolder: {
+    flexDirection: 'column',
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: 'auto',
+    width: '100%',
   },
   button: {
     alignItems: 'flex-start',
-    width: '100%',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    height: 40,
-    justifyContent: 'space-between',
-    paddingLeft: '1%',
-    paddingRight: '1%',
     width: '100%',
   },
   controlContainer: {
@@ -130,41 +92,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     width: '100%',
   },
-  dialogContainer: {
-    alignItems: 'center',
-    backgroundColor: COLORS.modalBackground,
-    flex: 1,
-    justifyContent: 'center',
-  },
-  dialogContents: {
-    alignItems: 'center',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    paddingLeft: '1%',
-    paddingRight: '1%',
-    width: '100%',
-  },
-  dialogPaper: {
-    alignItems: 'center',
-    backgroundColor: COLORS.white,
-    borderRadius: 10,
-    elevation: 5,
-    flexDirection: 'column',
-    height: 500,
-    padding: 35,
-    shadowColor: COLORS.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    width: '90%',
-  },
   placeholderText: { color: COLORS.gray2, paddingLeft: 5 },
-  spacer: {
-    height: 30,
-  },
   valueText: { paddingLeft: 5 },
 });
 
