@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { ScrollView, ImageBackground, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 
 import ProfileItem from '../../components/profile/profile';
 import ErrorText from '../../components/common/ErrorText';
 import { images, BACKEND_ORIGIN, DRIVER_PATH } from '../../constants';
 import { useUserData } from '../../hooks/userData';
-import { authFetch } from '../../utils/authFetch';
-import { NotAuthorizedError } from '../../utils/notAuthorizedError';
+import { useFetch } from '../../hooks/useFetch';
 import { isProfileEnabled } from '../../utils/isEnabled';
 
 const Profile = () => {
@@ -17,7 +16,8 @@ const Profile = () => {
   const [truck, setTruck] = React.useState<Record<string, any> | null>(null);
   const [profileError, setProfileError] = React.useState<string>('');
 
-  const [userData, setUserData] = useUserData();
+  const { userData } = useUserData();
+  const authFetch = useFetch();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -65,15 +65,10 @@ const Profile = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        if (error instanceof NotAuthorizedError) {
-          setProfileError('Not authorized');
-          setUserData(null);
-        } else {
-          setProfileError('Network problem: slow or unstable connection');
-        }
+        setProfileError('Network problem: slow or unstable connection');
         setIsLoading(false);
       });
-  }, [setUserData, changedAt]);
+  }, [changedAt]);
 
   return (
     <ImageBackground

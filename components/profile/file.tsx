@@ -15,12 +15,11 @@ import {
   BACKEND_ORIGIN,
   COLORS,
   FILE_PATH,
+  HTTP_UNAUTHORIZED,
   MAX_FILE_NAME_LENGTH,
 } from '../../constants';
-import { useRouter } from 'expo-router';
 import { getHeaders } from '../../utils/getHeaders';
 import { getDeviceId } from '../../utils/deviceId';
-import { logout } from '../../utils/logout';
 import { useUserData } from '../../hooks/userData';
 
 const File = ({
@@ -32,7 +31,7 @@ const File = ({
 }) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  const [userData, setUserData] = useUserData();
+  const { userData, logout } = useUserData();
 
   const download = async () => {
     setIsLoading(true);
@@ -52,9 +51,8 @@ const File = ({
       { headers },
     );
 
-    if (downloadResult.status === 401) {
-      await logout();
-      setUserData(null);
+    if (downloadResult.status === HTTP_UNAUTHORIZED) {
+      logout();
     }
 
     if (downloadResult.status === 200 && downloadResult.uri) {

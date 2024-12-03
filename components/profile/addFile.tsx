@@ -1,15 +1,18 @@
 import * as React from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FileNameDialog from './fileNameDIalog';
-import { BACKEND_ORIGIN, COLORS, FILE_PATH } from '../../constants';
+import {
+  BACKEND_ORIGIN,
+  COLORS,
+  FILE_PATH,
+  HTTP_UNAUTHORIZED,
+} from '../../constants';
 import { getDeviceId } from '../../utils/deviceId';
 import { getHeaders } from '../../utils/getHeaders';
-import { logout } from '../../utils/logout';
 import { useUserData } from '../../hooks/userData';
 import FileErrorDialog from './fileErrorDialog';
 import { FileOfType } from './fileList';
@@ -34,7 +37,7 @@ const AddFile = ({
     setFileUri('');
   }, [objectId, objectType]);
 
-  const [userData, setUserData] = useUserData();
+  const { userData, logout } = useUserData();
 
   const handleSubmit = (fileName: string) => {
     setFileUri('');
@@ -141,9 +144,8 @@ const AddFile = ({
       },
     );
 
-    if (uploadResult.status === 401) {
-      await logout();
-      setUserData(null);
+    if (uploadResult.status === HTTP_UNAUTHORIZED) {
+      logout();
     }
 
     if (uploadResult.status !== 201) {

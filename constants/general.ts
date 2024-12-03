@@ -5,6 +5,7 @@ export const BUILD_VERSION =
   Application.nativeBuildVersion + '@' + Application.nativeApplicationVersion;
 
 export const FETCH_TIMEOUT = 15000;
+export const HTTP_UNAUTHORIZED = 401;
 
 export const ROUTE_SET_DELAY = 5;
 export const MODAL_VIEW_DELAY = 20;

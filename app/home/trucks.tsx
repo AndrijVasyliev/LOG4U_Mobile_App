@@ -19,8 +19,7 @@ import {
   COLORS,
 } from '../../constants';
 import { useUserData } from '../../hooks/userData';
-import { authFetch } from '../../utils/authFetch';
-import { NotAuthorizedError } from '../../utils/notAuthorizedError';
+import { useFetch } from '../../hooks/useFetch';
 import { isTrucksEnabled } from '../../utils/isEnabled';
 
 const Trucks = () => {
@@ -34,7 +33,8 @@ const Trucks = () => {
     null,
   );
 
-  const [userData, setUserData] = useUserData();
+  const { userData } = useUserData();
+  const authFetch = useFetch();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -97,15 +97,10 @@ const Trucks = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        if (error instanceof NotAuthorizedError) {
-          setTruckError('Not authorized');
-          setUserData(null);
-        } else {
-          setTruckError('Network problem: slow or unstable connection');
-        }
+        setTruckError('Network problem: slow or unstable connection');
         setIsLoading(false);
       });
-  }, [userData, setUserData, changedAt]);
+  }, [userData, changedAt]);
 
   return (
     <ImageBackground

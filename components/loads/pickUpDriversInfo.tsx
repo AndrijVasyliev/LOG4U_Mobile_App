@@ -10,7 +10,7 @@ import SelectInputControl from '../common/SelectInputControl';
 import IconButton from '../common/IconButton';
 import Spacer from '../common/Spacer';
 import FileList from '../profile/fileList';
-import { authFetch } from '../../utils/authFetch';
+import { useFetch } from '../../hooks/useFetch';
 
 const initialValues = {
   pieces: 1,
@@ -42,6 +42,8 @@ const PickUpDriversInfo = ({
     { label: string; value: string }[] | void
   >(undefined);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const authFetch = useFetch();
 
   const screenHeight = Dimensions.get('window').height;
   let calculatedHeight = (screenHeight * 90) / 100 - 40 - 10 - 2 - 60;

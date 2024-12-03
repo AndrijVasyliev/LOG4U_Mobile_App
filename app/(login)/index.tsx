@@ -20,7 +20,6 @@ import PasswordInput from '../../components/login/passwordInput';
 import LoginButton from '../../components/login/loginButton';
 import LoginErrorText from '../../components/login/loginErrorText';
 import WelcomeText from '../../components/login/wellcomeText';
-import { AdditionalLocationOptions, startLocation } from '../../utils/location';
 import {
   BACKEND_ORIGIN,
   COLORS,
@@ -33,8 +32,9 @@ import {
   SET_APP_DATA_PATH,
 } from '../../constants';
 import { UserData, useUserData } from '../../hooks/userData';
+import { useFetch } from '../../hooks/useFetch';
+import { AdditionalLocationOptions, startLocation } from '../../utils/location';
 import { getDeviceId } from '../../utils/deviceId';
-import { authFetch } from '../../utils/authFetch';
 import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 import { registerForPushNotificationsAsync } from '../../utils/notifications';
 import { getAppPermissions } from '../../utils/getAppPermissions';
@@ -69,7 +69,8 @@ const Login = () => {
   const [isAutentificating, setIsAutentificating] =
     React.useState<boolean>(false);
 
-  const [, setUserData] = useUserData();
+  const { setUserData, setAppCredentials } = useUserData();
+  const authFetch = useFetch();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -146,6 +147,7 @@ const Login = () => {
         } must not be empty!`,
       );
     }
+    setAppCredentials({ appLogin: log, appPassword: pas });
     setIsAutentificating(true);
     setLoginError('');
     Promise.all([
@@ -266,11 +268,7 @@ const Login = () => {
         }
       })
       .catch((error) => {
-        if (error instanceof NotAuthorizedError) {
-          setLoginError('Login or Password is incorrect');
-        } else {
-          setLoginError('Network problem: slow or unstable connection');
-        }
+        setLoginError('Network problem: slow or unstable connection');
         setIsAutentificating(false);
       });
     return;

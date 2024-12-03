@@ -7,7 +7,7 @@ import { useUserData } from '../../hooks/userData';
 const HeaderButton = () => {
   const [menuVisible, setMenuVisible] = React.useState<boolean>(false);
 
-  const [userData] = useUserData();
+  const { userData } = useUserData();
 
   const handleOpenMenu = () => {
     setMenuVisible(true);

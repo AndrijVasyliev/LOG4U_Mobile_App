@@ -8,11 +8,13 @@ import {
   SET_AUTH_PATH,
 } from '../constants';
 import Constants from 'expo-constants';
+import { useFetch } from './useFetch';
 import { getDeviceId } from '../utils/deviceId';
-import { authFetch } from '../utils/authFetch';
 
 export const useNotifications = () => {
   const router = useRouter();
+  const authFetch = useFetch();
+
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
   React.useEffect(() => {
     if (
@@ -67,45 +69,49 @@ export const useNotifications = () => {
           console.log('Failed to get project id!');
           return;
         }
-        const token = await Notifications.getExpoPushTokenAsync({
-          projectId,
-          devicePushToken,
-        }).catch((error) =>
-          console.log('Error getting expo push token', error),
-        );
-        console.log(token);
-        if (!token) {
-          console.log('Failed to get expo push token!');
-          return;
-        }
-        const deviceId = await getDeviceId();
-        if (!deviceId) {
-          console.log('Failed to get device Id!');
-          return;
-        }
-        const checkAuthResponse = await authFetch(
-          new URL(SET_AUTH_PATH, BACKEND_ORIGIN),
-          {
-            method: 'PATCH',
-            body: JSON.stringify({ deviceId }),
-          },
-        );
-        if (checkAuthResponse?.status !== 200) {
-          Notifications.removePushTokenSubscription(pushTokenListener);
-          if (checkAuthResponse?.status === 412) {
-            console.log('Logged from other device!');
-          } else {
-            console.log('Some error!');
+        try {
+          const token = await Notifications.getExpoPushTokenAsync({
+            projectId,
+            devicePushToken,
+          }).catch((error) =>
+            console.log('Error getting expo push token', error),
+          );
+          console.log(token);
+          if (!token) {
+            console.log('Failed to get expo push token!');
+            return;
           }
-          return;
+          const deviceId = await getDeviceId();
+          if (!deviceId) {
+            console.log('Failed to get device Id!');
+            return;
+          }
+          const checkAuthResponse = await authFetch(
+            new URL(SET_AUTH_PATH, BACKEND_ORIGIN),
+            {
+              method: 'PATCH',
+              body: JSON.stringify({ deviceId }),
+            },
+          );
+          if (checkAuthResponse?.status !== 200) {
+            Notifications.removePushTokenSubscription(pushTokenListener);
+            if (checkAuthResponse?.status === 412) {
+              console.log('Logged from other device!');
+            } else {
+              console.log('Some error!');
+            }
+            return;
+          }
+          await authFetch(new URL(SET_APP_DATA_PATH, BACKEND_ORIGIN), {
+            method: 'PATCH',
+            body: JSON.stringify({
+              token: token || '',
+            }),
+          }).catch((error) => console.log('Error updating push token', error));
+          console.log('Token updated');
+        } catch (error) {
+          console.log('Error updating push token', error);
         }
-        await authFetch(new URL(SET_APP_DATA_PATH, BACKEND_ORIGIN), {
-          method: 'PATCH',
-          body: JSON.stringify({
-            token: token || '',
-          }),
-        }).catch((error) => console.log('Error updating push token', error));
-        console.log('Token updated');
       },
     );
 

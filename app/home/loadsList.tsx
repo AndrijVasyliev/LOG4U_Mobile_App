@@ -25,8 +25,7 @@ import {
   LOAD_COORDINATOR_LIST_PATH,
 } from '../../constants';
 import { useUserData } from '../../hooks/userData';
-import { authFetch } from '../../utils/authFetch';
-import { NotAuthorizedError } from '../../utils/notAuthorizedError';
+import { useFetch } from '../../hooks/useFetch';
 import { isLoadsListEnabled } from '../../utils/isEnabled';
 
 const Loads = () => {
@@ -38,7 +37,8 @@ const Loads = () => {
   const scrollViewRef = React.useRef<ScrollView>(null);
   const elementRef = React.useRef<Map<string, View>>(new Map());
 
-  const [userData, setUserData] = useUserData();
+  const { userData } = useUserData();
+  const authFetch = useFetch();
   const router = useRouter();
   const path = usePathname();
   const { selectedLoadId, renew } = useLocalSearchParams<{
@@ -102,15 +102,10 @@ const Loads = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        if (error instanceof NotAuthorizedError) {
-          setLoadError('Not authorized');
-          setUserData(null);
-        } else {
-          setLoadError('Network problem: slow or unstable connection');
-        }
+        setLoadError('Network problem: slow or unstable connection');
         setIsLoading(false);
       });
-  }, [setUserData, changedAt]);
+  }, [changedAt]);
 
   React.useEffect(() => {
     if (!selectedLoadId) {

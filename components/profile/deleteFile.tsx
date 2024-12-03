@@ -11,9 +11,7 @@ import {
 import Modal from '../common/Modal';
 import ModalButton from '../common/modalButton';
 import Spacer from '../common/Spacer';
-import { authFetch } from '../../utils/authFetch';
-import { NotAuthorizedError } from '../../utils/notAuthorizedError';
-import { useUserData } from '../../hooks/userData';
+import { useFetch } from '../../hooks/useFetch';
 
 const DeleteFile = ({
   file,
@@ -25,7 +23,7 @@ const DeleteFile = ({
   const [dialogVisible, setDialogVisible] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  const [, setUserData] = useUserData();
+  const authFetch = useFetch();
 
   const handleOpenDialog = () => {
     setDialogVisible(true);
@@ -39,18 +37,10 @@ const DeleteFile = ({
     setIsLoading(true);
     authFetch(new URL(`${FILE_PATH}/${file.id}`, BACKEND_ORIGIN), {
       method: 'DELETE',
-    })
-      .then(() => {
-        setIsLoading(false);
-        setChangedAt(Date.now());
-      })
-      .catch((error) => {
-        if (error instanceof NotAuthorizedError) {
-          setUserData(null);
-        }
-        setIsLoading(false);
-        setChangedAt(Date.now());
-      });
+    }).finally(() => {
+      setIsLoading(false);
+      setChangedAt(Date.now());
+    });
   };
 
   let name = file.comment || file.filename;

@@ -9,7 +9,7 @@ import WillBeAvailableDialog from './WillBeAvailDialog';
 import UserDataItem from './UserDataItem';
 import FileList from './fileList';
 import { BACKEND_ORIGIN, COLORS, TRUCK_PATH } from '../../constants';
-import { authFetch } from '../../utils/authFetch';
+import { useFetch } from '../../hooks/useFetch';
 import { toFormattedLocation } from '../../utils/toFormattedLocation';
 import { fromISOCorrected } from '../../utils/dateTimeConverters';
 import { dateTimeFormatter } from '../../utils/dateTimeFormatters';
@@ -35,6 +35,8 @@ const Profile = ({
     { label: string; value: string }[]
   >(truckStatuses.map((status) => ({ label: status, value: status })));
   const [locationName, setLocationName] = React.useState<string>('');
+
+  const authFetch = useFetch();
 
   React.useEffect(() => {
     if (truck && truck.availabilityLocation) {

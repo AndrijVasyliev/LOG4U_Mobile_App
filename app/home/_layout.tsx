@@ -13,7 +13,7 @@ import {
 import { COLORS } from '../../constants';
 
 const TabLayout = () => {
-  const [userData] = useUserData();
+  const { userData } = useUserData();
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />

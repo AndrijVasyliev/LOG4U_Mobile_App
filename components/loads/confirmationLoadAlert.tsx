@@ -6,7 +6,7 @@ import { BACKEND_ORIGIN, LOAD_PATH } from '../../constants';
 import Modal from '../common/Modal';
 import ModalButton from '../common/modalButton';
 import Spacer from '../common/Spacer';
-import { authFetch } from '../../utils/authFetch';
+import { useFetch } from '../../hooks/useFetch';
 
 const ConfirmationLoadAlert = ({
   load,
@@ -24,6 +24,8 @@ const ConfirmationLoadAlert = ({
     nextStatus: string;
   } | void>(undefined);
   const [acceptLoading, setAcceptLoading] = React.useState<boolean>(false);
+
+  const authFetch = useFetch();
 
   React.useEffect(() => {
     if (

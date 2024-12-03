@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { UserData, UserDataContext } from '../hooks/userData';
 import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { ROUTE_SET_DELAY } from '../constants';
+import { AppCredentials, UserData, UserDataContext } from '../hooks/userData';
+import { logout } from '../utils/logout';
 
 export const UserDataProvider = function UserDataProvider({
   children,
@@ -9,6 +10,8 @@ export const UserDataProvider = function UserDataProvider({
   children: React.ReactNode;
 }) {
   const [userData, setUserData] = React.useState<UserData | null>(null);
+  const [appCredentials, setAppCredentials] =
+    React.useState<AppCredentials | null>(null);
   const [timerId, setTimerId] = React.useState<NodeJS.Timeout | undefined>(
     undefined,
   );
@@ -94,8 +97,22 @@ export const UserDataProvider = function UserDataProvider({
     }
   }, [routeToFromPush]);*/
 
+  const handleLogout = () => {
+    logout().then(() => {
+      setUserData(null);
+      setAppCredentials(null);
+    });
+  };
+
   return (
-    <UserDataContext.Provider value={[userData, setUserData]}>
+    <UserDataContext.Provider
+      value={{
+        userData: { ...userData, ...appCredentials },
+        setUserData,
+        setAppCredentials,
+        logout: handleLogout,
+      }}
+    >
       {children}
     </UserDataContext.Provider>
   );

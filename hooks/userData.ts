@@ -3,8 +3,6 @@ import * as React from 'react';
 export type UserData = {
   id: string;
   fullName: string;
-  appLogin: string;
-  appPassword: string;
   type:
     | 'Driver'
     | 'Owner'
@@ -15,9 +13,17 @@ export type UserData = {
   useGoogleMaps?: boolean;
 };
 
-export const UserDataContext = React.createContext<
-  [userData: UserData, setUserData: (userData: UserData) => void]
->(null!);
+export type AppCredentials = {
+  appLogin: string;
+  appPassword: string;
+};
+
+export const UserDataContext = React.createContext<{
+  userData: UserData & AppCredentials;
+  setUserData: (userData: UserData) => void;
+  setAppCredentials: (appCredentials: AppCredentials) => void;
+  logout: () => void;
+}>(null!);
 
 export const useUserData = function useUserData() {
   return React.useContext(UserDataContext);

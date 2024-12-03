@@ -19,8 +19,7 @@ import Load from '../../components/loads/Load';
 import ErrorText from '../../components/common/ErrorText';
 import { images, BACKEND_ORIGIN, LOAD_PATH, COLORS } from '../../constants';
 import { useUserData } from '../../hooks/userData';
-import { authFetch } from '../../utils/authFetch';
-import { NotAuthorizedError } from '../../utils/notAuthorizedError';
+import { useFetch } from '../../hooks/useFetch';
 import { isLoadsEnabled } from '../../utils/isEnabled';
 
 const Loads = () => {
@@ -32,7 +31,8 @@ const Loads = () => {
   const scrollViewRef = React.useRef<ScrollView>(null);
   const elementRef = React.useRef<Map<string, View>>(new Map());
 
-  const [userData, setUserData] = useUserData();
+  const { userData } = useUserData();
+  const authFetch = useFetch();
   const router = useRouter();
   const path = usePathname();
   const { selectedLoadId, renew } = useLocalSearchParams<{
@@ -85,15 +85,10 @@ const Loads = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        if (error instanceof NotAuthorizedError) {
-          setLoadError('Not authorized');
-          setUserData(null);
-        } else {
-          setLoadError('Network problem: slow or unstable connection');
-        }
+        setLoadError('Network problem: slow or unstable connection');
         setIsLoading(false);
       });
-  }, [setUserData, changedAt]);
+  }, [changedAt]);
 
   React.useEffect(() => {
     if (!selectedLoadId) {

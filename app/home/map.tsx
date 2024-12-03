@@ -7,7 +7,7 @@ import {
   Platform,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import * as Location from 'expo-location';
 import { A } from '@expo/html-elements';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -20,8 +20,7 @@ import {
   COORDINATOR_PATH,
 } from '../../constants';
 import { useUserData } from '../../hooks/userData';
-import { authFetch } from '../../utils/authFetch';
-import { NotAuthorizedError } from '../../utils/notAuthorizedError';
+import { useFetch } from '../../hooks/useFetch';
 import { isMapEnabled } from '../../utils/isEnabled';
 import { toFormattedLocation } from '../../utils/toFormattedLocation';
 
@@ -35,7 +34,8 @@ const Map = () => {
 
   const mapRef = React.useRef();
 
-  const [userData, setUserData] = useUserData();
+  const { userData } = useUserData();
+  const authFetch = useFetch();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -118,15 +118,10 @@ const Map = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        if (error instanceof NotAuthorizedError) {
-          setMapError('Not authorized');
-          setUserData(null);
-        } else {
-          setMapError('Network problem: slow or unstable connection');
-        }
+        setMapError('Network problem: slow or unstable connection');
         setIsLoading(false);
       });
-  }, [userData, setUserData, changedAt]);
+  }, [userData, changedAt]);
 
   React.useEffect(() => {
     if (mapRef.current && trucks) {
