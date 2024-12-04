@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { useToast } from 'react-native-toast-notifications';
-import UserDataItem from '../profile/UserDataItem';
+import UserDataItem from '../common/UserDataItem';
 import { fromTimeFrame } from '../../utils/fromTimeFrame';
 import { getStatusText } from '../../utils/getStopStatus';
 import { COLORS } from '../../constants';

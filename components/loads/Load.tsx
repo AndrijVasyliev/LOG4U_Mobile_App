@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import Stops from './Stops';
 import ConfirmationLoadAlert from './confirmationLoadAlert';
-import UserDataItem from '../profile/UserDataItem';
-import FileList from '../profile/fileList';
+import UserDataItem from '../common/UserDataItem';
+import FileList from '../file/fileList';
 
 const Load = ({
   load,

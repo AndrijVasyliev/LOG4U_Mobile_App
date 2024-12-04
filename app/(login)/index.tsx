@@ -103,8 +103,13 @@ const Login = () => {
         setLogin(login);
         setPassword(password);
         if (login && password && pdstatus) {
-          setTimeout(() => handleLogin(null, { login, password, pdstatus }), 1);
-          // handleLogin(null, { login, password, pdstatus });
+          // setAppCredentials({ appLogin: login, appPassword: password });
+          console.log('LLLLL', { appLogin: login, appPassword: password });
+          setTimeout(() => {
+            setAppCredentials({ appLogin: login, appPassword: password });
+            setTimeout(() => makeLogin(), 1000);
+          }, 1000);
+          // setTimeout(() => makeLogin(), 100);
         }
       })
       .catch(() => {
@@ -121,41 +126,22 @@ const Login = () => {
     setPassword(text);
   };
 
-  const handleLogin = (
-    event: any,
+  const makeLogin = (
     {
-      login: log = login,
-      password: pas = password,
       pdstatus: pds = pdStatus,
       force = false,
     }: {
-      login?: string;
-      password?: string;
       pdstatus?: string;
       force?: boolean;
     } = {
-      login: login,
-      password: password,
       pdstatus: pdStatus,
       force: false,
     },
   ) => {
-    if (!log || !pas) {
-      return setLoginError(
-        `${!log ? 'Login' : ''}${!log && !pas ? ' and ' : ''}${
-          !pas ? 'Password' : ''
-        } must not be empty!`,
-      );
-    }
-    setAppCredentials({ appLogin: log, appPassword: pas });
     setIsAutentificating(true);
     setLoginError('');
-    Promise.all([
-      getDeviceId(),
-      AsyncStorage.setItem(STORAGE_USER_LOGIN, log),
-      AsyncStorage.setItem(STORAGE_USER_PASSWORD, pas),
-    ])
-      .then(([deviceId]) =>
+    getDeviceId()
+      .then((deviceId) =>
         authFetch(new URL(SET_AUTH_PATH, BACKEND_ORIGIN), {
           method: 'PATCH',
           body: JSON.stringify({
@@ -240,7 +226,7 @@ const Login = () => {
             }
             if (mobileDataResp.status === 200) {
               setIsAutentificating(false);
-              setUserData({ ...person, appPassword: pas } as UserData);
+              setUserData(person as UserData);
               return;
             } else if (mobileDataResp.status) {
               setLoginError(
@@ -269,9 +255,22 @@ const Login = () => {
       })
       .catch((error) => {
         setLoginError('Network problem: slow or unstable connection');
+        console.log('Error logging in', error);
         setIsAutentificating(false);
       });
     return;
+  };
+
+  const handleLogin = () => {
+    if (!login || !password) {
+      return setLoginError(
+        `${!login ? 'Login' : ''}${!login && !password ? ' and ' : ''}${
+          !password ? 'Password' : ''
+        } must not be empty!`,
+      );
+    }
+    setAppCredentials({ appLogin: login, appPassword: password });
+    setTimeout(() => makeLogin(), 1);
   };
 
   const handlePDGrant = () => {
@@ -289,7 +288,7 @@ const Login = () => {
 
   const handleForceLoginProceed = () => {
     setForceLoginVisible(false);
-    handleLogin(null, { force: true });
+    makeLogin({ force: true });
   };
 
   const handleForceLoginCancel = () => {

@@ -11,30 +11,23 @@ import Modal from '../common/Modal';
 import ModalButton from '../common/modalButton';
 import Spacer from '../common/Spacer';
 import LocationInput from '../common/locationInput';
-import DateTimeInput from '../common/dateTimeInput';
 import { getGoogleApiKey } from '../../utils/getGoogleApiKey';
 
-const WillBeAvailableDialog = ({
+const LastLocationDialog = ({
   visible,
   onStateChange,
   close,
 }: {
   visible: boolean;
-  onStateChange: (
-    status: 'Will be available',
-    availabilityLocation: [number, number],
-    availabilityAtLocal: Date,
-  ) => void;
+  onStateChange: (lastLocation: [number, number]) => void;
   close: VoidFunction;
 }) => {
   const [location, setLocation] = React.useState<[number, number] | null>(null);
   const [locationLoading, setLocationLoading] = React.useState<boolean>(false);
-  const [date, setDate] = React.useState<Date | null>(null);
 
   React.useEffect(() => {
     if (!visible) {
       setLocation(null);
-      setDate(null);
     }
   }, [visible]);
 
@@ -89,22 +82,20 @@ const WillBeAvailableDialog = ({
       });
   };
 
-  const setWillBeAvailable = () => {
-    onStateChange('Will be available', location, date);
+  const setLastLocationAvailable = () => {
+    onStateChange(location);
   };
 
   return (
     <>
       <Modal
         visible={visible}
-        header={<Text>{'Set Will Be Available'}</Text>}
+        header={<Text>{'Set Current Location'}</Text>}
         contents={
           <>
             <View style={styles.dialogContentsHolder}>
               <Spacer />
               <LocationInput onSet={handleSetLocation} />
-              <Spacer />
-              <DateTimeInput onSet={setDate} />
               <Spacer />
             </View>
           </>
@@ -114,8 +105,8 @@ const WillBeAvailableDialog = ({
             <ModalButton text={'Close'} onPress={close} />
             <ModalButton
               text={'Set'}
-              disabled={!location || !date}
-              onPress={setWillBeAvailable}
+              disabled={!location}
+              onPress={setLastLocationAvailable}
             />
           </>
         }
@@ -136,4 +127,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WillBeAvailableDialog;
+export default LastLocationDialog;

@@ -6,10 +6,9 @@ import { getHeaders } from '../utils/getHeaders';
 import { getDeviceId } from '../utils/deviceId';
 
 export const useFetch = function useFetch() {
-  const {
-    userData: { appLogin: login, appPassword: password },
-    logout,
-  } = React.useContext(UserDataContext);
+  const ctx = React.useContext(UserDataContext);
+
+  console.log('HER', ctx);
 
   return async (
     input: RequestInfo | URL,
@@ -17,9 +16,16 @@ export const useFetch = function useFetch() {
   ): Promise<Response> => {
     const deviceId = await getDeviceId();
 
+    console.log('BLJAD', ctx);
+
+    const {
+      userData: { appLogin: login, appPassword: password },
+      logout,
+    } = ctx;
+
     if (!login || !password) {
       throw new NotAuthorizedError(
-        `No ${!login ? 'login' : ''}${!login && !password ? 'and' : ''}${!password ? 'password' : ''} specified`,
+        `No ${!login ? 'login' : ''}${!login && !password ? ' and ' : ''}${!password ? 'password' : ''} specified`,
       );
     }
     const response = await fetch(input, {

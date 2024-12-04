@@ -6,13 +6,15 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import DropDownPicker from 'react-native-dropdown-picker';
 
 import WillBeAvailableDialog from './WillBeAvailDialog';
-import UserDataItem from './UserDataItem';
-import FileList from './fileList';
+import UserDataItem from '../common/UserDataItem';
+import FileList from '../file/fileList';
 import { BACKEND_ORIGIN, COLORS, TRUCK_PATH } from '../../constants';
 import { useFetch } from '../../hooks/useFetch';
 import { toFormattedLocation } from '../../utils/toFormattedLocation';
 import { fromISOCorrected } from '../../utils/dateTimeConverters';
 import { dateTimeFormatter } from '../../utils/dateTimeFormatters';
+import LastLocationDialog from './LastLocationDialog';
+import IconButton from '../common/IconButton';
 
 const truckStatuses = ['Will be available', 'Available', 'Not Available'];
 
@@ -28,6 +30,8 @@ const Profile = ({
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [willBeDialogVisible, setWillBeDialogVisible] =
     React.useState<boolean>(false);
+  const [lastLocationDialogVisible, setLastLocationDialogVisible] =
+    React.useState<boolean>(false);
 
   const [statusOpen, setStatusOpen] = React.useState<boolean>(false);
   const [statusValue, setStatusValue] = React.useState<string>('');
@@ -35,14 +39,16 @@ const Profile = ({
     { label: string; value: string }[]
   >(truckStatuses.map((status) => ({ label: status, value: status })));
   const [locationName, setLocationName] = React.useState<string>('');
+  const [willBeLocationName, setWillBeLocationName] =
+    React.useState<string>('');
 
   const authFetch = useFetch();
 
   React.useEffect(() => {
-    if (truck && truck.availabilityLocation) {
+    if (expanded && truck && truck.lastLocation) {
       Location.reverseGeocodeAsync({
-        latitude: truck.availabilityLocation[0],
-        longitude: truck.availabilityLocation[1],
+        latitude: truck.lastLocation[0],
+        longitude: truck.lastLocation[1],
       }).then(
         (geocodeRes) => setLocationName(toFormattedLocation(geocodeRes[0])),
         () => setLocationName(''),
@@ -50,7 +56,22 @@ const Profile = ({
     } else {
       setLocationName('');
     }
-  }, [truck]);
+  }, [truck, expanded]);
+
+  React.useEffect(() => {
+    if (expanded && truck && truck.availabilityLocation) {
+      Location.reverseGeocodeAsync({
+        latitude: truck.availabilityLocation[0],
+        longitude: truck.availabilityLocation[1],
+      }).then(
+        (geocodeRes) =>
+          setWillBeLocationName(toFormattedLocation(geocodeRes[0])),
+        () => setWillBeLocationName(''),
+      );
+    } else {
+      setWillBeLocationName('');
+    }
+  }, [truck, expanded]);
 
   React.useEffect(() => {
     const statusFromProfile = truck ? truck.status : '';
@@ -114,7 +135,7 @@ const Profile = ({
     });
   };
 
-  const handleStateChange = (
+  const handleWillBeAvailableSet = (
     value: string,
     availabilityLocation?: [number, number],
     availabilityAtLocal?: Date,
@@ -126,13 +147,41 @@ const Profile = ({
     setWillBeDialogVisible(false);
     onChanged(Date.now());
   };
+  const handleLastLocationSet = (lastLocation: [number, number]) => {
+    setIsLoading(true);
+    const data: {
+      lastLocation: [number, number];
+    } = {
+      lastLocation,
+    };
+    authFetch(new URL(`${TRUCK_PATH}/${truck.id}`, BACKEND_ORIGIN), {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }).finally(() => {
+      setIsLoading(false);
+      setTimeout(() => onChanged(Date.now()), 1);
+    });
+    setLastLocationDialogVisible(false);
+  };
+  const handleLastLocationDialogShow = () => {
+    setLastLocationDialogVisible(true);
+  };
+  const handleLastLocationDialogClose = () => {
+    setLastLocationDialogVisible(false);
+    onChanged(Date.now());
+  };
 
   return (
     <>
       <WillBeAvailableDialog
         visible={willBeDialogVisible}
-        onStateChange={handleStateChange}
+        onStateChange={handleWillBeAvailableSet}
         close={handleWillBeDialogClose}
+      />
+      <LastLocationDialog
+        visible={lastLocationDialogVisible}
+        onStateChange={handleLastLocationSet}
+        close={handleLastLocationDialogClose}
       />
       <UserDataItem
         iconName="account"
@@ -165,6 +214,21 @@ const Profile = ({
         value={`${truck ? truck.truckNumber : ''}`}
         fieldName="Truck #"
       />
+      <View style={styles.setLocationContainer}>
+        <IconButton
+          iconName="map-marker-plus-outline"
+          onClick={handleLastLocationDialogShow}
+        />
+      </View>
+      {expanded && truck && (
+        <>
+          <UserDataItem
+            iconName="map-marker"
+            value={locationName}
+            fieldName="Current location"
+          />
+        </>
+      )}
       {!expanded ? null : (
         <UserDataItem
           iconName="message-cog"
@@ -226,8 +290,8 @@ const Profile = ({
       {expanded && truck && truck.status === 'Will be available' && (
         <>
           <UserDataItem
-            iconName="map-marker"
-            value={locationName}
+            iconName="map-marker-path"
+            value={willBeLocationName}
             fieldName="Will be location"
           />
           <UserDataItem
@@ -274,6 +338,11 @@ const styles = StyleSheet.create({
   },
   dropdownDisabled: {
     opacity: 0.5,
+  },
+  setLocationContainer: {
+    position: 'relative',
+    top: -32,
+    marginBottom: -25,
   },
   iconWrapper: {
     alignItems: 'center',

@@ -13,8 +13,8 @@ import { Stack } from 'expo-router';
 import '../utils/abortSignal';
 import { COLORS } from '../constants';
 import { UserDataProvider } from '../providers/userData';
-import HeaderLogo from '../components/common/headerLogo';
-import HeaderButton from '../components/common/headerButton';
+import HeaderLogo from '../components/app/headerLogo';
+import HeaderButton from '../components/app/headerButton';
 import { useNotifications } from '../hooks/notifications';
 import { useLinking } from '../hooks/linking';
 

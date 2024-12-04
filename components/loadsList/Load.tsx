@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import Stops from './Stops';
-import UserDataItem from '../profile/UserDataItem';
+import UserDataItem from '../common/UserDataItem';
 
 const Load = ({
   load,

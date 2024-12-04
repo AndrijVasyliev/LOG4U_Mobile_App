@@ -11,7 +11,7 @@ import * as Clipboard from 'expo-clipboard';
 import { useToast } from 'react-native-toast-notifications';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { BACKEND_ORIGIN, COLORS, LOAD_PATH } from '../../constants';
-import UserDataItem from '../profile/UserDataItem';
+import UserDataItem from '../common/UserDataItem';
 import { fromTimeFrame } from '../../utils/fromTimeFrame';
 import { toFormattedLocation } from '../../utils/toFormattedLocation';
 import { getStatusText } from '../../utils/getStopStatus';

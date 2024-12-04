@@ -3,8 +3,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import dayjs from 'dayjs';
 import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 import { SingleChange } from 'react-native-ui-datepicker/src/types';
-import Modal from '../common/Modal';
-import ModalButton from '../common/modalButton';
+import Modal from './Modal';
+import ModalButton from './modalButton';
 import { COLORS } from '../../constants';
 import { toCorrected } from '../../utils/dateTimeConverters';
 

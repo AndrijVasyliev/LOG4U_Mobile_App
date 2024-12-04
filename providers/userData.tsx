@@ -1,8 +1,13 @@
 import * as React from 'react';
 import { useRouter, useGlobalSearchParams } from 'expo-router';
-import { ROUTE_SET_DELAY } from '../constants';
+import {
+  ROUTE_SET_DELAY,
+  STORAGE_USER_LOGIN,
+  STORAGE_USER_PASSWORD,
+} from '../constants';
 import { AppCredentials, UserData, UserDataContext } from '../hooks/userData';
 import { logout } from '../utils/logout';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const UserDataProvider = function UserDataProvider({
   children,
@@ -20,6 +25,17 @@ export const UserDataProvider = function UserDataProvider({
     routeToFromPush?: string;
   }>();
   const router = useRouter();
+
+  React.useEffect(() => {
+    if (userData && appCredentials) {
+      Promise.all([
+        AsyncStorage.setItem(STORAGE_USER_LOGIN, appCredentials.appLogin),
+        AsyncStorage.setItem(STORAGE_USER_PASSWORD, appCredentials.appPassword),
+      ]).finally(() => {
+        console.log('App credentials stored');
+      });
+    }
+  }, [userData, appCredentials]);
 
   React.useEffect(() => {
     if (timerId) {

@@ -9,7 +9,7 @@ import TextInputControl from '../common/TextInputControl';
 import SelectInputControl from '../common/SelectInputControl';
 import IconButton from '../common/IconButton';
 import Spacer from '../common/Spacer';
-import FileList from '../profile/fileList';
+import FileList from '../file/fileList';
 import { useFetch } from '../../hooks/useFetch';
 
 const initialValues = {
