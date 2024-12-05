@@ -58,7 +58,9 @@ const StopDelivery = ({
           >{`Delivery #${deliveryNumber}`}</Text>
         </View>
         <UserDataItem
+          iconName="map-clock"
           value={`${stop?.timeFrame ? fromTimeFrame(stop.timeFrame) : ''}`}
+          isDense
           fieldName="Time frame"
         />
         <TouchableOpacity
@@ -72,11 +74,15 @@ const StopDelivery = ({
           }
         >
           <UserDataItem
+            iconName="home-floor-1"
             value={`${stop?.facility?.address ? stop.facility.address : ''}`}
+            isDense
             fieldName="Address Line 1"
           />
           <UserDataItem
+            iconName="home-floor-2"
             value={`${stop?.facility?.address2 ? stop.facility.address2 : ''}`}
+            isDense
             fieldName="Address Line 2"
           />
         </TouchableOpacity>

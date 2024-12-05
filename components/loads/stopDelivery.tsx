@@ -164,32 +164,38 @@ const StopDelivery = ({
           }
         >
           <UserDataItem
+            iconName="home-circle"
             value={`${stop?.facility?.name ? stop.facility.name : ''}`}
             isDense
             fieldName="Facility name"
           />
           <UserDataItem
+            iconName="home-floor-1"
             value={`${stop?.facility?.address ? stop.facility.address : ''}`}
             isDense
             fieldName="Address Line 1"
           />
           <UserDataItem
+            iconName="home-floor-2"
             value={`${stop?.facility?.address2 ? stop.facility.address2 : ''}`}
             isDense
             fieldName="Address Line 2"
           />
           <UserDataItem
+            iconName="home-map-marker"
             value={`${locationName ? locationName : ''}`}
             isDense
             fieldName="Location"
           />
         </TouchableOpacity>
         <UserDataItem
+          iconName="map-clock"
           value={`${stop?.timeFrame ? fromTimeFrame(stop.timeFrame) : ''}`}
           isDense
           fieldName="Time frame"
         />
         <UserDataItem
+          iconName="information"
           value={`${stop?.addInfo ? stop?.addInfo : ''}`}
           fieldName="Additional info"
         />
