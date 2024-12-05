@@ -18,8 +18,8 @@ const SelectInputControl = ({
 }) => {
   const [selectOpen, setSelectOpen] = React.useState<boolean>(false);
   const [selectValue, setSelectValue] = React.useState<string>('');
-  const [locationSearchValue, setSelectSearchValue] =
-    React.useState<string>('');
+  // const [locationSearchValue, setSelectSearchValue] =
+  //  React.useState<string>('');
   const [selectItems, setSelectItems] = React.useState<ItemType<string>[]>([]);
 
   React.useEffect(() => {
@@ -39,12 +39,9 @@ const SelectInputControl = ({
   return (
     <View style={styles.container}>
       <DropDownPicker<string>
-        /*zIndex={10}
-        zIndexInverse={10}*/
         disableBorderRadius={false}
         modalAnimationType="slide"
-        // dropDownDirection="TOP"
-        dropDownDirection="BOTTOM"
+        dropDownDirection="TOP"
         placeholder={placeholder}
         translation={{
           SEARCH_PLACEHOLDER: 'Start to enter',
@@ -52,7 +49,7 @@ const SelectInputControl = ({
         }}
         searchPlaceholderTextColor={COLORS.gray2}
         disableLocalSearch={true}
-        onChangeSearchText={setSelectSearchValue}
+        // onChangeSearchText={setSelectSearchValue}
         style={styles.dropdown}
         textStyle={styles.text}
         containerStyle={styles.dropdownControlContainer}
@@ -118,9 +115,9 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   dropdownContainer: {
-    maxHeight: 95,
     backgroundColor: COLORS.lightWhite,
     borderColor: COLORS.gray,
+    maxHeight: 95,
   },
   dropdownControlContainer: {
     width: '100%',

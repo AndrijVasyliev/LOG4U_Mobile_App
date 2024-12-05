@@ -97,6 +97,12 @@ const LastLocationDialog = ({
               <Spacer />
               <LocationInput onSet={handleSetLocation} />
               <Spacer />
+              <Spacer />
+              <Text style={styles.text}>
+                {'Set current truck location manually'}
+              </Text>
+              <Spacer />
+              <Spacer />
             </View>
           </>
         }
@@ -124,6 +130,11 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     height: 'auto',
     width: '100%',
+  },
+  text: {
+    fontSize: 15,
+    textAlign: 'center',
+    minWidth: '70%',
   },
 });
 

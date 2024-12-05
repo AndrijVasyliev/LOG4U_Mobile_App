@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   },
   dialogContentsScroll: {
     flexDirection: 'column',
-    height: '100%',
+    height: 'auto',
     width: '100%',
   },
   dialogContents: {
