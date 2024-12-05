@@ -40,6 +40,13 @@ const Load = ({
         value={`${load?.weight ? load?.weight : ''}`}
         fieldName="Weight"
       />
+      {!expanded ? null : (
+        <UserDataItem
+          iconName="marker-check"
+          value={`${load?.checkInAs ? load.checkInAs : ''}`}
+          fieldName="Check In As"
+        />
+      )}
       {expanded ? null : (
         <UserDataItem
           iconName="source-commit-start"

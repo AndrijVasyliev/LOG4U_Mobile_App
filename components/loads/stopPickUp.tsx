@@ -151,47 +151,45 @@ const StopPickUp = ({
           )}
           <Text style={styles.stopAddText}>{`PickUp #${pickUpNumber}`}</Text>
         </View>
-        <UserDataItem
-          value={`${stop?.facility?.name ? stop.facility.name : ''}`}
-          fieldName="Facility name"
-        />
         <TouchableOpacity
           ref={addressRef}
           onPress={() =>
-            stop?.facility?.address &&
+            stop?.facility?.name &&
             copyToClipboard(
-              `${stop.facility.address + (stop?.facility?.address2 ? ', ' + stop.facility.address2 : '')}`,
-              'Facility address copied to clipboard',
+              `${stop?.facility?.name ? stop?.facility?.name + '\n' : ''}${(stop.facility.address ? stop.facility.address + '\n' : '') + (stop?.facility?.address2 ? stop.facility.address2 + '\n' : '')}${locationName ? locationName : ''}`,
+              'Facility data copied to clipboard',
             )
           }
         >
           <UserDataItem
+            value={`${stop?.facility?.name ? stop.facility.name : ''}`}
+            isDense
+            fieldName="Facility name"
+          />
+          <UserDataItem
             value={`${stop?.facility?.address ? stop.facility.address : ''}`}
+            isDense
             fieldName="Address Line 1"
           />
           <UserDataItem
             value={`${stop?.facility?.address2 ? stop.facility.address2 : ''}`}
+            isDense
             fieldName="Address Line 2"
           />
-        </TouchableOpacity>
-        <TouchableOpacity
-          ref={locationRef}
-          onPress={() =>
-            locationName &&
-            copyToClipboard(
-              `${locationName}`,
-              'Facility location copied to clipboard',
-            )
-          }
-        >
           <UserDataItem
             value={`${locationName ? locationName : ''}`}
+            isDense
             fieldName="Location"
           />
         </TouchableOpacity>
         <UserDataItem
           value={`${stop?.timeFrame ? fromTimeFrame(stop.timeFrame) : ''}`}
+          isDense
           fieldName="Time frame"
+        />
+        <UserDataItem
+          value={`${stop?.addInfo ? stop?.addInfo : ''}`}
+          fieldName="Additional info"
         />
       </View>
       <Spinner visible={isLoading} textContent={'Accepting load...'} />

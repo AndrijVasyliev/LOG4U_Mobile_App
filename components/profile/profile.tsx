@@ -44,29 +44,32 @@ const Profile = ({
 
   const authFetch = useFetch();
 
-  const geocodeLastLocation = React.useCallback((() => {
-    let isRunning = false;
-    return () => {
-      if (isRunning) {
-        return;
-      } else {
-        isRunning = true;
-      }
-      Location.reverseGeocodeAsync({
-        latitude: truck.lastLocation[0],
-        longitude: truck.lastLocation[1],
-      }).then(
-        (geocodeRes) => {
-          isRunning = false;
-          setLocationName(toFormattedLocation(geocodeRes[0]));
-        },
-        () => {
-          isRunning = false;
-          setLocationName('');
-        },
-      );
-    };
-  })(), [truck]);
+  const geocodeLastLocation = React.useCallback(
+    (() => {
+      let isRunning = false;
+      return () => {
+        if (isRunning) {
+          return;
+        } else {
+          isRunning = true;
+        }
+        Location.reverseGeocodeAsync({
+          latitude: truck.lastLocation[0],
+          longitude: truck.lastLocation[1],
+        }).then(
+          (geocodeRes) => {
+            isRunning = false;
+            setLocationName(toFormattedLocation(geocodeRes[0]));
+          },
+          () => {
+            isRunning = false;
+            setLocationName('');
+          },
+        );
+      };
+    })(),
+    [truck],
+  );
 
   React.useEffect(() => {
     if (expanded && truck && truck.lastLocation) {
@@ -82,29 +85,32 @@ const Profile = ({
     }
   }, [expanded]);
 
-  const geocodeAvailabilityLocation = React.useCallback((() => {
-    let isRunning = false;
-    return () => {
-      if (isRunning) {
-        return;
-      } else {
-        isRunning = true;
-      }
-      Location.reverseGeocodeAsync({
-        latitude: truck.availabilityLocation[0],
-        longitude: truck.availabilityLocation[1],
-      }).then(
-        (geocodeRes) => {
-          isRunning = false;
-          setWillBeLocationName(toFormattedLocation(geocodeRes[0]));
-        },
-        () => {
-          isRunning = false;
-          setWillBeLocationName('');
-        },
-      );
-    };
-  })(), [truck]);
+  const geocodeAvailabilityLocation = React.useCallback(
+    (() => {
+      let isRunning = false;
+      return () => {
+        if (isRunning) {
+          return;
+        } else {
+          isRunning = true;
+        }
+        Location.reverseGeocodeAsync({
+          latitude: truck.availabilityLocation[0],
+          longitude: truck.availabilityLocation[1],
+        }).then(
+          (geocodeRes) => {
+            isRunning = false;
+            setWillBeLocationName(toFormattedLocation(geocodeRes[0]));
+          },
+          () => {
+            isRunning = false;
+            setWillBeLocationName('');
+          },
+        );
+      };
+    })(),
+    [truck],
+  );
 
   React.useEffect(() => {
     if (expanded && truck && truck.availabilityLocation) {
@@ -115,7 +121,12 @@ const Profile = ({
   }, [truck]);
 
   React.useEffect(() => {
-    if (expanded && !willBeLocationName && truck && truck.availabilityLocation) {
+    if (
+      expanded &&
+      !willBeLocationName &&
+      truck &&
+      truck.availabilityLocation
+    ) {
       geocodeAvailabilityLocation();
     }
   }, [expanded]);
