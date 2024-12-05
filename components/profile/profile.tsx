@@ -44,34 +44,81 @@ const Profile = ({
 
   const authFetch = useFetch();
 
-  React.useEffect(() => {
-    if (expanded && truck && truck.lastLocation) {
+  const geocodeLastLocation = React.useCallback((() => {
+    let isRunning = false;
+    return () => {
+      if (isRunning) {
+        return;
+      } else {
+        isRunning = true;
+      }
       Location.reverseGeocodeAsync({
         latitude: truck.lastLocation[0],
         longitude: truck.lastLocation[1],
       }).then(
-        (geocodeRes) => setLocationName(toFormattedLocation(geocodeRes[0])),
-        () => setLocationName(''),
+        (geocodeRes) => {
+          isRunning = false;
+          setLocationName(toFormattedLocation(geocodeRes[0]));
+        },
+        () => {
+          isRunning = false;
+          setLocationName('');
+        },
       );
+    };
+  })(), [truck]);
+
+  React.useEffect(() => {
+    if (expanded && truck && truck.lastLocation) {
+      geocodeLastLocation();
     } else {
       setLocationName('');
     }
-  }, [truck, expanded]);
+  }, [truck]);
 
   React.useEffect(() => {
-    if (expanded && truck && truck.availabilityLocation) {
+    if (expanded && !locationName && truck && truck.lastLocation) {
+      geocodeLastLocation();
+    }
+  }, [expanded]);
+
+  const geocodeAvailabilityLocation = React.useCallback((() => {
+    let isRunning = false;
+    return () => {
+      if (isRunning) {
+        return;
+      } else {
+        isRunning = true;
+      }
       Location.reverseGeocodeAsync({
         latitude: truck.availabilityLocation[0],
         longitude: truck.availabilityLocation[1],
       }).then(
-        (geocodeRes) =>
-          setWillBeLocationName(toFormattedLocation(geocodeRes[0])),
-        () => setWillBeLocationName(''),
+        (geocodeRes) => {
+          isRunning = false;
+          setWillBeLocationName(toFormattedLocation(geocodeRes[0]));
+        },
+        () => {
+          isRunning = false;
+          setWillBeLocationName('');
+        },
       );
+    };
+  })(), [truck]);
+
+  React.useEffect(() => {
+    if (expanded && truck && truck.availabilityLocation) {
+      geocodeAvailabilityLocation();
     } else {
-      setWillBeLocationName('');
+      setLocationName('');
     }
-  }, [truck, expanded]);
+  }, [truck]);
+
+  React.useEffect(() => {
+    if (expanded && !willBeLocationName && truck && truck.availabilityLocation) {
+      geocodeAvailabilityLocation();
+    }
+  }, [expanded]);
 
   React.useEffect(() => {
     const statusFromProfile = truck ? truck.status : '';
@@ -214,12 +261,14 @@ const Profile = ({
         value={`${truck ? truck.truckNumber : ''}`}
         fieldName="Truck #"
       />
-      <View style={styles.setLocationContainer}>
-        <IconButton
-          iconName="map-marker-plus-outline"
-          onClick={handleLastLocationDialogShow}
-        />
-      </View>
+      {expanded && (
+        <View style={styles.setLocationContainer}>
+          <IconButton
+            iconName="map-marker-plus-outline"
+            onClick={handleLastLocationDialogShow}
+          />
+        </View>
+      )}
       {expanded && truck && (
         <>
           <UserDataItem
