@@ -7,6 +7,7 @@ import {
 } from 'react-native-safe-area-context';
 import { ToastProvider } from 'react-native-toast-notifications';
 import * as SplashScreen from 'expo-splash-screen';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Font from 'expo-font';
 import { Stack } from 'expo-router';
 
@@ -45,9 +46,16 @@ const RootLayout = () => {
 
   React.useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync().finally(() => console.log('Splash screen is hidden'));
     }
   }, [loaded]);
+
+  React.useEffect(() => {
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).finally(() => console.log('Orientation locked'));
+    return () => {
+      ScreenOrientation.unlockAsync().finally(() => console.log('Orientation unlocked'));
+    };
+  }, []);
 
   if (!loaded) {
     return null;
