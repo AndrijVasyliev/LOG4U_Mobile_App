@@ -68,12 +68,17 @@ const Loads = () => {
   }, [renew]);
 
   React.useEffect(() => {
-    if (!changedAt) {
+    if (!changedAt || !userData?.type) {
       return;
     }
-    setIsLoading(true);
+    setIsLoading((prev) => {
+      if (!prev) {
+        return true;
+      }
+      return prev;
+    });
     let path = '';
-    switch (userData?.type) {
+    switch (userData.type) {
       case 'Coordinator':
       case 'CoordinatorDriver':
         path = LOAD_COORDINATOR_LIST_PATH;
@@ -105,7 +110,7 @@ const Loads = () => {
         setLoadError('Network problem: slow or unstable connection');
         setIsLoading(false);
       });
-  }, [changedAt]);
+  }, [userData?.type, changedAt]);
 
   React.useEffect(() => {
     if (!selectedLoadId) {

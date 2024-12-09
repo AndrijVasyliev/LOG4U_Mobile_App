@@ -8,15 +8,11 @@ import { getDeviceId } from '../utils/deviceId';
 export const useFetch = function useFetch() {
   const ctx = React.useContext(UserDataContext);
 
-  console.log('HER', ctx);
-
   return async (
     input: RequestInfo | URL,
     init?: RequestInit,
   ): Promise<Response> => {
     const deviceId = await getDeviceId();
-
-    console.log('BLJAD', ctx);
 
     const {
       userData: { appLogin: login, appPassword: password },

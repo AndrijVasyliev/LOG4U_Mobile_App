@@ -115,6 +115,7 @@ export const UserDataProvider = function UserDataProvider({
 
   const handleLogout = () => {
     logout().then(() => {
+      console.log('Setting user data to null');
       setUserData(null);
       setAppCredentials(null);
     });

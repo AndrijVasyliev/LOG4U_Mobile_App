@@ -33,7 +33,7 @@ const Profile = () => {
   );
 
   React.useEffect(() => {
-    if (!changedAt) {
+    if (!changedAt || !userData?.type) {
       return;
     }
     setIsLoading((prev) => {
@@ -68,7 +68,7 @@ const Profile = () => {
         setProfileError('Network problem: slow or unstable connection');
         setIsLoading(false);
       });
-  }, [changedAt]);
+  }, [userData?.type, changedAt]);
 
   return (
     <ImageBackground

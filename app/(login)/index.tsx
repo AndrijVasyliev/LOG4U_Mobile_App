@@ -35,7 +35,6 @@ import { UserData, useUserData } from '../../hooks/userData';
 import { useFetch } from '../../hooks/useFetch';
 import { AdditionalLocationOptions, startLocation } from '../../utils/location';
 import { getDeviceId } from '../../utils/deviceId';
-import { NotAuthorizedError } from '../../utils/notAuthorizedError';
 import { registerForPushNotificationsAsync } from '../../utils/notifications';
 import { getAppPermissions } from '../../utils/getAppPermissions';
 import { getDeviceStatus } from '../../utils/getDeviceStatus';
@@ -63,13 +62,11 @@ const Login = () => {
   const [prominentDisclosureVisible, setProminentDisclosureVisible] =
     React.useState<boolean>(false);
   const [pdStatus, setPDStatus] = React.useState<string>('');
-  const [login, setLogin] = React.useState<string>('');
-  const [password, setPassword] = React.useState<string>('');
   const [loginError, setLoginError] = React.useState<string>('');
   const [isAutentificating, setIsAutentificating] =
     React.useState<boolean>(false);
 
-  const { setUserData, setAppCredentials } = useUserData();
+  const { userData, setUserData, setAppCredentials } = useUserData();
   const authFetch = useFetch();
 
   useFocusEffect(
@@ -100,16 +97,12 @@ const Login = () => {
         } else {
           setPDStatus(pdstatus);
         }
-        setLogin(login);
-        setPassword(password);
+        setAppCredentials({ appLogin: login, appPassword: password });
         if (login && password && pdstatus) {
-          // setAppCredentials({ appLogin: login, appPassword: password });
           console.log('LLLLL', { appLogin: login, appPassword: password });
           setTimeout(() => {
-            setAppCredentials({ appLogin: login, appPassword: password });
             setTimeout(() => makeLogin(), 1000);
           }, 1000);
-          // setTimeout(() => makeLogin(), 100);
         }
       })
       .catch(() => {
@@ -119,11 +112,11 @@ const Login = () => {
 
   const handleLoginChange = (text: string) => {
     setLoginError((prev) => (prev ? '' : prev));
-    setLogin(text);
+    setAppCredentials({ appLogin: text, appPassword: userData.appPassword });
   };
   const handlePasswordChange = (text) => {
     setLoginError((prev) => (prev ? '' : prev));
-    setPassword(text);
+    setAppCredentials({ appLogin: userData.appLogin, appPassword: text });
   };
 
   const makeLogin = (
@@ -262,14 +255,13 @@ const Login = () => {
   };
 
   const handleLogin = () => {
-    if (!login || !password) {
+    if (!userData.appLogin || !userData.appPassword) {
       return setLoginError(
-        `${!login ? 'Login' : ''}${!login && !password ? ' and ' : ''}${
-          !password ? 'Password' : ''
+        `${!userData.appLogin ? 'Login' : ''}${!userData.appLogin && !userData.appPassword ? ' and ' : ''}${
+          !userData.appPassword ? 'Password' : ''
         } must not be empty!`,
       );
     }
-    setAppCredentials({ appLogin: login, appPassword: password });
     setTimeout(() => makeLogin(), 1);
   };
 
@@ -317,8 +309,11 @@ const Login = () => {
         <View style={styles.controlsWrapper}>
           <Text style={styles.headerText}>Login</Text>
           <Text>Enter your credentials to login</Text>
-          <LoginInput value={login} onChange={handleLoginChange} />
-          <PasswordInput value={password} onChange={handlePasswordChange} />
+          <LoginInput value={userData.appLogin} onChange={handleLoginChange} />
+          <PasswordInput
+            value={userData.appPassword}
+            onChange={handlePasswordChange}
+          />
           <LoginErrorText errorText={loginError} />
           <LoginButton onClick={handleLogin} />
         </View>

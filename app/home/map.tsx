@@ -51,13 +51,18 @@ const Map = () => {
   );
 
   React.useEffect(() => {
-    if (!changedAt) {
+    if (!changedAt || !userData?.type) {
       return;
     }
     const updateId = changedAt;
-    setIsLoading(true);
+    setIsLoading((prev) => {
+      if (!prev) {
+        return true;
+      }
+      return prev;
+    });
     let path = '';
-    switch (userData?.type) {
+    switch (userData.type) {
       case 'Coordinator':
       case 'CoordinatorDriver':
         path = COORDINATOR_PATH;
@@ -73,7 +78,7 @@ const Map = () => {
           try {
             const person = await response.json();
             let trucks = [];
-            switch (userData?.type) {
+            switch (userData.type) {
               case 'Coordinator':
               case 'CoordinatorDriver':
                 trucks = person?.coordinateTrucks
@@ -121,7 +126,7 @@ const Map = () => {
         setMapError('Network problem: slow or unstable connection');
         setIsLoading(false);
       });
-  }, [userData, changedAt]);
+  }, [userData?.type, changedAt]);
 
   React.useEffect(() => {
     if (mapRef.current && trucks) {

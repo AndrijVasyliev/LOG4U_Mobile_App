@@ -62,10 +62,15 @@ const Loads = () => {
   }, [renew]);
 
   React.useEffect(() => {
-    if (!changedAt) {
+    if (!changedAt || !userData?.type) {
       return;
     }
-    setIsLoading(true);
+    setIsLoading((prev) => {
+      if (!prev) {
+        return true;
+      }
+      return prev;
+    });
     authFetch(new URL(LOAD_PATH, BACKEND_ORIGIN), { method: 'GET' })
       .then(async (response) => {
         if (response && response.status === 200) {
@@ -88,7 +93,7 @@ const Loads = () => {
         setLoadError('Network problem: slow or unstable connection');
         setIsLoading(false);
       });
-  }, [changedAt]);
+  }, [userData?.type, changedAt]);
 
   React.useEffect(() => {
     if (!selectedLoadId) {

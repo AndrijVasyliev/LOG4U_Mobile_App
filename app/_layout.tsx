@@ -46,14 +46,20 @@ const RootLayout = () => {
 
   React.useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync().finally(() => console.log('Splash screen is hidden'));
+      SplashScreen.hideAsync().finally(() =>
+        console.log('Splash screen is hidden'),
+      );
     }
   }, [loaded]);
 
   React.useEffect(() => {
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).finally(() => console.log('Orientation locked'));
+    ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.PORTRAIT_UP,
+    ).finally(() => console.log('Orientation locked'));
     return () => {
-      ScreenOrientation.unlockAsync().finally(() => console.log('Orientation unlocked'));
+      ScreenOrientation.unlockAsync().finally(() =>
+        console.log('Orientation unlocked'),
+      );
     };
   }, []);
 
