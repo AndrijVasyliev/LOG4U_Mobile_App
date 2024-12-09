@@ -12,9 +12,7 @@ import * as Font from 'expo-font';
 import { Stack } from 'expo-router';
 
 import '../utils/abortSignal';
-import {
-  COLORS,
-} from '../constants';
+import { COLORS } from '../constants';
 import { UserDataProvider } from '../providers/userData';
 import HeaderLogo from '../components/app/headerLogo';
 import HeaderButton from '../components/app/headerButton';

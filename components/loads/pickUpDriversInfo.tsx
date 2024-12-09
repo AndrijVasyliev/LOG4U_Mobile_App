@@ -16,9 +16,9 @@ const initialValues = {
   pieces: 1,
   unitOfWeight: 'LBS',
   weight: '',
-  bol: '',
+  bol: null,
   seal: '',
-  addressIsCorrect: '',
+  addressIsCorrect: null,
 };
 
 const PickUpDriversInfo = ({
@@ -52,12 +52,17 @@ const PickUpDriversInfo = ({
   React.useEffect(() => {
     if (!pickUpDriversItems) {
       setCanSave(false);
+      console.log('Set False');
       return;
     }
     let hasEmptyValues = false;
     pickUpDriversItems.forEach((item) => {
       const isAllFieldsFilled = Object.keys(initialValues).reduce(
-        (acc, key) => acc && !!item[key],
+        (acc, key) =>
+          acc &&
+          item[key] !== '' &&
+          item[key] !== null &&
+          item[key] !== undefined,
         true,
       );
       if (!isAllFieldsFilled) {
@@ -65,6 +70,7 @@ const PickUpDriversInfo = ({
       }
     });
     setCanSave(!hasEmptyValues && !!stops[index].stopId);
+    console.log('Set', hasEmptyValues, stops[index].stopId);
   }, [pickUpDriversItems]);
 
   React.useEffect(() => {

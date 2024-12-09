@@ -12,7 +12,7 @@ import Spacer from '../common/Spacer';
 import FileList from '../file/fileList';
 import { useFetch } from '../../hooks/useFetch';
 
-const initialValues = { bol: '', signedBy: '' };
+const initialValues = { bol: null, signedBy: '' };
 
 const DeliveryDriversInfo = ({
   loadId,
@@ -50,7 +50,11 @@ const DeliveryDriversInfo = ({
     let hasEmptyValues = false;
     deliveryDriversItems.forEach((item) => {
       const isAllFieldsFilled = Object.keys(initialValues).reduce(
-        (acc, key) => acc && !!item[key],
+        (acc, key) =>
+          acc &&
+          item[key] !== '' &&
+          item[key] !== null &&
+          item[key] !== undefined,
         true,
       );
       if (!isAllFieldsFilled) {

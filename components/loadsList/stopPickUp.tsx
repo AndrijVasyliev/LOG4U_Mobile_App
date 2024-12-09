@@ -12,6 +12,7 @@ import UserDataItem from '../common/UserDataItem';
 import { fromTimeFrame } from '../../utils/fromTimeFrame';
 import { getStatusText } from '../../utils/getStopStatus';
 import { COLORS } from '../../constants';
+import Freights from '../freight/Freights';
 
 const StopPickUp = ({
   index,
@@ -84,6 +85,7 @@ const StopPickUp = ({
             fieldName="Address Line 2"
           />
         </TouchableOpacity>
+        <Freights freights={stop.freightList} />
       </View>
     </>
   );
