@@ -83,6 +83,9 @@ const Login = () => {
     if (!changedAt) {
       return;
     }
+    if (userData.appLogin || userData.appPassword) {
+      return;
+    }
     Promise.all([
       AsyncStorage.getItem(STORAGE_USER_LOGIN),
       AsyncStorage.getItem(STORAGE_USER_PASSWORD),
@@ -99,15 +102,19 @@ const Login = () => {
         }
         setAppCredentials({ appLogin: login, appPassword: password });
         if (login && password && pdstatus) {
-          console.log('LLLLL', { appLogin: login, appPassword: password });
-          setTimeout(() => {
-            setTimeout(() => makeLogin(), 1000);
-          }, 1000);
+          setAppCredentials({ appLogin: login, appPassword: password });
+          setChangedAt(Date.now());
         }
       })
       .catch(() => {
         return;
       });
+  }, [changedAt]);
+
+  React.useEffect(() => {
+    if (userData.appLogin && userData.appPassword) {
+      makeLogin();
+    }
   }, [changedAt]);
 
   const handleLoginChange = (text: string) => {
@@ -262,7 +269,7 @@ const Login = () => {
         } must not be empty!`,
       );
     }
-    setTimeout(() => makeLogin(), 1);
+    makeLogin();
   };
 
   const handlePDGrant = () => {

@@ -83,7 +83,7 @@ const ConfirmationLoadAlert = ({
       },
     ).finally(() => {
       setAcceptLoading(false);
-      setTimeout(() => onChanged(Date.now()), 1);
+      onChanged(Date.now());
     });
   };
 

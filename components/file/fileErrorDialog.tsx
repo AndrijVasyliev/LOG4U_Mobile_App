@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
-import { COLORS, MODAL_VIEW_DELAY } from '../../constants';
 import Modal from '../common/Modal';
 import ModalButton from '../common/modalButton';
 import Spacer from '../common/Spacer';
@@ -12,21 +11,6 @@ const FileErrorDialog = ({
   errorCode: number;
   OnClose: () => void;
 }) => {
-  const [isModalVisible, setIsModalVisible] =
-    React.useState<boolean>(!!errorCode);
-
-  React.useEffect(() => {
-    if (!!errorCode) {
-      const timeoutId = setTimeout(
-        () => setIsModalVisible(!!errorCode),
-        MODAL_VIEW_DELAY,
-      );
-      return () => clearTimeout(timeoutId);
-    } else {
-      setIsModalVisible(!!errorCode);
-    }
-  }, [errorCode]);
-
   const handleCloseDialog = () => {
     OnClose();
   };

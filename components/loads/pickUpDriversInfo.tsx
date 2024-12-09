@@ -141,7 +141,7 @@ const PickUpDriversInfo = ({
       },
     ).finally(() => {
       setIsLoading(false);
-      setTimeout(() => onChanged(Date.now()), 1);
+      onChanged(Date.now());
     });
   };
   const handleClose = () => {

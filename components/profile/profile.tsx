@@ -189,7 +189,7 @@ const Profile = ({
       body: JSON.stringify(data),
     }).finally(() => {
       setIsLoading(false);
-      setTimeout(() => onChanged(Date.now()), 1);
+      onChanged(Date.now());
     });
   };
 
@@ -217,7 +217,7 @@ const Profile = ({
       body: JSON.stringify(data),
     }).finally(() => {
       setIsLoading(false);
-      setTimeout(() => onChanged(Date.now()), 1);
+      onChanged(Date.now());
     });
     setLastLocationDialogVisible(false);
   };
