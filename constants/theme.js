@@ -5,12 +5,20 @@ const COLORS = {
 
   gray: '#83829A',
   gray2: '#C1C0C8',
+  gray3: '#dad9dc',
 
   white: '#F3F4F8',
   lightWhite: '#FAFAFC',
 
   black: '#000000',
   red: '#ff0000',
+  green: '#00ff00',
+  blue: '#0000ff',
+  orange: '#ff8000',
+
+  link: '#0000ff',
+
+  locationNotification: '#b90101',
 
   toggleOn: 'green',
   toggleOff: 'red',
@@ -20,6 +28,8 @@ const COLORS = {
 
   backgroung: 'gainsboro',
   modalBackground: 'rgba(0,0,0,0.3)',
+
+  unset: 'unset',
 };
 
 const FONT = {

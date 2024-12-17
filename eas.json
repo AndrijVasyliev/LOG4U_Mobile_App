@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 5.6.0"
+    "version": ">= 5.6.0",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -10,17 +11,26 @@
       },
       "ios": {
         "buildConfiguration": "Debug"
-      }
+      },
+      "channel": "development"
     },
     "preview": {
       "distribution": "internal",
+      "channel": "preview",
       "android": {
         "buildType": "apk"
       }
     },
-    "production": {}
+    "production": {
+      "channel": "production",
+      "autoIncrement": true
+    }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./notional-gist-395315-77f92de29f2a.json"
+      }
+    }
   }
 }

@@ -1,119 +1,95 @@
 import * as React from 'react';
-import { Platform, TouchableOpacity, Text, View } from 'react-native';
-import * as Clipboard from 'expo-clipboard';
-import { useToast } from 'react-native-toast-notifications';
-import { COLORS } from '../../constants';
+import { Text, View, StyleSheet } from 'react-native';
+import Stops from './Stops';
+import ConfirmationLoadAlert from './confirmationLoadAlert';
+import UserDataItem from '../common/UserDataItem';
+import FileList from '../file/fileList';
 
-const Load = ({ load }: { load: Record<string, any> }) => {
-  const pickRef = React.useRef(null);
-  const deliverRef = React.useRef(null);
-  const toast = useToast();
-  const copyToClipboard = async (text: string, toastMsg: string) => {
-    if (Platform.OS === 'ios') {
-      toast.hideAll();
-      toast.show(toastMsg, { duration: 1500 });
-    }
-    await Clipboard.setStringAsync(text);
-  };
+const Load = ({
+  load,
+  expanded = false,
+  onChanged = () => {},
+}: {
+  load: Record<string, any>;
+  expanded?: boolean;
+  onChanged?: (number) => void;
+}) => {
   return (
-    <View
-      style={{
-        flexDirection: 'column',
-        width: '100%',
-        height: 110,
-        borderRadius: 10,
-        borderStyle: 'solid',
-        borderColor: COLORS.gray,
-        borderWidth: 1,
-        marginTop: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingLeft: 10,
-        paddingRight: 10,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+    <>
+      <ConfirmationLoadAlert
+        load={load}
+        expanded={expanded}
+        onChanged={onChanged}
+      />
+      <View style={styles.loadNumContainer}>
         <View>
           <Text
-            style={{
-              paddingLeft: 5,
-              fontWeight: 'bold',
-            }}
-          >{`Load # ${load?.loadNumber}`}</Text>
+            style={styles.loadMainText}
+          >{`Load # ${load?.loadNumber} [${load.status}]`}</Text>
         </View>
-        <Text>{`${
-          load?.milesByRoads ? load.milesByRoads.toFixed(2) : ''
+        <Text style={styles.loadMilesText}>{`${
+          load?.milesByRoads
+            ? load.milesByRoads.toFixed(2)
+            : load?.milesHaversine
+              ? 'Approx. ' + load.milesHaversine.toFixed(2)
+              : '?'
         } Miles`}</Text>
       </View>
-      <View
-        style={{
-          paddingTop: 10,
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <TouchableOpacity
-          ref={pickRef}
-          onPress={() =>
-            load?.pick?.formatted_address &&
-            copyToClipboard(
-              `${load.pick.formatted_address}`,
-              'Pick address copied to clipboard',
-            )
-          }
-        >
-          <Text
-            style={{
-              paddingLeft: 5,
-            }}
-            numberOfLines={2}
-          >{`First pickup: ${
-            load?.pick?.formatted_address ? load.pick.formatted_address : ''
-          }`}</Text>
-        </TouchableOpacity>
-      </View>
-      <View
-        style={{
-          paddingTop: 10,
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <TouchableOpacity
-          ref={deliverRef}
-          onPress={() =>
-            load?.deliver?.formatted_address &&
-            copyToClipboard(
-              `${load.deliver.formatted_address}`,
-              'Deliver address copied to clipboard',
-            )
-          }
-        >
-          <Text
-            style={{
-              paddingLeft: 5,
-            }}
-            numberOfLines={2}
-          >{`Last delivery: ${
-            load?.deliver?.formatted_address
-              ? load.deliver.formatted_address
-              : ''
-          }`}</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      <UserDataItem
+        iconName="weight"
+        value={`${load?.weight ? load?.weight : ''}`}
+        fieldName="Weight"
+      />
+      {!expanded ? null : (
+        <UserDataItem
+          iconName="marker-check"
+          value={`${load?.checkInAs ? load.checkInAs : ''}`}
+          fieldName="Check In As"
+        />
+      )}
+      {expanded ? null : (
+        <UserDataItem
+          iconName="source-commit-start"
+          value={`${load?.stops?.at(0)?.facility?.name ? load.stops.at(0).facility.name : ''}`}
+          fieldName="From"
+        />
+      )}
+      {expanded ? null : (
+        <UserDataItem
+          iconName="source-commit-end"
+          value={`${load?.stops?.at(-1)?.facility?.name ? load.stops.at(-1).facility.name : ''}`}
+          fieldName="To"
+        />
+      )}
+      {!expanded ? null : (
+        <Stops loadId={load.id} stops={load.stops} onChanged={onChanged} />
+      )}
+      {!expanded ? null : (
+        <FileList
+          objectId={load.id}
+          objectType="Load"
+          label="Bill Files"
+          tags={{ [`${load.id}`]: 'Bill' }}
+        />
+      )}
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  loadMainText: {
+    fontWeight: 'bold',
+    paddingLeft: 5,
+  },
+  loadMilesText: {
+    paddingRight: 5,
+  },
+  loadNumContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+});
 
 export default Load;

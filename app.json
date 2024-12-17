@@ -1,30 +1,59 @@
 {
   "expo": {
-    "name": "LOG4U",
+    "name": "4U TRACK",
     "slug": "LOG4U",
-    "version": "1.1.3",
+    "version": "1.2.23",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "newArchEnabled": true,
+    "jsEngine": "hermes",
     "orientation": "portrait",
-    "scheme": "acme",
+    "scheme": "log4u",
     "icon": "./assets/images/log4u_small_icon.png",
     "plugins": [
+      ["expo-router"],
       [
-        "react-native-background-geolocation", {
-          "license": "4347a8453602e2388691ac5c2a242193e8e6308045131e4dcc18a9aa59f2ca77"
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location. This data is used by 4U Logistics to provide most suitable orders for you. Geolocation data is not disclosed to third parties.",
+          "locationAlwaysPermission": "Allow $(PRODUCT_NAME) to use your location. This data is used by 4U Logistics to provide most suitable orders for you. Geolocation data is not disclosed to third parties.",
+          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location. This data is used by 4U Logistics to provide most suitable orders for you. Geolocation data is not disclosed to third parties.",
+          "isIosBackgroundLocationEnabled": true,
+          "isAndroidBackgroundLocationEnabled": true
         }
       ],
       [
-        "expo-gradle-ext-vars", {
-        "googlePlayServicesLocationVersion": "20.0.0",
-        "appCompatVersion": "1.4.2"
-      }
+        "expo-notifications",
+        {
+          "enableBackgroundRemoteNotifications": true
+        }
       ],
-      "react-native-background-fetch"
+      [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "Allow $(PRODUCT_NAME) to collect location and device ID data that can be used for tracking your device. This data is used by 4U Logistics to provide most suitable orders for you. Any of your personal data, including geolocation, is not disclosed to third parties."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your image library, so you can select and upload to 4U Logistics photos of yours and yours trucks documents, i.e. drivers licence, insurance policy, vehicle registration.",
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera, so you can select and upload to 4U Logistics photos of yours and yours trucks documents, i.e. drivers licence, insurance policy, vehicle registration."
+        }
+      ]
     ],
     "web": {
       "bundler": "metro"
     },
     "android": {
-      "package": "com.log4u"
+      "package": "com.log4u",
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAMYnJBvj6xChSaS3em70ulDcP961BQ6pk"
+        }
+      }
     },
     "extra": {
       "eas": {
@@ -33,20 +62,12 @@
     },
     "ios": {
       "bundleIdentifier": "com.log4u",
+      "config": {
+        "googleMapsApiKey": "AIzaSyAViHHWTbT2p_SnNdQwUOQFFC9jba2XPvU"
+      },
       "infoPlist": {
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "[LOG4U] This app requires location in the background",
-        "NSLocationWhenInUseUsageDescription": "[LOG4U] This app requires location while in use",
-        "NSMotionUsageDescription": "[LOG4U] This app uses motion-detection to determine the motion-activity of the device (walking, vehicle, bicycle, etc)",
-        "UIBackgroundModes": [
-          "location",
-          "fetch",
-          "processing",
-          "audio"
-        ],
-        "BGTaskSchedulerPermittedIdentifiers": [
-          "com.transistorsoft.fetch",
-          "com.transistorsoft.customtask"
-        ]
+        "UIBackgroundModes": ["location", "fetch", "remote-notification", "processing"],
+        "BGTaskSchedulerPermittedIdentifiers": ["$(PRODUCT_BUNDLE_IDENTIFIER)"]
       }
     }
   }

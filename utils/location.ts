@@ -1,110 +1,218 @@
-//import * as SecureStore from 'expo-secure-store';
-import { encode as btoa } from 'base-64';
-import BackgroundGeolocation, {
-  State,
-  Config,
-  Location,
-  LocationError,
-  Geofence,
-  GeofenceEvent,
-  GeofencesChangeEvent,
-  HeartbeatEvent,
-  HttpEvent,
-  MotionActivityEvent,
-  MotionChangeEvent,
-  ProviderChangeEvent,
-  ConnectivityChangeEvent,
-} from 'react-native-background-geolocation';
+import * as Location from 'expo-location';
+// import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
+import { merge } from 'lodash';
 
-import { BACKEND_ORIGIN, SET_LOCATION_PATH } from '../constants';
+import {
+  BACKEND_ORIGIN,
+  SET_LOCATION_PATH,
+  // BACKGROUND_FETCH_TASK,
+  LOCATION_TRACKING,
+  // BACKGROUND_GEOFENCE_TASK,
+  LOCATION_UPDATE_INTERVAL,
+  LOCATION_DISTANCE_INTERVAL,
+  // GEOFENCE_DISTANCE_INTERVAL,
+  LOCATION_NOTIFICATION_BODY,
+  LOCATION_NOTIFICATION_TITLE,
+  COLORS,
+  PERMISSION_GRANTED,
+  FETCH_TIMEOUT,
+  BUILD_VERSION,
+} from '../constants';
+import { getDeviceId } from './deviceId';
+import { throttle } from './throttle';
 
-const baseConfig: Config = {
-  // Geolocation Config
-  desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
-  distanceFilter: 10,
-  // locationUpdateInterval: 1000,
-  // Activity Recognition
-  // stopTimeout: 5,
-  // Application config
-  debug: true, // <-- enable this hear sounds for background-geolocation life-cycle.
-  logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
-  stopOnTerminate: false, // <-- Allow the background-service to continue tracking when user closes the app.
-  startOnBoot: true, // <-- Auto start tracking when device is powered-up.
-  // HTTP / SQLite config
-  url: BACKEND_ORIGIN + SET_LOCATION_PATH,
-  batchSync: false, // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
-  autoSync: true, // <-- [Default: true] Set true to sync each location to server as it arrives.
+export type AdditionalLocationOptions = Partial<Location.LocationTaskOptions>;
+
+const baseLocationOptions: Location.LocationTaskOptions = {
+  // deferredUpdatesDistance: 0,
+  // deferredUpdatesInterval: 0,
+  // deferredUpdatesTimeout: 1000 * 60 * 30,
+  foregroundService: {
+    killServiceOnDestroy: false,
+    notificationBody: LOCATION_NOTIFICATION_BODY,
+    notificationTitle: LOCATION_NOTIFICATION_TITLE,
+    notificationColor: COLORS.locationNotification,
+  },
+  activityType: Location.ActivityType.Other, // Location.ActivityType.AutomotiveNavigation,
+  pausesUpdatesAutomatically: false,
+  showsBackgroundLocationIndicator: true,
+  // next options from getCurrentPositionAsync
+  accuracy: Location.Accuracy.Balanced,
+  distanceInterval: LOCATION_DISTANCE_INTERVAL,
+  mayShowUserSettingsDialog: true,
+  timeInterval: LOCATION_UPDATE_INTERVAL,
 };
 
 let isStarting = false;
-let isStarted = false;
-let login = 'Mego2Man';
-let password = 'Super2Pass';
 
-const startLocation = async () => {
+const startLocation = async (addLocationParams: AdditionalLocationOptions) => {
   if (isStarting) {
     console.log('Already starting');
     return;
   }
   isStarting = true;
 
-  /*try {
-    [login, password] = await Promise.all([
-      SecureStore.getItemAsync('login'),
-      SecureStore.getItemAsync('password'),
-    ]);
+  try {
+    const resf = await Location.requestForegroundPermissionsAsync();
+    const resb = await Location.requestBackgroundPermissionsAsync();
+    await Location.enableNetworkProviderAsync(); // Probably don`t need that
+    if (
+      resf.status != PERMISSION_GRANTED &&
+      resb.status !== PERMISSION_GRANTED
+    ) {
+      console.log('No Permission to access location');
+      isStarting = false;
+      return;
+    }
+    console.log('Permission to access location present');
   } catch (error) {
-    console.log('Error, getting login and password: ', error);
-  }*/
-
-  if (!login || !password) {
-    console.log('No login or password');
+    console.log('Error getting permissions: ', error);
     isStarting = false;
     return;
   }
 
   try {
-    const state = await BackgroundGeolocation.getState();
-    console.log('State: ', state);
-    if (state.enabled) {
-      console.log('Already running');
+    await Location.startLocationUpdatesAsync(
+      LOCATION_TRACKING,
+      merge({}, baseLocationOptions, addLocationParams),
+    );
+
+    const hasStarted =
+      await Location.hasStartedLocationUpdatesAsync(LOCATION_TRACKING);
+    console.log('Location tracking started? ', hasStarted);
+    if (!hasStarted) {
       isStarting = false;
       return;
     }
-    const config: Config = {
-      ...baseConfig,
-      headers: {
-        Authorization: 'Basic ' + btoa(login + ':' + password),
-      },
-    };
-    const readyState = !isStarted
-      ? await BackgroundGeolocation.ready(config)
-      : await BackgroundGeolocation.setConfig(config);
-    isStarted = true;
-    console.log('After ready: ', readyState);
-    const startState = await BackgroundGeolocation.start();
-    console.log('After start: ', startState);
+    const currentLocation = await getLocation();
+    await throttledSendLocation(currentLocation);
   } catch (e) {
-    console.log('Error, while starting location: ', e);
+    console.log(`Error starting location: ${e.message}`);
     isStarting = false;
     return;
   }
 
+  const locationHasStarted =
+    await Location.hasStartedLocationUpdatesAsync(LOCATION_TRACKING);
+  console.log('Location tracking started (Start)? ', locationHasStarted);
+  if (!locationHasStarted) {
+    isStarting = false;
+    return;
+  }
   isStarting = false;
   return;
 };
 
 const stopLocation = async () => {
-  const state = await BackgroundGeolocation.getState();
-  console.log('State: ', state);
-  if (state.enabled) {
-    const stopState = await BackgroundGeolocation.stop();
-    console.log('After stop: ', stopState);
+  const isLocationStarted =
+    await Location.hasStartedLocationUpdatesAsync(LOCATION_TRACKING);
+  if (isLocationStarted) {
+    console.log('Location was running');
+    await Location.stopLocationUpdatesAsync(LOCATION_TRACKING);
   }
-
-  login = '';
-  password = '';
   console.log('Stopped');
 };
+
+const getLocation = async () => {
+  let currentLocation: Location.LocationObject;
+  try {
+    currentLocation = await Location.getLastKnownPositionAsync();
+    console.log(
+      `${
+        currentLocation
+          ? 'Current location at: ' + currentLocation.timestamp
+          : 'No last known location'
+      }`,
+    );
+    if (!currentLocation) {
+      currentLocation = await Location.getCurrentPositionAsync();
+      console.log(`New location location at: ${currentLocation.timestamp}`);
+    }
+  } catch (error) {
+    console.log('Error getting location: ', error);
+  }
+  return currentLocation;
+};
+
+const sendLocation = async (currentLocation: Location.LocationObject) => {
+  if (currentLocation) {
+    const deviceId = await getDeviceId();
+    const headers = new Headers();
+    headers.set('X-Device-Id', `${deviceId}`);
+    headers.set('X-App-Version', `${BUILD_VERSION}`);
+    headers.set('Accept', 'application/json');
+    headers.set('Content-Type', 'application/json');
+    const uri = new URL(SET_LOCATION_PATH, BACKEND_ORIGIN);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+    const init = {
+      method: 'POST',
+      headers,
+      signal: controller.signal,
+      body: JSON.stringify({
+        deviceId,
+        location: {
+          coords: {
+            latitude: currentLocation.coords.latitude,
+            longitude: currentLocation.coords.longitude,
+          },
+        },
+      }),
+    };
+    console.log(
+      `Sending location to ${uri.toString()}: ${JSON.stringify(init)}`,
+    );
+    try {
+      await fetch(uri, init).then((response) => {
+        console.log(
+          'Location response status code: ',
+          response && response.status,
+        );
+        if (response && response.status === 412) {
+          return stopLocation();
+        }
+      });
+      console.log('Location sent');
+    } catch (error) {
+      console.log('Error sending location', error);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  } else {
+    console.log('No location to send');
+  }
+};
+
+const throttledSendLocation = throttle(sendLocation, FETCH_TIMEOUT * 3);
+
+if (!TaskManager.isTaskDefined(LOCATION_TRACKING)) {
+  console.log('Registering: ', LOCATION_TRACKING);
+  TaskManager.defineTask<{ locations: Location.LocationObject[] }>(
+    LOCATION_TRACKING,
+    async ({ data, error, executionInfo }) => {
+      console.log(`${new Date().toISOString()}: Location task`, executionInfo);
+
+      if (error) {
+        console.log('Location task ERROR:', error);
+        return;
+      }
+      if (data) {
+        const { locations } = data;
+        console.log(`Location data: ${JSON.stringify(data)}`);
+        try {
+          const currentLocation = locations[0];
+          await throttledSendLocation(currentLocation);
+          return;
+        } catch (error) {
+          console.log('Error sending location', error);
+        }
+      }
+      return;
+    },
+  );
+} else {
+  console.log('Already registered: ', LOCATION_TRACKING);
+}
 
 export { startLocation, stopLocation };

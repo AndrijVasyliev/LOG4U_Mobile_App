@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "notional-gist-395315",
+  "private_key_id": "77f92de29f2a46139ee2846598a385d597588a7b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCzDNwR6nAE87y+\nM/mm22/iH0c4oeopEj26sXPl4q1sE27UKwbFbEtxiUZDFZtZwAVXwoL9pWocFE9H\nd+WVvtjAofcUXJ4mSwOgmF+gE+8aNbVVo9vxG1eccMzTQv82+Pc72QaaaENF8/3+\nMGHSR6yc6dAq1vbVM1ldJfBL3fpBQbPxG/1VzEZxA7QspjRul6IkLQjcq0CtPvXS\nTFI1Sbmb+1MCgPcrsm6aWguT+726KzxPkqyphIJBWrxyRax5ocDIqnYgH1LPolap\nvt3Y6UMheYmB6nqqrnWvgz6ym+/NuWEhsyUZ/35Lg7FIcrQm+wXcsVtlMukPkVVU\nMZQuTePnAgMBAAECggEAL+IcBoSKQaDHVJyEwt1DbhcMTnZqr2Ir9P4Y7x0wYMtP\no9j/3hNIl8vs6Orh2V4zb5Vav6eZmXnK++NyGBpqUBXghGcCel4sUan+RMqf8oPz\ngzwniTLVOsal2Ee+Bf8N60jubaO9ffsy7WQV/Qzi+jHDVHmZmEm7t9/6A+gQ0Ztk\nU4zIdaNsT9AKWAOEgFt1jIbef6UFmJUEf3doBwhe4sBV8eD5JcmcC1jYzQ3Ap40X\n4rCpZA+K22EpUo+DvVL09AleV+PmcBMApXQeAmoa2QGmeEye6pyYJKFnVIZNd4aG\nmVyNrjP+F03azX4ZeHg+LdfhVBB0P6svNba/sfEn4QKBgQDlJlHCH/+hzwesth+3\nUoaxBdeU9QKdMq3NmfBFB0nslrJxx3oY2zZRjQJPjQwE9jx653RF7cr+IvnWjOjD\naoAIPiRTkXxF76FGtqp+SqO5crcZJscYDrIllfRJPpN/3JndbUIDMNnsdO7fRWYt\nErMpJ2dR3L0/W6s5ioZGdj+UBwKBgQDIB7vZ4ZZstz8QLMlksl/cpdMPgdvYZXz9\n4jKP23Ht+JTFpoRUhUatoJ8E5JEPw6bIeroIKRsndNsSHR4+i7URFAY//EMYgItn\nczuVt0yrU7XRuwzYIwHrBRgXkVMCuYJXBJ8vnXm6TvB1rfBFok2uPmgLLzPoSiJv\nWk9mr5f5IQKBgBdGsi1W1L+Z6PypL0WO03Gt1z0hOhe/qxnkVhyc5exrTkryaTuX\nIMhd22s7N4pVfMU7N3tW8TSpVtltTMN00PaFYWk/sPDlq2skaOMVL9ZJicG7R6Pw\n8jWRKtQ5z/+/570vOPJcBvbW1eDGCt/vM1Wt0/fjxTFnXVgl8we7QTAHAoGBAJ+f\nXE6QcIOs74wu0T+kAE+JnJXBYPicdFP9T6/wxEfMmJvpN6xi9nXTuVIkO4ZC8TMG\njLG6a8reu3sG9X2f6wwH2Lzyx3AkFBqnoCLnNS17DZqiE6ves8ciN4mHFKEV/GcI\nbyeGGP+NwuGFvjkzPZ4QeuKB9oAluLj3bmlZMoNBAoGBANRMEXGrSuGUV3dPBLpx\nR9YbtrGC+sDQtT2fu/XSTh7ZaBAOWc+MDtcNSR75F7r9bYEzHYqT3Elkwl4GyGT/\nqNkRzRacKQm8GCYwPN7RoiEVEXqEVUxkEIRfEQPHstRW2EQIFzXf9IEhM2U2mQE0\nF7LAvZ/YuqXn7jPc2yCrSI4h\n-----END PRIVATE KEY-----\n",
+  "client_email": "log4u-mobile-app-service-acc@notional-gist-395315.iam.gserviceaccount.com",
+  "client_id": "112307833748700067985",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/log4u-mobile-app-service-acc%40notional-gist-395315.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

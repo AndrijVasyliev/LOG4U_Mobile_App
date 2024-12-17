@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1028897116086",
+    "project_id": "notional-gist-395315",
+    "storage_bucket": "notional-gist-395315.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028897116086:android:3d64c0c64c39deb990bb17",
+        "android_client_info": {
+          "package_name": "com.log4u"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeL5igvnsOcrLIDs6AJ0C1n0WkedfWeN4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
