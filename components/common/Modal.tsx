@@ -23,10 +23,23 @@ const Modal = ({
   buttons: JSX.Element;
   close: VoidFunction;
 }) => {
+  const [isModalMounted, setIsModalMounted] = React.useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = React.useState<boolean>(visible);
 
   const screenHeight = Dimensions.get('window').height;
   const calculatedHeight = (screenHeight * 90) / 100;
+
+  React.useEffect(() => {
+    if (visible) {
+      setIsModalMounted(visible);
+    } else {
+      const timeoutId = setTimeout(
+        () => setIsModalMounted(visible),
+        MODAL_VIEW_DELAY,
+      );
+      return () => clearTimeout(timeoutId);
+    }
+  }, [visible]);
 
   React.useEffect(() => {
     if (visible) {
@@ -41,28 +54,33 @@ const Modal = ({
   }, [visible]);
 
   return (
-    <NativeModal
-      hardwareAccelerated={true}
-      animationType="fade"
-      transparent={true}
-      visible={isModalVisible}
-      onRequestClose={() => {
-        console.log('Modal has been closed.');
-        close();
-      }}
-    >
-      <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={close}>
-          <View style={styles.area} />
-        </TouchableWithoutFeedback>
-        <View style={[styles.dialogPaper, { maxHeight: calculatedHeight }]}>
-          <View style={styles.dialogHeader}>{header}</View>
-          <View style={styles.dialogContentsHolder}>{contents}</View>
-          <Spacer />
-          <View style={styles.buttonContainer}>{buttons}</View>
-        </View>
-      </View>
-    </NativeModal>
+    <>
+      {!isModalMounted ? null : (
+        <NativeModal
+          hardwareAccelerated={true}
+          animationType="none"
+          // presentationStyle="pageSheet"
+          transparent={true}
+          visible={isModalVisible}
+          onRequestClose={() => {
+            console.log('Modal has been closed.');
+            close();
+          }}
+        >
+          <View style={styles.container}>
+            <TouchableWithoutFeedback onPress={close}>
+              <View style={styles.area} />
+            </TouchableWithoutFeedback>
+            <View style={[styles.dialogPaper, { maxHeight: calculatedHeight }]}>
+              <View style={styles.dialogHeader}>{header}</View>
+              <View style={styles.dialogContentsHolder}>{contents}</View>
+              <Spacer />
+              <View style={styles.buttonContainer}>{buttons}</View>
+            </View>
+          </View>
+        </NativeModal>
+      )}
+    </>
   );
 };
 

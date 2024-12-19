@@ -72,6 +72,7 @@ const AddFile = ({
       aspect: [4, 3],
       quality: 1,
       exif: false,
+      base64: false,
       allowsMultipleSelection: false,
     });
 
@@ -99,6 +100,7 @@ const AddFile = ({
       aspect: [4, 3],
       quality: 1,
       exif: false,
+      base64: false,
       allowsMultipleSelection: false,
       cameraType: CameraType.back,
     });
