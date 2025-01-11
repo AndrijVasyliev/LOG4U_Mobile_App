@@ -2,7 +2,7 @@
   "expo": {
     "name": "4U TRACK",
     "slug": "LOG4U",
-    "version": "1.2.24",
+    "version": "1.2.25",
     "runtimeVersion": {
       "policy": "appVersion"
     },
