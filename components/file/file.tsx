@@ -24,9 +24,11 @@ import { useUserData } from '../../hooks/userData';
 
 const File = ({
   file,
+  isDeleteDisabled = false,
   setChangedAt,
 }: {
   file?: Record<string, any>;
+  isDeleteDisabled?: boolean;
   setChangedAt: (changedAt: number) => void;
 }) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -121,7 +123,11 @@ const File = ({
             <Text style={styles.valueText}>{`${name}`}</Text>
           </View>
         </TouchableOpacity>
-        <DeleteFile file={file} setChangedAt={setChangedAt} />
+        <DeleteFile
+          file={file}
+          disabled={isDeleteDisabled}
+          setChangedAt={setChangedAt}
+        />
       </View>
       <Spinner visible={isLoading} textContent={'Downloading file...'} />
     </>

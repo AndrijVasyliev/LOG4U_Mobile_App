@@ -15,9 +15,11 @@ import { useFetch } from '../../hooks/useFetch';
 
 const DeleteFile = ({
   file,
+  disabled = false,
   setChangedAt,
 }: {
   file: Record<string, any>;
+  disabled?: boolean;
   setChangedAt: (changedAt: number) => void;
 }) => {
   const [dialogVisible, setDialogVisible] = React.useState<boolean>(false);
@@ -70,10 +72,14 @@ const DeleteFile = ({
         }
         close={handleCloseDialog}
       />
-      <TouchableOpacity style={styles.deleteButton} onPress={handleOpenDialog}>
+      <TouchableOpacity
+        style={styles.deleteButton}
+        disabled={disabled}
+        onPress={handleOpenDialog}
+      >
         <MaterialCommunityIcons
           name="file-image-minus-outline"
-          color={COLORS.black}
+          color={disabled ? COLORS.gray : COLORS.black}
           size={24}
         />
       </TouchableOpacity>

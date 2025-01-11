@@ -22,11 +22,13 @@ const AddFile = ({
   objectId,
   objectType,
   tags,
+  disabled = false,
   setChangedAt,
 }: {
   objectId?: string;
   objectType?: FileOfType;
   tags?: Record<string, string>;
+  disabled?: boolean;
   setChangedAt: (changedAt: number) => void;
 }) => {
   const [fileUri, setFileUri] = React.useState<string>('');
@@ -167,25 +169,27 @@ const AddFile = ({
       <FileErrorDialog errorCode={uploadError} OnClose={handleFileErrorClose} />
       <TouchableOpacity
         style={styles.addButton}
+        disabled={disabled}
         onPress={() => {
           takePhoto();
         }}
       >
         <MaterialCommunityIcons
           name="camera-plus-outline"
-          color={COLORS.black}
+          color={disabled ? COLORS.gray : COLORS.black}
           size={24}
         />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.addButton}
+        disabled={disabled}
         onPress={() => {
           pickImage();
         }}
       >
         <MaterialCommunityIcons
           name="file-image-plus-outline"
-          color={COLORS.black}
+          color={disabled ? COLORS.gray : COLORS.black}
           size={24}
         />
       </TouchableOpacity>

@@ -21,11 +21,15 @@ const FileList = ({
   objectType,
   label,
   tags,
+  isAddDisabled = false,
+  isDeleteDisabled = false,
 }: {
   objectId?: string;
   objectType?: FileOfType;
   label: string;
   tags?: Record<string, string>;
+  isAddDisabled?: boolean;
+  isDeleteDisabled?: boolean;
 }) => {
   const [changedAt, setChangedAt] = React.useState<number>(0);
   const [expanded, setExpanded] = React.useState<boolean>(false);
@@ -113,6 +117,7 @@ const FileList = ({
           objectId={objectId}
           objectType={objectType}
           tags={tags}
+          disabled={isAddDisabled}
           setChangedAt={setChangedAt}
         />
       </View>
@@ -122,7 +127,12 @@ const FileList = ({
       ) : (
         files &&
         files.map((file) => (
-          <File key={file.id} file={file} setChangedAt={setChangedAt} />
+          <File
+            key={file.id}
+            file={file}
+            isDeleteDisabled={isDeleteDisabled}
+            setChangedAt={setChangedAt}
+          />
         ))
       )}
     </>

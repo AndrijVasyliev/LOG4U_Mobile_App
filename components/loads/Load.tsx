@@ -69,6 +69,8 @@ const Load = ({
           objectId={load.id}
           objectType="Load"
           label="Bill Files"
+          isAddDisabled={true}
+          isDeleteDisabled={true}
           tags={{ [`${load.id}`]: 'Bill' }}
         />
       )}
