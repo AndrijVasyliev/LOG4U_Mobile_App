@@ -89,6 +89,10 @@ const WillBeAvailableDialog = ({
       });
   };
 
+  const handleSetDate = (newDate: Date) => {
+    setDate(newDate);
+  };
+
   const setWillBeAvailable = () => {
     onStateChange('Will be available', location, date);
   };
@@ -104,7 +108,7 @@ const WillBeAvailableDialog = ({
               <Spacer />
               <LocationInput onSet={handleSetLocation} />
               <Spacer />
-              <DateTimeInput onSet={setDate} />
+              <DateTimeInput onSet={handleSetDate} />
               <Spacer />
             </View>
           </>

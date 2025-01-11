@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import dayjs from 'dayjs';
-import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
-import { SingleChange } from 'react-native-ui-datepicker/src/types';
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+// import dayjs from 'dayjs';
+// import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
+// import { SingleChange } from 'react-native-ui-datepicker/src/types';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import Modal from './Modal';
 import ModalButton from './modalButton';
 import { COLORS } from '../../constants';
@@ -10,30 +11,58 @@ import { toCorrected } from '../../utils/dateTimeConverters';
 
 const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
   const [pickerVisible, setPickerVisible] = React.useState<boolean>(false);
-  const [date, setDate] = React.useState<DateType | undefined>(undefined);
+  const [date, setDate] = React.useState</*DateType*/ Date | undefined>(undefined);
+  const [mode, setMode] = React.useState<'date' | 'time' | 'datetime'>(Platform.OS === 'ios' ? 'datetime' : 'date');
 
   const onClick = () => {
+    const currDate = new Date();
+    setDate(currDate);
+    onSet(toCorrected(currDate));
     setPickerVisible(true);
   };
-  const handleDateChange: SingleChange = ({ date }) => {
+  /*const handleDateChange: SingleChange = ({ date }) => {
     setDate(date);
+  };*/
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    if (Platform.OS !== 'ios') {
+      if (mode === 'date') {
+        setMode('time');
+      } else {
+        setMode('date');
+        onSet(toCorrected(currentDate));
+        setPickerVisible(false);
+      }
+    }
+    setDate(currentDate);
   };
   const handleClose = () => {
     setPickerVisible(false);
   };
   const handleSet = () => {
-    onSet(toCorrected(dayjs(date).toDate()));
+    // onSet(toCorrected(dayjs(date).toDate()));
+    onSet(toCorrected(date));
     setPickerVisible(false);
   };
 
   return (
     <>
-      <Modal
-        visible={pickerVisible}
-        header={<Text>{'Select Will Be Available At'}</Text>}
-        contents={
-          <View style={styles.dialogContentsHolder}>
-            <DateTimePicker
+      {Platform.OS === 'android' && pickerVisible ? (
+        <DateTimePicker
+          mode={mode}
+          display='default'
+          is24Hour={true}
+          minimumDate={new Date(Date.now() - 24 * 60 * 60 * 1000)}
+          value={date}
+          onChange={handleDateChange}
+        />
+      ) : (
+        <Modal
+          visible={pickerVisible}
+          header={<Text>{'Select Will Be Available At'}</Text>}
+          contents={
+            <View style={styles.dialogContentsHolder}>
+              {/*<DateTimePicker
               mode="single"
               headerButtonColor={COLORS.primary}
               selectedItemColor={COLORS.primary}
@@ -42,23 +71,32 @@ const DateTimeInput = ({ onSet }: { onSet: (date?: Date) => void }) => {
               minDate={new Date(Date.now() - 24 * 60 * 60 * 1000)}
               date={date}
               onChange={handleDateChange}
-            />
-          </View>
-        }
-        buttons={
-          <>
-            <ModalButton text={'Cancel'} onPress={handleClose} />
-            <ModalButton text={'Set'} onPress={handleSet} />
-          </>
-        }
-        close={handleClose}
-      />
+            />*/}
+              <DateTimePicker
+                mode={mode}
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                is24Hour={true}
+                minimumDate={new Date(Date.now() - 24 * 60 * 60 * 1000)}
+                value={date}
+                onChange={handleDateChange}
+              />
+            </View>
+          }
+          buttons={
+            <>
+              <ModalButton text={'Cancel'} onPress={handleClose} />
+              <ModalButton text={'Set'} onPress={handleSet} />
+            </>
+          }
+          close={handleClose}
+        />
+      )}
       <View style={styles.controlContainer}>
         <TouchableOpacity style={styles.button} onPress={onClick}>
           {date ? (
             <Text
               style={styles.valueText}
-            >{`${dayjs(date).toDate().toDateString()}`}</Text>
+            >{`${/*dayjs(date).toDate().toDateString()*/ date.toDateString()}`}</Text>
           ) : (
             <Text style={styles.placeholderText}>Enter date</Text>
           )}
